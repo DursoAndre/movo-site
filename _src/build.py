@@ -1,5 +1,5 @@
 import re, os
-APP = "https://dursoandre.github.io/meu-treino/"
+APP = "https://app.movoapp.com.br/"
 tpl = open('template.html', encoding='utf-8').read()
 def pic(m):
     name, alt, mode = m.group(1), m.group(2), m.group(3) or 'lazy'
