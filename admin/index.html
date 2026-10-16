@@ -207,8 +207,8 @@ input:focus{outline:2px solid var(--ac);outline-offset:0}
   var EV = {
     "Entrada": { login_codigo: "Login por código", login_link: "Login por link", aceite_registrado: "Aceitou os termos" },
     "Onboarding": { onboarding_iniciado: "Começou o onboarding", onb_atividades_escolhidas: "Escolheu atividades", onb_objetivo_forca: "Objetivo: força", onb_objetivo_emagrecer: "Objetivo: emagrecer", onb_objetivo_rotina: "Objetivo: criar rotina", onboarding_pulado: "Pulou o onboarding", onboarding_cancelado: "Cancelou o onboarding", onboarding_concluido: "Concluiu o onboarding" },
-    "Treino": { treino_concluido: "Concluiu treino", treino_concluido_com_ajuste: "Concluiu com ajuste de carga", treino_recorde: "Bateu recorde", primeiro_registro: "Primeiro registro", ficha_salva_com_ajustes: "Salvou ficha com ajustes", treino_herói_iniciar: "Iniciou treino pelo card principal", proximo_fazer_hoje: "Usou “próximo a fazer”" },
-    "Corrida e provas": { corrida_registrada_manual: "Corrida registrada à mão", treino_corrida_agendado: "Agendou corrida", treino_corrida_salvo: "Salvou corrida", meta_corrida_aberta: "Abriu meta de corrida", meta_corrida_definida: "Definiu meta de corrida", plano_corrida_aberto: "Abriu plano de corrida", plano_corrida_prompt: "Plano: viu o prompt", plano_corrida_ia_pedido: "Pediu plano com IA", plano_corrida_ia_gerado: "Plano com IA gerado", plano_corrida_ia_retomado: "Retomou plano com IA", plano_corrida_criado: "Criou plano de corrida", provas_aberta: "Abriu Provas", prova_marcada: "Marcou prova", prova_favoritada: "Favoritou prova", prova_manual_criada: "Criou prova manual", prova_km_definida: "Definiu distância da prova", prova_link_clicado: "Clicou no link da prova" },
+    "Treino": { treino_registrado: "Registrou treino (qualquer modalidade)", treino_concluido: "Concluiu treino", treino_concluido_com_ajuste: "Concluiu com ajuste de carga", treino_recorde: "Bateu recorde", primeiro_registro: "Primeiro registro", ficha_salva_com_ajustes: "Salvou ficha com ajustes", treino_herói_iniciar: "Iniciou treino pelo card principal", proximo_fazer_hoje: "Usou “próximo a fazer”" },
+    "Corrida e provas": { corrida_registrada_manual: "Corrida registrada à mão", strava_importado: "Importou do Strava", treino_corrida_agendado: "Agendou corrida", treino_corrida_salvo: "Salvou corrida", meta_corrida_aberta: "Abriu meta de corrida", meta_corrida_definida: "Definiu meta de corrida", plano_corrida_aberto: "Abriu plano de corrida", plano_corrida_prompt: "Plano: viu o prompt", plano_corrida_ia_pedido: "Pediu plano com IA", plano_corrida_ia_gerado: "Plano com IA gerado", plano_corrida_ia_retomado: "Retomou plano com IA", plano_corrida_criado: "Criou plano de corrida", provas_aberta: "Abriu Provas", prova_marcada: "Marcou prova", prova_favoritada: "Favoritou prova", prova_manual_criada: "Criou prova manual", prova_km_definida: "Definiu distância da prova", prova_link_clicado: "Clicou no link da prova" },
     "Desafios e convites": { desafio_entrou: "Entrou em desafio", desafio_criado: "Criou desafio", desafio_aplauso: "Deu aplauso", desafio_treinei_com: "Marcou “treinei com”", desafio_cartao_compartilhado: "Compartilhou o cartão", convite_whatsapp: "Convidou por WhatsApp", convite_whatsapp_ranking: "Convidou pelo ranking" },
     "IA": { treino_ia_aberto_builder: "Abriu o montador com IA", treino_ia_iniciado: "Iniciou treino com IA", treino_ia_pronto: "Treino com IA pronto" },
     "Treinador": { coach_painel_aberto: "Abriu o painel do treinador", coach_semana_enviada: "Enviou semana ao aluno", coach_ficha_import_iniciado: "Começou a importar ficha" },
@@ -230,7 +230,7 @@ input:focus{outline:2px solid var(--ac);outline-offset:0}
 
   // ---------- abas (cada uma só carrega quando aberta) ----------
   var TABS = [
-    { id: "geral", t: "Visão geral" }, { id: "ret", t: "Retenção" }, { id: "funil", t: "Funil" },
+    { id: "geral", t: "Visão geral" }, { id: "ret", t: "Retenção" }, { id: "funil", t: "Funil" }, { id: "ativ", t: "Ativação" },
     { id: "uso", t: "Uso" }, { id: "conv", t: "Convites" }, { id: "dom", t: "Domínio" }
   ];
   var cache = {};
@@ -241,6 +241,10 @@ input:focus{outline:2px solid var(--ac);outline-offset:0}
     if (tab === "geral") return sb.rpc("admin_m_geral");
     if (tab === "ret") return sb.rpc("admin_m_retencao");
     if (tab === "funil") return sb.rpc("admin_m_funil");
+    if (tab === "ativ") return Promise.all([sb.rpc("admin_m_ativacao"), sb.rpc("admin_m_canais"), sb.rpc("admin_m_usoretorno")]).then(function (r) {
+      var er = r.filter(function (x) { return x.error; })[0];
+      return er ? { error: er.error } : { data: { ativ: r[0].data, canais: r[1].data, usoret: r[2].data } };
+    });
     if (tab === "uso") return sb.rpc("admin_m_funcoes", { p_dias: params.uso });
     if (tab === "conv") return sb.rpc("admin_m_convites", { p_dias: params.conv });
     return sb.rpc("admin_m_dominio", { p_dias: params.dom });
@@ -283,6 +287,28 @@ input:focus{outline:2px solid var(--ac);outline-offset:0}
         h += barRow(e.etapa, e.n, topo, pct(e.n, topo), sub, i === maxI && maxD > 0 ? "maior queda" : "");
       });
       h += '</div><div class="note">Só contas criadas desde <b>' + dm(d.desde) + "</b> (quando os eventos começaram), todas medidas no mesmo grupo. Sem você e sem contas de teste. Com este tamanho de grupo, use para saber <b>quem</b> parou em cada etapa e chamar a pessoa.</div>";
+      return h;
+    },
+    ativ: function (d) {
+      var t = d.ativ.total;
+      function cel(a, b) { return b > 0 ? '<td class="' + (b < 10 ? "low" : "") + '"><b>' + a + "/" + b + "</b> <small>" + pct(a, b) + "</small></td>" : '<td class="low"><small>sem dados</small></td>'; }
+      function card(a, b, titulo, vazio) { return b > 0 ? stat(a + " de " + b, titulo, "hi", pct(a, b) + (b < 10 ? " · amostra pequena" : "")) : stat("—", titulo, "", vazio); }
+      var h = '<h2>Ativação e “aha”</h2><div class="grid">' + card(t.a1, t.el_a, "1º treino em até 7 dias da conta", "contas novas demais") + card(t.a2, t.el_b, "2º dia de treino em até 7 dias do 1º", "ninguém com 7 dias desde o 1º treino") + "</div>";
+      h += '<div class="note"><b>Ativação</b>: contas com 7+ dias que registraram treino na 1ª semana. <b>Aha</b> (hipótese): quem treina uma 2ª vez na semana seguinte ao 1º treino tende a ficar. Só contas criadas desde 05/10 (eventos de treino não existem antes).</div>';
+      h += '<h2>Por semana de cadastro</h2><div class="card scroll"><table><tr><th>Semana de</th><th>Contas</th><th>Ativação</th><th>2º dia</th></tr>';
+      d.ativ.semanas.forEach(function (s) { h += "<tr><td>" + dm(s.semana) + "</td><td>" + s.contas + "</td>" + cel(s.a1, s.el_a) + cel(s.a2, s.el_b) + "</tr>"; });
+      h += "</table></div>";
+      h += '<h2>Canal → 1º treino</h2><div class="card scroll"><table><tr><th>Canal</th><th>Contas</th><th>Treinaram</th><th>Em 7 dias</th></tr>';
+      d.canais.forEach(function (c) { h += "<tr><td>" + esc(c.canal) + "</td><td>" + c.contas + "</td><td>" + c.treinaram + "/" + c.contas + "</td>" + cel(c.a1, c.el) + "</tr>"; });
+      h += '</table></div><div class="note">A origem é gravada a partir da v177 (link da landing, convite de desafio, de treinador ou de aluno). “Sem registro” são contas anteriores ou de quem ainda não atualizou o app. Com poucas contas por canal, serve para saber <b>de onde vêm as pessoas que treinam</b>, não para comparar taxas.</div>';
+      h += '<h2>Quem usou voltou mais?</h2>';
+      if (!d.usoret.length) h += '<div class="card"><div class="note">Ainda sem funcionalidades com 2+ pessoas que já passaram de 7 dias do primeiro uso.</div></div>';
+      else {
+        h += '<div class="card">' + d.usoret.map(function (x) {
+          return '<div class="row"><div class="t">' + esc(evInfo(x.name).t) + '</div><div class="v">' + x.usou_ret + "/" + x.usou_n + "<small>" + pct(x.usou_ret, x.usou_n) + '</small></div><div class="s">quem não usou: ' + x.nao_ret + "/" + x.nao_n + " (" + pct(x.nao_ret, x.nao_n) + ") · voltou a abrir o app em até 7 dias após o 1º uso</div></div>";
+        }).join("") + "</div>";
+      }
+      h += '<div class="note">Só direção, não causa: quem usa mais recursos já costuma ser mais engajado. Com menos de 10 pessoas por linha, trate como pista para conversar com a pessoa.</div>';
       return h;
     },
     uso: function (d) {
