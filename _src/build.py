@@ -12,3 +12,11 @@ tpl = re.sub(r'\{\{pic ([a-z\-]+) "([^"]+)"(?: (eager))?\}\}', pic, tpl)
 tpl = tpl.replace('{{APP}}', APP)
 open('../index.html', 'w', encoding='utf-8').write(tpl)
 print('index.html', len(tpl.encode()))
+
+# Página de convite: link estável movoapp.com.br/convite/?desafio=CODE (ou ?treinador= / ?prof=) que leva ao app,
+# esteja ele em qualquer endereço. Ao migrar o app, só trocar APP acima e rodar este build de novo.
+import os
+os.makedirs('../convite', exist_ok=True)
+conv = open('convite.html', encoding='utf-8').read().replace('{{APP}}', APP)
+open('../convite/index.html', 'w', encoding='utf-8').write(conv)
+print('convite/index.html', len(conv.encode()))
