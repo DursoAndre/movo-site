@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://movoapp.com.br/sitemap.xml
