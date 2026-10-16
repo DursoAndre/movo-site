@@ -15,7 +15,7 @@
 :root{--bg:#14161A;--card:#1d2026;--card2:#252931;--line:#2e333c;--fg:#eef0f3;--mut:#9aa1ad;--ac:#bef230;--ac-d:#14161A;--bad:#ff7a6b;--warn:#ffc857;--new:#5cc8ff;color-scheme:dark}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-bottom:calc(32px + env(safe-area-inset-bottom,0px));min-height:100vh}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-bottom:calc(32px + env(safe-area-inset-bottom,0px));min-height:100vh;overscroll-behavior-y:contain}
 [hidden]{display:none!important}
 button{font:inherit;color:inherit;cursor:pointer}
 .top{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(10px + env(safe-area-inset-top,0px)) 0 8px;margin:0 -2px}
@@ -23,82 +23,104 @@ button{font:inherit;color:inherit;cursor:pointer}
 .logo{font-weight:800;letter-spacing:-.02em;font-size:18px}
 .logo b{color:var(--ac)}
 .sp{flex:1}
-.ib{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 11px;font-size:13px;color:var(--mut)}
+.ib{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:0 14px;min-height:44px;font-size:14px;color:var(--mut)}
 .ib:active{background:var(--card2)}
-.tabs{display:flex;gap:6px;overflow-x:auto;padding:10px 2px 4px;scrollbar-width:none}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:10px 2px 4px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 92%,transparent);mask-image:linear-gradient(90deg,#000 92%,transparent)}
 .tabs::-webkit-scrollbar{display:none}
-.tab{flex:none;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:14px;color:var(--mut)}
+.tab{flex:none;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:0 16px;min-height:44px;font-size:14px;color:var(--mut)}
 .tab[aria-selected=true]{background:var(--ac);border-color:var(--ac);color:var(--ac-d);font-weight:700}
-main{max-width:760px;margin:0 auto;padding-top:6px}
+main{max-width:760px;margin:0 auto;padding-top:6px;transition:opacity .15s}
+main.busy{opacity:.45;pointer-events:none}
 h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin:22px 0 8px;font-weight:700}
-.meta{color:var(--mut);font-size:12px;margin:6px 0 0;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.meta{color:var(--mut);font-size:12.5px;margin:6px 0 0;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-@media(min-width:560px){.grid.g3{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.grid.g3{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;min-width:0}
+.g3 .stat{padding:10px 11px}
 .stat .n{font-size:30px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1.1}
+.g3 .stat .n{font-size:26px}
 .stat .l{color:var(--mut);font-size:12.5px;margin-top:2px}
+.stat .s{color:var(--mut);font-size:12px;margin-top:4px;font-variant-numeric:tabular-nums}
 .stat.hi .n{color:var(--ac)}
+.stat.warn .n{color:var(--warn)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px;min-width:0}
-.note{color:var(--mut);font-size:12.5px;margin:8px 2px}
+.note{color:var(--mut);font-size:13px;margin:8px 2px}
 .note b{color:var(--fg)}
-.chart{display:flex;align-items:flex-end;gap:3px;height:110px;padding-top:6px}
-.chart .c{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;height:100%;position:relative}
-.chart .c i{display:block;background:var(--ac);border-radius:3px 3px 0 0;min-height:1px}
-.chart .c i.o{background:var(--new);border-radius:0}
-.chart .c i.a{background:var(--warn);border-radius:3px 3px 0 0}
-.axis{display:flex;justify-content:space-between;color:var(--mut);font-size:11px;margin-top:4px}
-.legend{display:flex;gap:14px;font-size:12px;color:var(--mut);margin-top:8px;flex-wrap:wrap}
+.chartbox{min-width:0}
+.rd{font-size:12.5px;color:var(--mut);min-height:18px;margin-bottom:2px;font-variant-numeric:tabular-nums}
+.rd b{color:var(--fg)}
+.chart{display:flex;align-items:flex-end;gap:3px;height:110px;touch-action:pan-y}
+.chart .c{flex:1;min-width:0;max-width:26px;height:100%;position:relative;border-bottom:1px solid var(--line);cursor:pointer}
+.chart .c i{position:absolute;left:0;right:0;bottom:0;display:block;border-radius:3px 3px 0 0;background:var(--ac)}
+.chart .c i.b{background:#5b6270}
+.chart .c i.o{background:var(--new)}
+.chart .c i.a{background:var(--warn)}
+.chart.stack .c{display:flex;flex-direction:column;justify-content:flex-end}
+.chart.stack .c i{position:static;border-radius:0}
+.chart .c.sel{outline:2px solid var(--fg);outline-offset:1px;border-radius:3px}
+.axis{display:flex;justify-content:space-between;color:var(--mut);font-size:12px;margin-top:4px}
+.legend{display:flex;gap:14px;font-size:12.5px;color:var(--mut);margin-top:8px;flex-wrap:wrap}
 .legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;background:var(--ac);margin-right:5px;vertical-align:-1px}
-.legend .o::before{background:var(--new)}.legend .a::before{background:var(--warn)}
+.legend .b::before{background:#5b6270}.legend .o::before{background:var(--new)}.legend .a::before{background:var(--warn)}
 .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:9px 0;border-top:1px solid var(--line);align-items:center}
 .row:first-child{border-top:0}
 .row .t{min-width:0;overflow-wrap:anywhere}
 .row .v{font-variant-numeric:tabular-nums;font-weight:700;text-align:right}
 .row .v small{color:var(--mut);font-weight:500;margin-left:5px}
+.row .v.warn{color:var(--warn)}
 .row .b{grid-column:1/-1;height:5px;background:var(--card2);border-radius:3px;overflow:hidden}
 .row .b i{display:block;height:100%;background:var(--ac);border-radius:3px}
-.row .s{grid-column:1/-1;color:var(--mut);font-size:12px}
+.row .s{grid-column:1/-1;color:var(--mut);font-size:12.5px}
 table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:13.5px}
-th,td{padding:8px 6px;text-align:right;border-top:1px solid var(--line);white-space:nowrap}
+th,td{padding:9px 6px;text-align:right;border-top:1px solid var(--line);white-space:nowrap}
 th:first-child,td:first-child{text-align:left}
-th{color:var(--mut);font-weight:600;font-size:12px;border-top:0}
-td small{color:var(--mut)}
+th{color:var(--mut);font-weight:600;font-size:12.5px;border-top:0}
+td small,.mut{color:var(--mut)}
+td.low{color:var(--mut)}
 .scroll{overflow-x:auto}
-.pill{display:inline-block;border-radius:999px;padding:1px 8px;font-size:12px;background:var(--card2);color:var(--mut)}
+.pill{display:inline-block;border-radius:999px;padding:1px 8px;font-size:12px;background:var(--card2);color:var(--mut);margin-left:6px;white-space:nowrap}
 .pill.ok{background:rgba(190,242,48,.15);color:var(--ac)}
 .pill.warn{background:rgba(255,200,87,.15);color:var(--warn)}
 .seg{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.seg button{background:none;border:0;padding:6px 12px;font-size:13px;color:var(--mut)}
+.seg button{background:none;border:0;padding:0 14px;min-height:44px;font-size:14px;color:var(--mut)}
 .seg button[aria-pressed=true]{background:var(--card2);color:var(--fg);font-weight:700}
+.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0 0}
 .sk{height:74px;border-radius:14px;background:linear-gradient(90deg,var(--card),var(--card2),var(--card));background-size:200% 100%;animation:sk 1.2s linear infinite;margin-bottom:10px}
 @keyframes sk{to{background-position:-200% 0}}
 .err{background:rgba(255,122,107,.1);border:1px solid rgba(255,122,107,.4);color:var(--bad);border-radius:12px;padding:12px 14px}
+.verdict{font-size:18px;font-weight:800;margin-bottom:4px}
+.verdict.ok{color:var(--ac)}.verdict.warn{color:var(--warn)}
+.foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line);display:flex;gap:12px;align-items:center;flex-wrap:wrap;color:var(--mut);font-size:12.5px}
 /* login */
 .login{max-width:380px;margin:0 auto;padding-top:calc(14vh + env(safe-area-inset-top,0px))}
 .login h1{font-size:28px;letter-spacing:-.03em;margin:0 0 4px}
 .login p{color:var(--mut);margin:0 0 18px}
-input{width:100%;background:var(--card);border:1px solid var(--line);color:var(--fg);border-radius:12px;padding:13px 14px;font:inherit;font-size:16px;margin-bottom:10px}
+input{width:100%;background:var(--card);border:1px solid var(--line);color:var(--fg);border-radius:12px;padding:13px 14px;font:inherit;font-size:16px;margin-bottom:10px;min-height:48px}
 input:focus{outline:2px solid var(--ac);outline-offset:0}
-.btn{width:100%;background:var(--ac);color:var(--ac-d);border:0;border-radius:12px;padding:13px;font-weight:800;font-size:16px}
+.btn{width:100%;background:var(--ac);color:var(--ac-d);border:0;border-radius:12px;padding:13px;font-weight:800;font-size:16px;min-height:48px}
 .btn:disabled{opacity:.6}
-.lk{background:none;border:0;color:var(--mut);text-decoration:underline;padding:10px 0;font-size:13px}
+.lk{background:none;border:0;color:var(--mut);text-decoration:underline;padding:0 4px;min-height:44px;font-size:14px}
+.lk:disabled{opacity:.5;text-decoration:none}
 </style>
 </head>
 <body>
 
 <div id="login" class="login" hidden>
   <h1>Movo <span style="color:var(--ac)">Admin</span></h1>
-  <p>Acesso restrito. Entre com o seu e-mail de admin.</p>
+  <p id="lmsg">Acesso restrito. Entre com o seu e-mail de admin.</p>
   <form id="f1">
     <input id="email" type="email" inputmode="email" autocomplete="email" placeholder="seu e-mail" required>
     <button class="btn" id="b1" type="submit">Enviar código</button>
   </form>
   <form id="f2" hidden>
-    <input id="otp" inputmode="numeric" autocomplete="one-time-code" placeholder="código do e-mail" required>
+    <input id="otp" inputmode="numeric" autocomplete="one-time-code" placeholder="código do e-mail" maxlength="10" required>
     <button class="btn" id="b2" type="submit">Entrar</button>
-    <button class="lk" id="voltar" type="button">Usar outro e-mail</button>
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap">
+      <button class="lk" id="voltar" type="button">Usar outro e-mail</button>
+      <button class="lk" id="reenviar" type="button">Reenviar código</button>
+    </div>
   </form>
-  <div id="lerr" class="err" hidden style="margin-top:12px"></div>
+  <div id="lerr" class="err" hidden style="margin-top:12px" role="alert"></div>
 </div>
 
 <div id="app" hidden>
@@ -106,12 +128,12 @@ input:focus{outline:2px solid var(--ac);outline-offset:0}
     <div class="bar">
       <div class="logo">movo<b>.</b>admin</div>
       <div class="sp"></div>
-      <button class="ib" id="reload" type="button" aria-label="Atualizar">Atualizar</button>
-      <button class="ib" id="sair" type="button">Sair</button>
+      <button class="ib" id="reload" type="button">Atualizar</button>
     </div>
-    <div class="tabs" id="tabs" role="tablist"></div>
+    <div class="tabs" id="tabs" role="tablist" aria-label="Seções do painel"></div>
   </div>
-  <main id="main"></main>
+  <main id="main" role="tabpanel" aria-live="polite"></main>
+  <div class="foot"><span id="foot-info"></span><span class="sp"></span><button class="ib" id="sair" type="button">Sair da conta</button></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
@@ -126,51 +148,93 @@ input:focus{outline:2px solid var(--ac);outline-offset:0}
   // ---------- util ----------
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function pct(a, b) { return b > 0 ? Math.round((a / b) * 100) + "%" : "—"; }
+  function pl(n, um, varios) { return n + " " + (n === 1 ? um : varios); }
   function dm(iso) { var p = String(iso).slice(0, 10).split("-"); return p[2] + "/" + p[1]; }
   function ago(ts) {
     var s = Math.round((Date.now() - ts) / 1000);
-    if (s < 45) return "agora"; if (s < 3600) return Math.round(s / 60) + " min atrás";
-    return Math.round(s / 3600) + " h atrás";
+    if (s < 45) return "agora"; if (s < 3600) return "há " + Math.round(s / 60) + " min";
+    return "há " + Math.round(s / 3600) + " h";
   }
   function dt(iso) { try { return new Date(iso).toLocaleString("pt-BR", { timeZone: TZ, day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }); } catch (e) { return iso; } }
   function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
-  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
-  function stat(n, l, hi) { return '<div class="stat' + (hi ? " hi" : "") + '"><div class="n">' + esc(n) + '</div><div class="l">' + esc(l) + "</div></div>"; }
-  function barRow(titulo, n, max, extra, sub) {
-    return '<div class="row"><div class="t">' + esc(titulo) + '</div><div class="v">' + esc(n) + (extra ? "<small>" + esc(extra) + "</small>" : "") + '</div><div class="b"><i style="width:' + (max > 0 ? Math.max(2, Math.round((n / max) * 100)) : 0) + '%"></i></div>' + (sub ? '<div class="s">' + esc(sub) + "</div>" : "") + "</div>";
+  function lsSet(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
+  function hojeBR() { return new Date().toLocaleDateString("sv-SE", { timeZone: TZ }); }
+  function ultimosDias(n) {
+    var p = hojeBR().split("-").map(Number), base = Date.UTC(p[0], p[1] - 1, p[2]), out = [];
+    for (var i = n - 1; i >= 0; i--) out.push(new Date(base - i * 86400000).toISOString().slice(0, 10));
+    return out;
+  }
+  function stat(n, l, cls, sub) { return '<div class="stat' + (cls ? " " + cls : "") + '"><div class="n">' + esc(n) + '</div><div class="l">' + esc(l) + "</div>" + (sub ? '<div class="s">' + esc(sub) + "</div>" : "") + "</div>"; }
+  function barRow(titulo, n, max, extra, sub, tag) {
+    return '<div class="row"><div class="t">' + esc(titulo) + (tag ? '<span class="pill warn">' + esc(tag) + "</span>" : "") + '</div><div class="v">' + esc(n) + (extra ? "<small>" + esc(extra) + "</small>" : "") + '</div><div class="b"><i style="width:' + (max > 0 ? Math.min(100, Math.max(2, Math.round((n / max) * 100))) : 0) + '%"></i></div>' + (sub ? '<div class="s">' + esc(sub) + "</div>" : "") + "</div>";
+  }
+  function seg(id, vals, atual, suf) {
+    return '<div class="seg" id="' + id + '">' + vals.map(function (n) { return '<button type="button" data-d="' + n + '" aria-pressed="' + (atual === n) + '">' + n + suf + "</button>"; }).join("") + "</div>";
   }
 
-  // nomes legíveis dos eventos, agrupados por área
+  // ---------- gráfico de barras com leitura ao toque ----------
+  var charts = {};
+  // layers: [{k, cls, label}]; modo "stack" empilha, "overlay" sobrepõe (a primeira camada é o fundo)
+  function chart(id, serie, layers, modo) {
+    charts[id] = { serie: serie, layers: layers };
+    var max = 1;
+    serie.forEach(function (x) {
+      var v = modo === "stack" ? layers.reduce(function (s, l) { return s + (x[l.k] || 0); }, 0) : Math.max.apply(null, layers.map(function (l) { return x[l.k] || 0; }));
+      if (v > max) max = v;
+    });
+    var bars = serie.map(function (x, i) {
+      return '<div class="c" data-i="' + i + '">' + layers.map(function (l) { return '<i class="' + l.cls + '" style="height:' + ((x[l.k] || 0) / max) * 100 + '%"></i>'; }).join("") + "</div>";
+    }).join("");
+    var mid = serie[Math.floor(serie.length / 2)];
+    var leg = layers.length > 1 ? '<div class="legend">' + layers.map(function (l) { return '<span class="' + l.cls + '">' + esc(l.label) + "</span>"; }).join("") + "</div>" : "";
+    return '<div class="chartbox" data-chart="' + id + '" role="img" aria-label="Gráfico: ' + esc(layers.map(function (l) { return l.label; }).join(", ")) + ', toque nas barras para ler os valores"><div class="rd">toque numa barra para ver o valor · máx. ' + max + '</div><div class="chart ' + (modo === "stack" ? "stack" : "overlay") + '">' + bars + '</div><div class="axis"><span>' + dm(serie[0].dia) + "</span><span>" + dm(mid.dia) + "</span><span>" + dm(serie[serie.length - 1].dia) + "</span></div>" + leg + "</div>";
+  }
+  function ligarGraficos() {
+    Array.prototype.forEach.call(document.querySelectorAll(".chartbox"), function (box) {
+      var cfg = charts[box.getAttribute("data-chart")], rd = box.querySelector(".rd");
+      function sel(e) {
+        var c = e.target.closest(".c"); if (!c) return;
+        Array.prototype.forEach.call(box.querySelectorAll(".c.sel"), function (n) { n.classList.remove("sel"); });
+        c.classList.add("sel");
+        var x = cfg.serie[+c.getAttribute("data-i")];
+        rd.innerHTML = "<b>" + dm(x.dia) + "</b>: " + cfg.layers.map(function (l) { return esc(l.label) + " <b>" + (x[l.k] || 0) + "</b>"; }).join(" · ");
+      }
+      box.addEventListener("pointerdown", sel);
+    });
+  }
+
+  // ---------- nomes legíveis dos eventos ----------
   var EV = {
-    "Entrada": { login_codigo: "Login por código", login_link: "Login por link", logout: "Saiu da conta", aceite_registrado: "Aceitou os termos" },
-    "Onboarding": { onboarding_iniciado: "Começou o onboarding", onb_visto_t1: "Viu o passo 1", onb_visto_t2: "Viu o passo 2", onb_visto_t3: "Viu o passo 3", onb_atividades_escolhidas: "Escolheu atividades", onb_objetivo_forca: "Objetivo: força", onb_objetivo_emagrecer: "Objetivo: emagrecer", onb_objetivo_rotina: "Objetivo: criar rotina", onb_pulado_t3: "Pulou o passo 3", onboarding_pulado: "Pulou o onboarding", onboarding_concluido: "Concluiu o onboarding", estado_vazio_cta_hoje_adicionar: "Tela vazia: adicionar treino", estado_vazio_cta_evolucao: "Tela vazia: evolução" },
-    "Treino": { treino_concluido: "Concluiu treino", treino_concluido_com_ajuste: "Concluiu com ajuste de carga", treino_recorde: "Bateu recorde", primeiro_registro: "Primeiro registro", ficha_salva_com_ajustes: "Salvou ficha com ajustes", treino_herói_iniciar: "Iniciou treino pelo card principal", modo_sheet_aberto: "Abriu o seletor de modo", modo_trocado: "Trocou de modo", proximo_fazer_hoje: "Próximo a fazer (hoje)", semana_card_aberto: "Abriu o card da semana" },
-    "Corrida e provas": { corrida_registrada_manual: "Corrida registrada à mão", treino_corrida_agendado: "Agendou corrida", treino_corrida_salvo: "Salvou corrida", meta_corrida_aberta: "Abriu meta de corrida", meta_corrida_definida: "Definiu meta de corrida", plano_corrida_aberto: "Abriu plano de corrida", plano_corrida_prompt: "Plano: viu o prompt", plano_corrida_ia_pedido: "Pediu plano com IA", plano_corrida_ia_gerado: "Plano com IA gerado", plano_corrida_criado: "Criou plano de corrida", provas_aberta: "Abriu Provas", prova_marcada: "Marcou prova", prova_km_definida: "Definiu distância da prova", prova_link_clicado: "Clicou no link da prova" },
-    "Desafios e convites": { desafio_entrou: "Entrou em desafio", desafio_criado: "Criou desafio", desafio_aplauso: "Deu aplauso", desafio_cartao_compartilhado: "Compartilhou o cartão", convite_whatsapp: "Convidou por WhatsApp" },
+    "Entrada": { login_codigo: "Login por código", login_link: "Login por link", aceite_registrado: "Aceitou os termos" },
+    "Onboarding": { onboarding_iniciado: "Começou o onboarding", onb_atividades_escolhidas: "Escolheu atividades", onb_objetivo_forca: "Objetivo: força", onb_objetivo_emagrecer: "Objetivo: emagrecer", onb_objetivo_rotina: "Objetivo: criar rotina", onboarding_pulado: "Pulou o onboarding", onboarding_cancelado: "Cancelou o onboarding", onboarding_concluido: "Concluiu o onboarding" },
+    "Treino": { treino_concluido: "Concluiu treino", treino_concluido_com_ajuste: "Concluiu com ajuste de carga", treino_recorde: "Bateu recorde", primeiro_registro: "Primeiro registro", ficha_salva_com_ajustes: "Salvou ficha com ajustes", treino_herói_iniciar: "Iniciou treino pelo card principal", proximo_fazer_hoje: "Usou “próximo a fazer”" },
+    "Corrida e provas": { corrida_registrada_manual: "Corrida registrada à mão", treino_corrida_agendado: "Agendou corrida", treino_corrida_salvo: "Salvou corrida", meta_corrida_aberta: "Abriu meta de corrida", meta_corrida_definida: "Definiu meta de corrida", plano_corrida_aberto: "Abriu plano de corrida", plano_corrida_prompt: "Plano: viu o prompt", plano_corrida_ia_pedido: "Pediu plano com IA", plano_corrida_ia_gerado: "Plano com IA gerado", plano_corrida_ia_retomado: "Retomou plano com IA", plano_corrida_criado: "Criou plano de corrida", provas_aberta: "Abriu Provas", prova_marcada: "Marcou prova", prova_favoritada: "Favoritou prova", prova_manual_criada: "Criou prova manual", prova_km_definida: "Definiu distância da prova", prova_link_clicado: "Clicou no link da prova" },
+    "Desafios e convites": { desafio_entrou: "Entrou em desafio", desafio_criado: "Criou desafio", desafio_aplauso: "Deu aplauso", desafio_treinei_com: "Marcou “treinei com”", desafio_cartao_compartilhado: "Compartilhou o cartão", convite_whatsapp: "Convidou por WhatsApp", convite_whatsapp_ranking: "Convidou pelo ranking" },
     "IA": { treino_ia_aberto_builder: "Abriu o montador com IA", treino_ia_iniciado: "Iniciou treino com IA", treino_ia_pronto: "Treino com IA pronto" },
-    "Treinador": { coach_painel_aberto: "Abriu o painel do treinador", plano_interesse_treinador_pro: "Interesse no plano Treinador Pro" },
-    "Domínio": { dominio_novo_aberto: "Clicou no aviso do endereço novo" }
+    "Treinador": { coach_painel_aberto: "Abriu o painel do treinador", coach_semana_enviada: "Enviou semana ao aluno", coach_ficha_import_iniciado: "Começou a importar ficha" },
+    "Disposição a pagar": { plano_interesse_treinador_pro: "Interesse no plano Treinador Pro" },
+    "Conta e domínio": { dominio_novo_aberto: "Clicou no aviso do endereço novo", feedback_enviado: "Enviou feedback", dados_exportados: "Exportou os próprios dados" },
+    "Telas abertas": { tela_hoje: "Tela: Hoje", tela_treinos: "Tela: Treinos", tela_evolucao: "Tela: Evolução", tela_desafios: "Tela: Desafios" },
+    "Interface (diagnóstico)": { modo_sheet_aberto: "Abriu o seletor de modo", modo_trocado: "Trocou de modo", semana_card_aberto: "Abriu o card da semana", onb_visto_t1: "Onboarding: viu passo 1", onb_visto_t2: "Onboarding: viu passo 2", onb_visto_t3: "Onboarding: viu passo 3", onb_pulado_t3: "Onboarding: pulou passo 3", estado_vazio_cta_hoje_adicionar: "Tela vazia: adicionar treino", estado_vazio_cta_hoje_montar: "Tela vazia: montar treino", estado_vazio_cta_evolucao: "Tela vazia: evolução", logout: "Saiu da conta" }
   };
   var EVLOOK = {}; Object.keys(EV).forEach(function (g) { Object.keys(EV[g]).forEach(function (k) { EVLOOK[k] = { g: g, t: EV[g][k] }; }); });
-  var TELAS = { hoje: "Hoje", treinos: "Treinos", evolucao: "Evolução", desafios: "Desafios" };
+  var OCULTOS = { "Telas abertas": 1, "Interface (diagnóstico)": 1 };
   function evInfo(name) {
     if (EVLOOK[name]) return EVLOOK[name];
-    if (name.indexOf("tela_") === 0) { var k = name.slice(5); return { g: "Telas abertas", t: "Tela: " + (TELAS[k] || k) }; }
+    if (name.indexOf("plano_interesse_") === 0) return { g: "Disposição a pagar", t: "Interesse: " + name.slice(16).replace(/_/g, " ") };
+    if (name.indexOf("tela_") === 0) return { g: "Telas abertas", t: "Tela: " + name.slice(5) };
+    if (name.indexOf("onb_") === 0) return { g: "Interface (diagnóstico)", t: name };
     return { g: "Outros", t: name };
   }
-  var GORDEM = ["Telas abertas", "Entrada", "Onboarding", "Treino", "Corrida e provas", "Desafios e convites", "IA", "Treinador", "Domínio", "Outros"];
+  var GORDEM = ["Entrada", "Onboarding", "Treino", "Corrida e provas", "Desafios e convites", "IA", "Treinador", "Disposição a pagar", "Conta e domínio", "Outros", "Telas abertas", "Interface (diagnóstico)"];
 
   // ---------- abas (cada uma só carrega quando aberta) ----------
   var TABS = [
-    { id: "geral", t: "Visão geral" },
-    { id: "ret", t: "Retenção" },
-    { id: "funil", t: "Funil" },
-    { id: "uso", t: "Uso" },
-    { id: "conv", t: "Convites" },
-    { id: "dom", t: "Domínio" }
+    { id: "geral", t: "Visão geral" }, { id: "ret", t: "Retenção" }, { id: "funil", t: "Funil" },
+    { id: "uso", t: "Uso" }, { id: "conv", t: "Convites" }, { id: "dom", t: "Domínio" }
   ];
-  var cache = {};       // id -> { ts, data }
-  var params = { uso: 30, conv: 30, dom: 14 };
+  var cache = {};
+  var params = { uso: 30, conv: 30, dom: 14, base: "abriram", ui: false };
   var atual = null, reqSeq = 0;
 
   function call(tab) {
@@ -182,162 +246,225 @@ input:focus{outline:2px solid var(--ac);outline-offset:0}
     return sb.rpc("admin_m_dominio", { p_dias: params.dom });
   }
 
-  function chartBars(serie, campo) {
-    var max = Math.max.apply(null, serie.map(function (x) { return x[campo]; }).concat([1]));
-    return '<div class="chart">' + serie.map(function (x) { return '<div class="c" title="' + dm(x.dia) + ": " + x[campo] + '"><i style="height:' + (x[campo] / max) * 100 + '%"></i></div>'; }).join("") + "</div>" +
-      '<div class="axis"><span>' + dm(serie[0].dia) + "</span><span>" + dm(serie[serie.length - 1].dia) + "</span></div>";
-  }
-
   var VIEW = {
     geral: function (d) {
-      var h = '<h2>Pessoas ativas</h2><div class="grid g3">' + stat(d.dau, "hoje", true) + stat(d.wau, "últimos 7 dias") + stat(d.mau, "últimos 30 dias") + "</div>";
-      h += '<div class="note">Engajamento (hoje ÷ 30 dias): <b>' + pct(d.dau, d.mau) + "</b> · semana ÷ 30 dias: <b>" + pct(d.wau, d.mau) + "</b></div>";
-      h += '<h2>Base</h2><div class="grid g3">' + stat(d.contas, "contas criadas") + stat(d.novas_7d, "novas em 7 dias") + stat(d.novas_hoje, "novas hoje") + stat(d.abriram_algum_dia, "já abriram o app") + stat(d.com_treino, "registraram treino") + stat(d.instalado_7d, "abriram instalado (7d)") + "</div>";
-      h += '<div class="note">“Instalado” só conta aberturas a partir da v176.</div>';
-      h += '<h2>Pessoas por dia (30 dias)</h2><div class="card">' + chartBars(d.serie, "pessoas") + "</div>";
-      h += '<h2>Contas novas por dia</h2><div class="card">' + chartBars(d.serie, "novas") + "</div>";
+      var h = '<div class="grid">' +
+        stat(d.dau, "abriram o app hoje", "hi", "ontem " + d.dau_ontem + " · média 7 dias " + String(d.dau_media_7d).replace(".", ",")) +
+        stat(d.treinaram_7d, "treinaram nos últimos 7 dias", "hi", d.dois_dias_7d + " em 2 dias ou mais") + "</div>";
+      h += '<div class="note">' + pl(d.novas_hoje, "conta nova", "contas novas") + " hoje · " + pl(d.novas_7d, "nova", "novas") + " nos últimos 7 dias. Dos que abriram o app na semana, <b>" + pct(d.treinaram_7d, d.wau) + "</b> registraram treino (" + d.treinaram_7d + " de " + d.wau + ").</div>";
+      h += '<h2>Abriram o app</h2><div class="grid g3">' + stat(d.dau, "hoje") + stat(d.wau, "em 7 dias") + stat(d.mau, "em 30 dias") + "</div>";
+      h += '<h2>Registraram treino</h2><div class="grid g3">' + stat(d.treinaram_7d, "em 7 dias") + stat(d.treinaram_30d, "em 30 dias") + stat(d.dois_dias_7d, "2+ dias (7d)") + "</div>";
+      h += '<div class="note">“Treino” = treino concluído, primeiro registro ou corrida manual. Eventos só existem desde 05/10/2026.</div>';
+      h += '<h2>Por dia (30 dias)</h2><div class="card">' + chart("g1", d.serie, [{ k: "pessoas", cls: "b", label: "abriram" }, { k: "treinaram", cls: "", label: "treinaram" }], "overlay") + "</div>";
+      h += '<details class="card"><summary style="min-height:44px;display:flex;align-items:center;cursor:pointer">Contas novas por dia</summary>' + chart("g2", d.serie, [{ k: "novas", cls: "o", label: "contas novas" }], "overlay") + "</details>";
+      h += '<h2>Base</h2><div class="grid g3">' + stat(d.contas, "contas") + stat(d.abriram_algum_dia, "já abriram") + stat(d.instalado_7d, "instalados (7d)") + "</div>";
+      h += '<div class="note">Não entram na conta: ' + pl(d.excluidas, "conta (você/teste)", "contas (você/testes)") + ". “Instalados” só vale para aberturas da v176 em diante.</div>";
       return h;
     },
     ret: function (d) {
-      function cel(a, b) { return b > 0 ? pct(a, b) + " <small>" + a + "/" + b + "</small>" : "<small>—</small>"; }
       var t = d.total;
-      var h = '<h2>Quem voltou</h2><div class="grid g3">' + stat(pct(t.d1, t.el1), "voltou no dia seguinte (D1)", true) + stat(pct(t.d7, t.el7), "voltou na 2ª semana (D7)") + stat(pct(t.d30, t.el30), "voltou após 30 dias (D30)") + "</div>";
-      h += '<div class="note"><b>D1</b>: abriu o app no dia seguinte ao cadastro. <b>D7</b>: abriu entre o dia 7 e o 13. <b>D30</b>: abriu do dia 30 em diante. Só entra na conta quem já tem tempo de cadastro suficiente.</div>';
-      h += '<h2>Por semana de cadastro</h2><div class="card scroll"><table><tr><th>Semana</th><th>Cadastros</th><th>D1</th><th>D7</th><th>D30</th></tr>';
-      d.semanas.forEach(function (s) { h += "<tr><td>" + dm(s.semana) + "</td><td>" + s.cadastros + "</td><td>" + cel(s.d1, s.el1) + "</td><td>" + cel(s.d7, s.el7) + "</td><td>" + cel(s.d30, s.el30) + "</td></tr>"; });
+      function cel(a, b) { return b > 0 ? '<td class="' + (b < 10 ? "low" : "") + '"><b>' + a + "/" + b + "</b> <small>" + pct(a, b) + "</small></td>" : '<td class="low"><small>sem dados</small></td>'; }
+      function card(a, b, titulo, vazio) {
+        return b > 0 ? stat(a + " de " + b, titulo, "", pct(a, b) + (b < 10 ? " · amostra pequena" : "")) : stat("—", titulo, "", vazio);
+      }
+      var h = '<h2>Quem voltou a abrir o app</h2><div class="grid g3">' + card(t.d1, t.el1, "D1: dia seguinte", "") + card(t.d7, t.el7, "D7: dias 7–13", "contas novas demais") + card(t.d30, t.el30, "D30: dias 28–34", "contas novas demais") + "</div>";
+      h += '<div class="note">Mede quem <b>abriu</b> o app, não quem treinou. Só entram contas que já completaram a janela. Com poucas pessoas, cada uma muda a % em vários pontos: leia o “x de n”.</div>';
+      h += '<h2>Por semana de cadastro</h2><div class="card scroll"><table><tr><th>Semana de</th><th>Contas</th><th>D1</th><th>D7</th><th>D30</th></tr>';
+      d.semanas.forEach(function (s) { h += "<tr><td>" + dm(s.semana) + "</td><td>" + s.cadastros + "</td>" + cel(s.d1, s.el1) + cel(s.d7, s.el7) + cel(s.d30, s.el30) + "</tr>"; });
       return h + "</table></div>";
     },
     funil: function (d) {
-      var topo = d[0].n, h = '<h2>Do cadastro ao hábito</h2><div class="card">';
-      d.forEach(function (e, i) {
-        var prev = i ? d[i - 1].n : null;
-        h += barRow(e.etapa, e.n, topo, pct(e.n, topo), prev != null && i > 1 ? "da etapa anterior: " + pct(e.n, prev) : "");
+      var it = d.itens, topo = it[0].n, maxI = -1, maxD = 0;
+      for (var i = 1; i < it.length - 1; i++) { var q = it[i - 1].n - it[i].n; if (q > maxD) { maxD = q; maxI = i; } }
+      var h = '<h2>Do cadastro ao hábito</h2><div class="card">';
+      it.forEach(function (e, i) {
+        if (e.base != null) { h += barRow(e.etapa, e.n, e.base, "de " + e.base, ""); return; }
+        var sub = i > 0 ? "da etapa anterior: " + e.n + " de " + it[i - 1].n + " (" + pct(e.n, it[i - 1].n) + ")" : "";
+        h += barRow(e.etapa, e.n, topo, pct(e.n, topo), sub, i === maxI && maxD > 0 ? "maior queda" : "");
       });
-      h += '</div><div class="note">Os eventos de onboarding e treino só existem desde 05/10/2026; contas anteriores aparecem nas duas primeiras etapas, mas podem faltar nas demais. “Voltaram 7+ dias” vem das aberturas do app, então vale para todos.</div>';
+      h += '</div><div class="note">Só contas criadas desde <b>' + dm(d.desde) + "</b> (quando os eventos começaram), todas medidas no mesmo grupo. Sem você e sem contas de teste. Com este tamanho de grupo, use para saber <b>quem</b> parou em cada etapa e chamar a pessoa.</div>";
       return h;
     },
     uso: function (d) {
-      var base = d.ativos_periodo, grupos = {};
-      d.itens.forEach(function (it) { var i = evInfo(it.name); (grupos[i.g] = grupos[i.g] || []).push({ t: i.t, it: it }); });
-      var h = '<div class="meta"><div class="seg" id="seg-uso">' + [7, 30, 90].map(function (n) { return '<button type="button" data-d="' + n + '" aria-pressed="' + (params.uso === n) + '">' + n + " dias</button>"; }).join("") + "</div></div>";
-      h += '<div class="note">Base: <b>' + base + "</b> pessoas ativas no período (<b>" + d.ativos_7d + "</b> nos últimos 7 dias). A barra é a % das pessoas ativas que usaram. Sinal, não estatística: a base ainda é pequena.</div>";
+      var base = params.base === "treinaram" ? d.treinaram_periodo : d.ativos_periodo, grupos = {}, ocultos = 0;
+      d.itens.forEach(function (it) {
+        var i = evInfo(it.name);
+        if (OCULTOS[i.g] && !params.ui) { ocultos++; return; }
+        (grupos[i.g] = grupos[i.g] || []).push({ t: i.t, it: it });
+      });
+      var h = '<div class="tools">' + seg("seg-uso", [7, 30, 90], params.uso, " dias") + "</div>";
+      h += '<div class="tools"><div class="seg" id="seg-base"><button type="button" data-b="abriram" aria-pressed="' + (params.base === "abriram") + '">Base: abriram o app</button><button type="button" data-b="treinaram" aria-pressed="' + (params.base === "treinaram") + '">Base: treinaram</button></div></div>';
+      h += '<div class="note">Base atual: <b>' + base + "</b> pessoas (" + (params.base === "treinaram" ? "registraram treino" : "abriram o app") + " no período). Recursos de treinador ou de IA têm público menor que a base: leia o número de pessoas, não só a %. Sinal, não estatística.</div>";
       GORDEM.forEach(function (g) {
         if (!grupos[g]) return;
         h += "<h2>" + esc(g) + '</h2><div class="card">';
         grupos[g].forEach(function (x) { h += barRow(x.t, x.it.pessoas, Math.max(base, 1), pct(x.it.pessoas, base), x.it.vezes + " vezes · " + x.it.pessoas_7d + " na última semana · último uso " + dm(x.it.ultima)); });
         h += "</div>";
       });
+      h += '<div class="tools"><button class="ib" id="tg-ui" type="button">' + (params.ui ? "Ocultar telas e eventos de interface" : "Mostrar telas e eventos de interface (" + ocultos + " ocultos)") + "</button></div>";
       return h;
     },
     conv: function (d) {
       var nome = { convite_whatsapp: "Convites enviados por WhatsApp", desafio_criado: "Desafios criados", desafio_cartao_compartilhado: "Cartões de desafio compartilhados", desafio_entrou: "Entradas em desafio", desafio_aplauso: "Aplausos" };
-      var h = '<div class="meta"><div class="seg" id="seg-conv">' + [7, 30, 90].map(function (n) { return '<button type="button" data-d="' + n + '" aria-pressed="' + (params.conv === n) + '">' + n + " dias</button>"; }).join("") + "</div></div>";
-      h += '<h2>No app</h2><div class="card">' + (d.eventos.length ? d.eventos.map(function (e) { return '<div class="row"><div class="t">' + esc(nome[e.name] || e.name) + '</div><div class="v">' + e.pessoas + "<small>pessoas · " + e.vezes + "×</small></div></div>"; }).join("") : '<div class="note">Nada no período.</div>') + "</div>";
-      h += '<div class="note">O funil de convite completo (enviado → link aberto → entrou) ainda não existe: hoje só medimos o envio e a entrada.</div>';
+      var h = '<div class="tools">' + seg("seg-conv", [7, 30, 90], params.conv, " dias") + "</div>";
+      h += '<h2>No app</h2><div class="card">' + (d.eventos.length ? d.eventos.map(function (e) { return '<div class="row"><div class="t">' + esc(nome[e.name] || e.name) + '</div><div class="v">' + pl(e.pessoas, "pessoa", "pessoas") + "<small>" + e.vezes + "×</small></div></div>"; }).join("") : '<div class="note">Nada no período.</div>') + "</div>";
+      h += '<div class="note">O funil completo de convite (enviado → link aberto → conta criada → primeiro treino) ainda não existe: hoje só medimos o envio e a entrada em desafio.</div>';
       var ln = { view: "Visitas à landing", chapter: "Capítulos do vídeo vistos", cta_open_app: "Cliques em “abrir o app”", video_play: "Vídeo iniciado", click_email: "Cliques no e-mail", install_guide: "Guia de instalação" };
       h += '<h2>Landing (movoapp.com.br)</h2><div class="card">' + (d.landing.length ? d.landing.map(function (e) { return '<div class="row"><div class="t">' + esc(ln[e.name] || e.name) + '</div><div class="v">' + e.n + "</div></div>"; }).join("") : '<div class="note">Nada no período.</div>') + "</div>";
       if (d.origens.length) h += '<h2>Origem das visitas</h2><div class="card">' + d.origens.map(function (e) { return '<div class="row"><div class="t">' + esc(e.src) + '</div><div class="v">' + e.n + "</div></div>"; }).join("") + "</div>";
       return h;
     },
     dom: function (d) {
-      var dias = {}; d.serie.forEach(function (x) { (dias[x.dia] = dias[x.dia] || { antigo: 0, novo: 0 })[x.site] = x.pessoas; });
-      var ks = Object.keys(dias).sort();
-      var max = Math.max.apply(null, ks.map(function (k) { return dias[k].antigo + dias[k].novo; }).concat([1]));
-      var h = '<div class="meta"><div class="seg" id="seg-dom">' + [7, 14, 30].map(function (n) { return '<button type="button" data-d="' + n + '" aria-pressed="' + (params.dom === n) + '">' + n + " dias</button>"; }).join("") + "</div></div>";
-      h += '<h2>Hoje</h2><div class="grid">' + stat(d.hoje_antigo, "no endereço antigo (github.io)", d.hoje_antigo > 0) + stat(d.hoje_novo, "no endereço novo", true) + "</div>";
-      h += '<div class="note">Aviso do endereço novo clicado: <b>' + d.banner.pessoas + "</b> pessoa(s). Origem exata (pelo endereço) vale desde <b>" + (d.host_desde ? dt(d.host_desde) : "— (v176 ainda não publicada)") + "</b>; antes disso é estimada pela versão (≤ v174 = antigo).</div>";
-      h += '<h2>Pessoas por dia</h2><div class="card"><div class="chart">' + ks.map(function (k) { var a = dias[k].antigo, n = dias[k].novo; return '<div class="c" title="' + dm(k) + " · antigo " + a + " · novo " + n + '"><i class="o" style="height:' + (n / max) * 100 + '%"></i><i class="a" style="height:' + (a / max) * 100 + '%"></i></div>'; }).join("") + '</div><div class="axis"><span>' + (ks[0] ? dm(ks[0]) : "") + "</span><span>" + (ks.length ? dm(ks[ks.length - 1]) : "") + '</span></div><div class="legend"><span class="a">antigo</span><span class="o">novo</span></div></div>';
-      h += "<h2>Versão da última abertura (7 dias)</h2><div class=\"card\">" + d.versoes.map(function (v) { return '<div class="row"><div class="t">' + esc(v.versao) + '</div><div class="v">' + v.pessoas + "</div></div>"; }).join("") + '</div><div class="note">Quem está em “antes da v164” ainda não tem nem o aviso do endereço novo.</div>';
-      h += "<h2>Ainda no endereço antigo (7 dias)</h2>";
-      if (!d.ainda_antigo.length) h += '<div class="card"><div class="note">Ninguém. 🎉</div></div>';
+      var mapa = {}; d.serie.forEach(function (x) { (mapa[x.dia] = mapa[x.dia] || { antigo: 0, novo: 0 })[x.site] = x.pessoas; });
+      var serie = ultimosDias(params.dom).map(function (k) { var m = mapa[k] || { antigo: 0, novo: 0 }; return { dia: k, antigo: m.antigo, novo: m.novo }; });
+      var h = '<div class="tools">' + seg("seg-dom", [7, 14, 30], params.dom, " dias") + "</div>";
+      h += '<h2>Pronto para redirecionar?</h2><div class="card"><div class="verdict ' + (d.pronto ? "ok" : "warn") + '">' + (d.pronto ? "Pronto: pode ligar o redirecionamento" : "Ainda não: " + pl(d.sem_novo_30d, "pessoa ainda não abriu", "pessoas ainda não abriram") + " o endereço novo") + "</div>";
+      h += '<div class="note" style="margin-top:0">Pronto = ninguém que abriu o endereço antigo nos últimos 30 dias ficou sem abrir o novo.</div>';
+      h += '<div class="row"><div class="t">Abriram o antigo (30 dias) e nunca abriram o novo</div><div class="v ' + (d.sem_novo_30d ? "warn" : "") + '">' + d.sem_novo_30d + "</div></div>";
+      h += '<div class="row"><div class="t">Última abertura foi no antigo (14 dias)</div><div class="v">' + d.antigo_14d + "<small>de " + d.ativos_14d + "</small></div></div>";
+      h += '<div class="row"><div class="t">Sem o aviso do endereço novo (versão anterior à v163)</div><div class="v ' + (d.sem_aviso ? "warn" : "") + '">' + d.sem_aviso + "</div></div>";
+      h += '<div class="row"><div class="t">Clicaram no aviso do endereço novo</div><div class="v">' + d.banner.pessoas + "</div></div></div>";
+      h += '<div class="note">Quem está numa versão anterior à v163 <b>não recebe nem o aviso nem o redirecionamento automático</b>: só chega por mensagem direta.</div>';
+      h += '<h2>Hoje</h2><div class="grid">' + stat(d.hoje_antigo, "no endereço antigo (github.io)", d.hoje_antigo > 0 ? "warn" : "") + stat(d.hoje_novo, "no endereço novo", "hi") + "</div>";
+      h += '<div class="note">Origem exata (pelo endereço) vale desde <b>' + (d.host_desde ? dt(d.host_desde) : "ainda indisponível") + "</b>; antes disso é estimada pela versão (v174 ou menos = antigo).</div>";
+      h += '<h2>Pessoas por dia</h2><div class="card">' + chart("d1", serie, [{ k: "antigo", cls: "a", label: "antigo" }, { k: "novo", cls: "o", label: "novo" }], "stack") + "</div>";
+      h += '<h2>Versão da última abertura (14 dias)</h2><div class="card">' + d.versoes.map(function (v) { return '<div class="row"><div class="t">' + esc(v.versao) + '</div><div class="v">' + v.pessoas + "</div></div>"; }).join("") + "</div>";
+      h += "<h2>Ainda no endereço antigo</h2>";
+      if (!d.ainda_antigo.length) h += '<div class="card"><div class="note">Ninguém.</div></div>';
       else {
-        h += '<div class="card">' + d.ainda_antigo.map(function (p) { return '<div class="row"><div class="t">' + esc(p.email || "(sem e-mail)") + '</div><div class="v"><small>' + esc(p.versao || "<v164") + "</small></div><div class=\"s\">última abertura " + dt(p.ultima) + " · " + p.dias + " dia(s) na semana</div></div>"; }).join("") + "</div>";
-        h += '<button class="ib" id="cp-emails" type="button">Copiar e-mails</button>';
+        h += '<div class="card">' + d.ainda_antigo.map(function (p) {
+          return '<div class="row"><div class="t">' + esc(p.email || "(sem e-mail)") + (p.sem_aviso ? '<span class="pill warn">sem aviso</span>' : "") + '</div><div class="v"><small>' + esc(p.versao || "<v164") + '</small></div><div class="s">última abertura ' + dt(p.ultima) + " · " + pl(p.dias, "dia", "dias") + " nas últimas 2 semanas</div></div>";
+        }).join("") + '</div><div class="tools"><button class="ib" id="cp-emails" type="button">Copiar e-mails</button></div>';
+        h += '<div class="note">Lista de e-mails temporária, só para avisar a migração. Remover do painel depois da virada.</div>';
       }
       return h;
     }
   };
 
+  function metaHtml(ts) { return '<div class="meta"><span id="upd" data-ts="' + ts + '">Atualizado ' + ago(ts) + "</span></div>"; }
   function paint(id, d, ts) {
-    var h = '<div class="meta"><span>Atualizado ' + ago(ts) + "</span></div>" + VIEW[id](d);
+    $("main").classList.remove("busy");
+    var h;
+    try { h = metaHtml(ts) + VIEW[id](d); }
+    catch (e) { h = '<div class="err">Não consegui montar esta tela com os dados recebidos.</div><p><button class="ib" id="tentar" type="button">Tentar de novo</button></p>'; }
     $("main").innerHTML = h;
-    var seg = document.querySelector(".seg");
-    if (seg) seg.addEventListener("click", function (e) {
-      var b = e.target.closest("button"); if (!b) return;
-      params[id] = +b.getAttribute("data-d"); delete cache[id]; open(id, true);
+    var t = $("tentar"); if (t) t.onclick = function () { open(id, true); };
+    ligarGraficos();
+    Array.prototype.forEach.call(document.querySelectorAll(".seg"), function (sg) {
+      sg.addEventListener("click", function (e) {
+        var b = e.target.closest("button"); if (!b) return;
+        if (b.hasAttribute("data-b")) { params.base = b.getAttribute("data-b"); paint(id, cache[id].data, cache[id].ts); return; }
+        params[id] = +b.getAttribute("data-d"); delete cache[id]; open(id, true);
+      });
     });
+    var tg = $("tg-ui"); if (tg) tg.onclick = function () { params.ui = !params.ui; paint(id, d, ts); };
     var cp = $("cp-emails");
     if (cp) cp.addEventListener("click", function () {
-      var t = d.ainda_antigo.map(function (p) { return p.email; }).filter(Boolean).join(", ");
-      (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { cp.textContent = "Copiado ✓"; }, function () { cp.textContent = t; });
+      var t2 = d.ainda_antigo.map(function (p) { return p.email; }).filter(Boolean).join(", ");
+      (navigator.clipboard ? navigator.clipboard.writeText(t2) : Promise.reject()).then(function () { cp.textContent = "Copiado ✓"; setTimeout(function () { cp.textContent = "Copiar e-mails"; }, 2000); }, function () {
+        var ta = document.createElement("textarea"); ta.value = t2; ta.setAttribute("readonly", ""); ta.style.cssText = "width:100%;margin-top:8px;min-height:90px;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:8px";
+        cp.parentNode.appendChild(ta); ta.select(); cp.textContent = "Selecione e copie abaixo";
+      });
     });
+  }
+
+  function mostrarErro(id, msg) {
+    $("main").classList.remove("busy");
+    var forb = /forbidden/i.test(msg || "");
+    $("main").innerHTML = '<div class="err">' + (forb ? "Esta conta não tem acesso ao painel." : "Não consegui carregar: " + esc(msg || "erro de conexão")) + '</div><p><button class="ib" id="tentar" type="button">Tentar de novo</button></p>';
+    var t = $("tentar"); if (t) t.onclick = function () { open(id, true); };
   }
 
   function open(id, force) {
     atual = id; lsSet("movo-admin-tab", id);
-    Array.prototype.forEach.call($("tabs").children, function (b) { b.setAttribute("aria-selected", String(b.getAttribute("data-id") === id)); });
+    try { history.replaceState(null, "", "#" + id); } catch (e) {}
+    Array.prototype.forEach.call($("tabs").children, function (b) {
+      var on = b.getAttribute("data-id") === id;
+      b.setAttribute("aria-selected", String(on));
+      if (on && b.scrollIntoView) b.scrollIntoView({ inline: "center", block: "nearest" });
+    });
     var c = cache[id];
     if (c && !force) { paint(id, c.data, c.ts); return; }
     var my = ++reqSeq;
-    $("main").innerHTML = '<div class="sk"></div><div class="sk"></div><div class="sk"></div>';
-    call(id).then(function (r) {
+    if (c || $("main").children.length > 0 && $("main").getAttribute("data-tab") === id) { $("main").classList.add("busy"); var u = $("upd"); if (u) u.textContent = "Atualizando…"; }
+    else $("main").innerHTML = '<div class="sk"></div><div class="sk"></div><div class="sk"></div>';
+    $("main").setAttribute("data-tab", id);
+    var p;
+    try { p = call(id); } catch (e) { mostrarErro(id, e.message); return; }
+    Promise.resolve(p).then(function (r) {
       if (my !== reqSeq) return;                       // trocou de aba enquanto carregava
-      if (r.error) {
-        var forb = /forbidden/i.test(r.error.message || "");
-        $("main").innerHTML = '<div class="err">' + (forb ? "Esta conta não tem acesso ao painel." : "Não consegui carregar: " + esc(r.error.message || "erro")) + '</div><p><button class="ib" id="tentar" type="button">Tentar de novo</button></p>';
-        var t = $("tentar"); if (t) t.onclick = function () { open(id, true); };
-        return;
-      }
+      if (r.error) { mostrarErro(id, r.error.message); return; }
       cache[id] = { ts: Date.now(), data: r.data };
       paint(id, r.data, Date.now());
-    });
+    }).catch(function (e) { if (my === reqSeq) mostrarErro(id, "sem conexão"); });
   }
 
   // ---------- sessão ----------
-  function mostrarLogin(msg) {
+  function msgErro(m) {
+    m = String(m || "");
+    if (/signups? not allowed|not allowed for otp/i.test(m)) return "Esse e-mail não tem acesso.";
+    if (/rate limit|after \d+ seconds|too many/i.test(m)) return "Aguarde um minuto para pedir outro código.";
+    if (/invalid|expired/i.test(m)) return "Código inválido ou expirado.";
+    return "Não foi possível: " + m;
+  }
+  function passoCodigo(email) { $("f1").hidden = true; $("f2").hidden = false; $("lmsg").textContent = "Enviamos um código para " + email + "."; $("otp").focus(); }
+  function mostrarLogin() {
     $("app").hidden = true; $("login").hidden = false;
+    $("lerr").hidden = true; $("otp").value = "";
     $("email").value = lsGet("movo-admin-email") || "";
-    if (msg) { $("lerr").hidden = false; $("lerr").textContent = msg; }
+    $("f1").hidden = false; $("f2").hidden = true; $("lmsg").textContent = "Acesso restrito. Entre com o seu e-mail de admin.";
+    try { var pend = JSON.parse(lsGet("movo-admin-pend") || "null"); if (pend && Date.now() - pend.ts < 15 * 60 * 1000) { $("email").value = pend.email; passoCodigo(pend.email); } } catch (e) {}
   }
   function mostrarApp() {
-    $("login").hidden = true; $("app").hidden = false;
+    $("login").hidden = true; $("app").hidden = false; lsSet("movo-admin-pend", null);
     if (!$("tabs").children.length) {
       $("tabs").innerHTML = TABS.map(function (t) { return '<button class="tab" role="tab" type="button" data-id="' + t.id + '" aria-selected="false">' + t.t + "</button>"; }).join("");
       $("tabs").addEventListener("click", function (e) { var b = e.target.closest(".tab"); if (b) open(b.getAttribute("data-id")); });
     }
+    $("foot-info").textContent = "Dados de São Paulo (UTC−3) · sem você e contas de teste";
     var h = (location.hash || "").slice(1), ini = lsGet("movo-admin-tab");
     var id = TABS.some(function (t) { return t.id === h; }) ? h : TABS.some(function (t) { return t.id === ini; }) ? ini : "geral";
     open(id);
   }
-  sb.auth.onAuthStateChange(function (ev, s) {
-    if (ev === "SIGNED_OUT") { cache = {}; mostrarLogin(); }
-  });
-  sb.auth.getSession().then(function (r) { if (r.data && r.data.session) mostrarApp(); else mostrarLogin(); });
+  sb.auth.onAuthStateChange(function (ev) { if (ev === "SIGNED_OUT") { cache = {}; mostrarLogin(); } });
+  sb.auth.getSession().then(function (r) { if (r.data && r.data.session) mostrarApp(); else mostrarLogin(); }, function () { mostrarLogin(); });
 
+  var cooldown = 0, cdTimer = null;
+  function iniciarCooldown() {
+    cooldown = 30; $("reenviar").disabled = true;
+    clearInterval(cdTimer);
+    cdTimer = setInterval(function () { cooldown--; if (cooldown <= 0) { clearInterval(cdTimer); $("reenviar").disabled = false; $("reenviar").textContent = "Reenviar código"; } else $("reenviar").textContent = "Reenviar em " + cooldown + "s"; }, 1000);
+  }
+  function enviarCodigo(email, depois) {
+    $("lerr").hidden = true; $("b1").disabled = true;
+    sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: false, emailRedirectTo: location.origin + "/admin/" } }).then(function (r) {
+      $("b1").disabled = false;
+      if (r.error) { $("lerr").hidden = false; $("lerr").textContent = msgErro(r.error.message); return; }
+      lsSet("movo-admin-pend", JSON.stringify({ email: email, ts: Date.now() })); iniciarCooldown(); depois && depois();
+    }, function () { $("b1").disabled = false; $("lerr").hidden = false; $("lerr").textContent = "Sem conexão. Tente de novo."; });
+  }
   $("f1").addEventListener("submit", function (e) {
     e.preventDefault(); var em = $("email").value.trim().toLowerCase(); if (!em) return;
-    lsSet("movo-admin-email", em); $("b1").disabled = true; $("lerr").hidden = true;
-    sb.auth.signInWithOtp({ email: em, options: { shouldCreateUser: false, emailRedirectTo: location.origin + "/admin/" } }).then(function (r) {
-      $("b1").disabled = false;
-      if (r.error) { $("lerr").hidden = false; $("lerr").textContent = "Não foi possível enviar: " + r.error.message; return; }
-      $("f1").hidden = true; $("f2").hidden = false; $("otp").focus();
-    });
+    lsSet("movo-admin-email", em); enviarCodigo(em, function () { passoCodigo(em); });
   });
+  $("reenviar").addEventListener("click", function () { enviarCodigo($("email").value.trim().toLowerCase()); });
+  $("otp").addEventListener("input", function () { this.value = this.value.replace(/\D/g, ""); });
   $("f2").addEventListener("submit", function (e) {
     e.preventDefault(); $("b2").disabled = true; $("lerr").hidden = true;
     sb.auth.verifyOtp({ email: $("email").value.trim().toLowerCase(), token: $("otp").value.trim(), type: "email" }).then(function (r) {
       $("b2").disabled = false;
-      if (r.error) { $("lerr").hidden = false; $("lerr").textContent = "Código inválido ou expirado."; return; }
+      if (r.error) { $("lerr").hidden = false; $("lerr").textContent = msgErro(r.error.message); return; }
       $("otp").value = ""; mostrarApp();
-    });
+    }, function () { $("b2").disabled = false; $("lerr").hidden = false; $("lerr").textContent = "Sem conexão. Tente de novo."; });
   });
-  $("voltar").addEventListener("click", function () { $("f2").hidden = true; $("f1").hidden = false; });
-  $("sair").addEventListener("click", function () { sb.auth.signOut(); });
+  $("voltar").addEventListener("click", function () { lsSet("movo-admin-pend", null); mostrarLogin(); });
+  $("sair").addEventListener("click", function () { lsSet("movo-admin-pend", null); sb.auth.signOut(); });
   $("reload").addEventListener("click", function () { if (atual) { delete cache[atual]; open(atual, true); } });
   document.addEventListener("visibilitychange", function () {
     if (document.visibilityState !== "visible" || !atual || $("app").hidden) return;
     var c = cache[atual]; if (c && Date.now() - c.ts > 5 * 60 * 1000) { delete cache[atual]; open(atual, true); }
   });
+  setInterval(function () { var u = $("upd"); if (u && u.getAttribute("data-ts")) u.textContent = "Atualizado " + ago(+u.getAttribute("data-ts")); }, 30000);
 
   if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js", { scope: "/admin/" }).catch(function () {});
 })();
