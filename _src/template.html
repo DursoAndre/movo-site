@@ -166,6 +166,17 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 .vdesc{max-width:560px;margin:18px auto 0;color:var(--muted);font-size:14px}
 .vdesc summary{cursor:pointer;min-height:44px;display:flex;align-items:center;justify-content:center}
 /* vantagens */
+.demos{list-style:none;margin:0;padding:0;display:grid;gap:26px}
+.demos .vp{display:grid;grid-template-columns:128px 1fr;gap:18px;align-items:center;text-align:left}
+.demos .vp .phone{width:128px;border-width:5px;border-radius:22px}
+.demos .vp .play span{width:44px;height:44px}
+.demos .vp .play svg{width:20px;height:20px}
+.demos .vp figcaption{margin-top:0}
+.demos .vp figcaption b{font-size:21px}
+.demos .vp figcaption span{margin:6px 0 0;max-width:34ch}
+.coach .vp .phone{width:min(66vw,250px);margin-inline:auto}
+@media (min-width:700px){.demos{grid-template-columns:1fr 1fr;gap:34px 40px}}
+
 .adv{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .adv li{display:flex;flex-direction:column;gap:10px;min-height:168px;padding:16px 14px 18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
 .adv svg{width:28px;height:28px;flex:none;fill:none;stroke:var(--lime);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
@@ -215,12 +226,12 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 <body>
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
 <nav class="cnav" id="cnav" aria-label="Capítulos"><ul>
-  <li><a href="#como-funciona">Como funciona</a></li><li><a href="#videos">Vídeos</a></li><li><a href="#vantagens">Vantagens</a></li><li><a href="#treinadores">Treinadores</a></li><li><a href="#instalar">Instalar</a></li><li><a href="#perguntas">Dúvidas</a></li>
+  <li><a href="#como-funciona">Como funciona</a></li><li><a href="#vantagens">Recursos</a></li><li><a href="#treinadores">Treinadores</a></li><li><a href="#instalar">Instalar</a></li><li><a href="#perguntas">Dúvidas</a></li>
 </ul><i class="prog" id="prog"></i></nav>
 <div class="wrap">
 <header class="top">
   <a class="logo" href="./" aria-label="Movo, início"><svg width="30" height="30" viewBox="0 0 240 240" fill="none" aria-hidden="true"><rect x="36" y="126" width="44" height="74" rx="14" fill="#C6F135"/><rect x="98" y="84" width="44" height="116" rx="14" fill="#C6F135"/><rect x="160" y="40" width="44" height="160" rx="14" fill="#C6F135"/></svg>movo</a>
-  <nav aria-label="Seções"><a href="#como-funciona">Como funciona</a><a href="#videos">Vídeos</a><a href="#vantagens">Vantagens</a><a href="#treinadores">Treinadores</a><a href="#instalar">Instalar</a><a href="#perguntas">Dúvidas</a></nav>
+  <nav aria-label="Seções"><a href="#como-funciona">Como funciona</a><a href="#vantagens">Recursos</a><a href="#treinadores">Treinadores</a><a href="#instalar">Instalar</a><a href="#perguntas">Dúvidas</a></nav>
   <a class="btn sm" href="{{APP}}?utm_source=lp&pos=nav" data-cta="nav">Começar</a>
 </header>
 </div>
@@ -234,7 +245,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
     <p class="lead">Ficha de academia, corrida, vôlei, CrossFit, Hyrox. Monte a semana, marque o que fez e veja sua evolução, no celular.</p>
     <div class="cta">
       <a class="btn" href="{{APP}}?utm_source=lp&pos=hero" data-cta="hero">Montar meu treino</a>
-      <a class="link" href="#videos">Ver como funciona</a>
+      <a class="link" href="#vantagens">Ver o app em ação</a>
     </div>
     <p class="micro">Entre com um código no e-mail. Sem senha, sem cartão. Instala direto do navegador.</p>
   </div>
@@ -253,63 +264,26 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
   </ol>
 </div></section>
 
-<section id="videos" class="chap alt" data-chapter aria-labelledby="h-videos"><div class="wrap">
-  <header class="chead"><p class="eyebrow"><b>02</b><span>Em vídeo</span></p>
-  <h2 id="h-videos">Veja o Movo em ação.</h2>
-  <p class="lead">Vídeos curtos, um por tema. Toque no que quiser ver.</p></header>
-  <div class="vtabs" role="tablist" aria-label="Vídeos por tema">
-    <button role="tab" id="vt-ficha" aria-selected="true" aria-controls="vp-ficha">Montar a ficha</button>
-    <button role="tab" id="vt-treinar" aria-selected="false" aria-controls="vp-treinar" tabindex="-1">Treinar</button>
-    <button role="tab" id="vt-desafios" aria-selected="false" aria-controls="vp-desafios" tabindex="-1">Desafios</button>
-    <button role="tab" id="vt-corrida" aria-selected="false" aria-controls="vp-corrida" tabindex="-1">Corrida</button>
-    <button role="tab" id="vt-treinadores" aria-selected="false" aria-controls="vp-treinadores" tabindex="-1">Treinadores</button>
-  </div>
-  <div class="vstage" id="vstage" tabindex="0" aria-label="Vídeos, deslize para o lado">
-    <figure class="vp on" id="vp-ficha" role="tabpanel" aria-labelledby="vt-ficha" data-src="media/v-ficha.mp4" data-poster="media/v-ficha.webp" data-t="ficha">
+<section id="vantagens" class="chap" data-chapter aria-labelledby="h-van"><div class="wrap">
+  <header class="chead"><p class="eyebrow"><b>02</b><span>Em ação</span></p>
+  <h2 id="h-van">Menos planilha. Mais treino.</h2></header>
+  <ul class="demos">
+    <li><figure class="vp on" id="vp-ficha" data-src="media/v-ficha.mp4" data-poster="media/v-ficha.webp" data-t="ficha">
       <div class="phone"><img src="media/v-ficha.webp" width="540" height="1168" loading="lazy" decoding="async" alt="Tela de importação do Movo com um texto de treinos colado."><button class="play" type="button" aria-label="Reproduzir vídeo: Montar a ficha, 19 segundos"><span><svg width="28" height="28" viewBox="0 0 24 24" fill="#14161A" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></button></div>
       <figcaption><b>Traga a ficha e monte sua semana</b><span>Importe de PDF, foto ou planilha, confira e salve.</span><em>0:19</em><a class="nojs link" href="media/v-ficha.mp4">Assistir ao vídeo</a></figcaption>
-    </figure>
-    <figure class="vp" id="vp-treinar" role="tabpanel" aria-labelledby="vt-treinar" data-src="media/v-treinar.mp4" data-poster="media/v-treinar.webp" data-t="treinar">
+    </figure></li>
+    <li><figure class="vp on" id="vp-treinar" data-src="media/v-treinar.mp4" data-poster="media/v-treinar.webp" data-t="treinar">
       <div class="phone"><img src="media/v-treinar.webp" width="540" height="1168" loading="lazy" decoding="async" alt="Tela do treino do dia no Movo com exercícios e o botão de iniciar."><button class="play" type="button" aria-label="Reproduzir vídeo: Treinar, 19 segundos"><span><svg width="28" height="28" viewBox="0 0 24 24" fill="#14161A" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></button></div>
       <figcaption><b>Registre carga e descanso</b><span>Marque feito, anote a carga e use o timer.</span><em>0:19</em><a class="nojs link" href="media/v-treinar.mp4">Assistir ao vídeo</a></figcaption>
-    </figure>
-    <figure class="vp" id="vp-desafios" role="tabpanel" aria-labelledby="vt-desafios" data-src="media/v-desafios.mp4" data-poster="media/v-desafios.webp" data-t="desafios">
+    </figure></li>
+    <li><figure class="vp on" id="vp-desafios" data-src="media/v-desafios.mp4" data-poster="media/v-desafios.webp" data-t="desafios">
       <div class="phone"><img src="media/v-desafios.webp" width="540" height="1168" loading="lazy" decoding="async" alt="Tela inicial do Movo com o desafio da semana."><button class="play" type="button" aria-label="Reproduzir vídeo: Desafios, 13 segundos"><span><svg width="28" height="28" viewBox="0 0 24 24" fill="#14161A" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></button></div>
       <figcaption><b>Desafie quem treina com você</b><span>Regras, placar semanal e cartão para os stories.</span><em>0:13</em><a class="nojs link" href="media/v-desafios.mp4">Assistir ao vídeo</a></figcaption>
-    </figure>
-    <figure class="vp" id="vp-corrida" role="tabpanel" aria-labelledby="vt-corrida" data-src="media/v-corrida.mp4" data-poster="media/v-corrida.webp" data-t="corrida">
+    </figure></li>
+    <li><figure class="vp on" id="vp-corrida" data-src="media/v-corrida.mp4" data-poster="media/v-corrida.webp" data-t="corrida">
       <div class="phone"><img src="media/v-corrida.webp" width="540" height="1168" loading="lazy" decoding="async" alt="Plano de treino de corrida gerado pelo Movo, com as semanas até a prova."><button class="play" type="button" aria-label="Reproduzir vídeo: Corrida e provas, 27 segundos"><span><svg width="28" height="28" viewBox="0 0 24 24" fill="#14161A" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></button></div>
       <figcaption><b>Da prova marcada ao plano de treino</b><span>Calendário de provas, “Vou nessa” e plano de corrida gerado com IA.</span><em>0:27</em><a class="nojs link" href="media/v-corrida.mp4">Assistir ao vídeo</a></figcaption>
-    </figure>
-    <figure class="vp" id="vp-treinadores" role="tabpanel" aria-labelledby="vt-treinadores" data-src="media/v-treinadores.mp4" data-poster="media/v-treinadores.webp" data-t="treinadores">
-      <div class="phone"><img src="media/v-treinadores.webp" width="540" height="1168" loading="lazy" decoding="async" alt="Modo treinador do Movo com a lista de alunos."><button class="play" type="button" aria-label="Reproduzir vídeo: Para treinadores, 11 segundos"><span><svg width="28" height="28" viewBox="0 0 24 24" fill="#14161A" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></button></div>
-      <figcaption><b>Acompanhe seus alunos</b><span>Veja quem treinou e quem precisa de atenção.</span><em>0:11</em><a class="nojs link" href="media/v-treinadores.mp4">Assistir ao vídeo</a></figcaption>
-    </figure>
-  </div>
-  <details class="vdesc"><summary>Ver descrição dos vídeos</summary>
-    <p><b>Montar a ficha:</b> a pessoa cola o texto de treinos antigos na tela Importar, confere a leitura e salva. Em seguida a agenda mostra a semana com academia e outras atividades.</p>
-    <p style="margin-top:8px"><b>Treinar:</b> abre o treino do dia, anota a carga de cada exercício, marca como feito e usa o timer de descanso. No fim, confere a evolução.</p>
-    <p style="margin-top:8px"><b>Desafios:</b> abre um desafio entre amigos, vê o placar da semana e o cartão para compartilhar nos stories.</p>
-    <p style="margin-top:8px"><b>Corrida:</b> procura uma prova no calendário, marca “Vou nessa”, escolhe a distância e vê a contagem regressiva na tela Hoje.</p>
-    <p style="margin-top:8px"><b>Treinadores:</b> o treinador vê a lista de alunos, quem treinou hoje e quem precisa de atenção.</p></details>
-  <aside class="cta-break" data-nosticky aria-label="Começar">
-    <p class="t">Gostou do que viu? <span class="muted">Monte seu treino em menos de 2 minutos.</span></p>
-    <a class="btn" href="{{APP}}?utm_source=lp&pos=video" data-cta="video">Testar com a minha ficha</a>
-    <p class="micro">Importe PDF, foto ou planilha e confira tudo antes de salvar.</p>
-  </aside>
-</div></section>
-
-<section id="vantagens" class="chap" data-chapter aria-labelledby="h-van"><div class="wrap">
-  <header class="chead"><p class="eyebrow"><b>03</b><span>Vantagens</span></p>
-  <h2 id="h-van">Menos planilha. Mais treino.</h2></header>
-  <ul class="adv">
-    <li class="main"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg><h3>Tudo o que você treina, junto.</h3><p>Academia, corrida, vôlei e CrossFit na mesma agenda.</p></li>
-    <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 19c0-3.3 2.7-5 6-5s6 1.7 6 5"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14c2.5 0 4 1.5 4 4"/></svg><h3>Chame os amigos</h3><p>Crie um desafio, convide por link e acompanhem o placar.</p></li>
-    <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16"/><path d="M8 15l4-4 3 3 5-6"/></svg><h3>Evolução de verdade</h3><p>Frequência e carga por exercício, sem montar gráfico.</p></li>
-    <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3L5 14h6l-1 7 8-11h-6z"/></svg><h3>Prático no treino</h3><p>Carga, séries e timer de descanso na palma da mão.</p></li>
-    <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M5 20h14"/></svg><h3>Traga sua ficha</h3><p>PDF, foto, planilha ou WhatsApp. Você confere antes de salvar.</p></li>
-    <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="12" cy="12" r="3.2"/></svg><h3>Poste o placar</h3><p>Cartão pronto para os stories. Suas cargas continuam privadas.</p></li>
-    <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18a6 6 0 0 1 1.5-11.8A6 6 0 0 1 18 8.5 4 4 0 0 1 17.5 18z"/></svg><h3>Sem loja, sem sinal</h3><p>Instale pelo navegador. Registra offline e sincroniza depois.</p></li>
+    </figure></li>
   </ul>
   <aside class="cta-break" data-nosticky aria-label="Começar">
     <p class="t">Pronto para juntar tudo? <span class="muted">Leva menos de 2 minutos.</span></p>
@@ -319,12 +293,14 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 </div></section>
 
 <section id="treinadores" class="chap coach" data-chapter data-nosticky aria-labelledby="h-coach"><div class="wrap">
-  <header class="chead"><p class="eyebrow"><b>04</b><span>Para treinadores</span><em class="tag">Beta</em></p>
+  <header class="chead"><p class="eyebrow"><b>03</b><span>Para treinadores</span><em class="tag">Beta</em></p>
   <h2 id="h-coach">Monte a semana do aluno. <span class="hl">Veja quem treinou.</span></h2>
   <p class="lead">Envie a ficha pelo Movo ou importe a que você já tem. O aluno aceita cada mudança e decide o que você pode ver.</p></header>
   <div class="coach-grid">
-    <div class="media"><div class="phone lime">{{pic treinador "Modo treinador do Movo com a lista de alunos, quem treinou hoje e quem precisa de atenção."}}</div>
-    <p class="vlink"><a class="link" href="#videos" data-goto-video="treinadores">Ver em vídeo (11 s)</a></p></div>
+    <div class="media"><figure class="vp on" id="vp-treinadores" data-src="media/v-treinadores.mp4" data-poster="media/v-treinadores.webp" data-t="treinadores">
+      <div class="phone lime"><img src="media/v-treinadores.webp" width="540" height="1168" loading="lazy" decoding="async" alt="Modo treinador do Movo com a lista de alunos."><button class="play" type="button" aria-label="Reproduzir vídeo: Para treinadores, 11 segundos"><span><svg width="28" height="28" viewBox="0 0 24 24" fill="#14161A" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></button></div>
+      
+    </figure></div>
     <ul class="cb">
       <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l16-8-6 16-2-7z"/></svg><div><b>Envie a ficha pelo Movo</b><span>Ou importe de foto, PDF, planilha e WhatsApp.</span></div></li>
       <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/></svg><div><b>Veja quem treinou</b><span>E quem precisa de atenção, num relance. Comente cada sessão.</span></div></li>
@@ -337,7 +313,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 </div></section>
 
 <section id="instalar" class="chap" data-chapter aria-labelledby="h-inst"><div class="wrap">
-  <header class="chead"><p class="eyebrow"><b>05</b><span>Instalar</span></p>
+  <header class="chead"><p class="eyebrow"><b>04</b><span>Instalar</span></p>
   <h2 id="h-inst">Instale em 10 segundos. Sem loja de apps.</h2>
   <p class="lead">O Movo é um app web instalável. Abra no celular e adicione à tela inicial: ele ganha ícone próprio, abre em tela cheia e registra seus treinos mesmo sem sinal.</p></header>
   <div class="tabs" role="tablist" aria-label="Sistema do celular">
@@ -372,7 +348,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 </div></section>
 
 <section id="perguntas" class="chap alt" data-chapter data-nosticky aria-labelledby="h-faq"><div class="wrap">
-  <header class="chead"><p class="eyebrow"><b>06</b><span>Dúvidas</span></p>
+  <header class="chead"><p class="eyebrow"><b>05</b><span>Dúvidas</span></p>
   <h2 id="h-faq">Perguntas frequentes</h2></header>
   <div class="faq">
     <details><summary>O Movo é grátis?</summary><p>Sim. Você usa o Movo sem pagar e sem cartão. As funções de IA têm limite de uso por mês.</p></details>
@@ -388,7 +364,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 <section class="final" data-nosticky aria-labelledby="h-final"><div class="wrap"><div class="box reveal">
   <h2 id="h-final">Monte seu treino agora.</h2>
   <p class="lead" style="margin:12px auto 0">Leva menos de 2 minutos para começar.</p>
-  <div class="row"><a class="btn" href="{{APP}}?utm_source=lp&pos=final" data-cta="final" id="cta-final">Começar agora</a><a class="btn ghost" href="#videos">Ver os vídeos</a></div>
+  <div class="row"><a class="btn" href="{{APP}}?utm_source=lp&pos=final" data-cta="final" id="cta-final">Começar agora</a><a class="btn ghost" href="#vantagens">Ver o app em ação</a></div>
   <p class="micro" style="margin-top:14px;font-size:14px;color:var(--muted)">Sem senha, sem cartão.</p>
 </div></div></section>
 
@@ -434,20 +410,15 @@ var links=[].slice.call(nav.querySelectorAll('a'));
 if('IntersectionObserver' in window){var cio=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;track('chapter',e.target.id,true);
  links.forEach(function(a){var on=a.getAttribute('href')==='#'+e.target.id;a.setAttribute('aria-current',on?'true':'false');if(on)nav.querySelector('ul').scrollTo({left:Math.max(0,a.offsetLeft-20),behavior:reduce?'auto':'smooth'})})})},{rootMargin:'-45% 0px -50% 0px'});
  d.querySelectorAll('[data-chapter]').forEach(function(el){cio.observe(el)})}
-/* galeria: um único <video> reaproveitado; toque para tocar; abas sincronizadas com o swipe */
-var gs=d.getElementById('vstage'),panels=[].slice.call(gs.children),tabsV=[].slice.call(d.querySelectorAll('.vtabs [role=tab]')),gv=d.createElement('video'),cur=null,order=['ficha','treinar','desafios','corrida','treinadores'];
+/* vídeos dentro de cada seção: um único <video> reaproveitado; toque para tocar */
+var panels=[].slice.call(d.querySelectorAll('.vp')),gv=d.createElement('video'),cur=null;
 gv.playsInline=true;gv.muted=true;gv.preload='none';gv.controls=true;gv.setAttribute('playsinline','');gv.setAttribute('muted','');gv.setAttribute('aria-label','Vídeo de demonstração');
 function stopV(){if(!cur)return;gv.pause();if(gv.parentNode)gv.parentNode.removeChild(gv);cur.querySelector('.play').hidden=false;cur=null}
 function playV(p){stopV();cur=p;gv.poster=p.dataset.poster;gv.src=p.dataset.src;p.querySelector('.phone').appendChild(gv);p.querySelector('.play').hidden=true;var r=gv.play();if(r&&r.catch)r.catch(function(){});track('video_play',p.dataset.t)}
 gv.addEventListener('ended',stopV);
 panels.forEach(function(p){p.querySelector('.play').addEventListener('click',function(){playV(p)})});
-function selV(i,scroll){tabsV.forEach(function(t,j){t.setAttribute('aria-selected',i===j?'true':'false');t.tabIndex=i===j?0:-1});panels.forEach(function(p,j){p.classList.toggle('on',i===j)});
- if(scroll&&panels[i].scrollIntoView)panels[i].scrollIntoView({behavior:reduce?'auto':'smooth',inline:'center',block:'nearest'})}
-tabsV.forEach(function(t,i){t.addEventListener('click',function(){stopV();selV(i,true)});
- t.addEventListener('keydown',function(e){var n=e.key==='ArrowRight'?i+1:e.key==='ArrowLeft'?i-1:-1;if(n>=0&&n<tabsV.length){e.preventDefault();tabsV[n].focus();tabsV[n].click()}})});
-if('IntersectionObserver' in window){var vio=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting&&e.intersectionRatio>.6){var i=panels.indexOf(e.target);if(!panels[i].classList.contains('on')){stopV();selV(i,false)}}})},{root:gs,threshold:.6});panels.forEach(function(p){vio.observe(p)})}
+if('IntersectionObserver' in window){var vio=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting&&e.target===cur)stopV()})},{threshold:0});panels.forEach(function(p){vio.observe(p)})}
 d.addEventListener('visibilitychange',function(){if(d.hidden&&cur)gv.pause()});
-d.querySelectorAll('[data-goto-video]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();stopV();selV(order.indexOf(a.dataset.gotoVideo),true);d.getElementById('videos').scrollIntoView({behavior:reduce?'auto':'smooth'})})});
 /* instalar: aba conforme o sistema + aviso de navegador interno */
 var ua=navigator.userAgent||'',ios=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 var inapp=/FBAN|FBAV|Instagram|WhatsApp|Line\//i.test(ua)||(ios&&/CriOS|FxiOS/i.test(ua));
