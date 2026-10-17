@@ -42,7 +42,7 @@ p{margin:0}
 .skip{position:absolute;left:12px;top:-60px;background:var(--lime);color:#14161A;padding:10px 14px;border-radius:8px;font-weight:600;z-index:1000}
 .skip:focus{top:12px}
 .wrap{max-width:1120px;margin:0 auto;padding-inline:20px}
-section{padding-block:56px}
+section{padding-block:40px}
 h1 .hl{display:block}
 h1{text-wrap:balance}
 h2{text-wrap:balance}
@@ -108,7 +108,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 .js .reveal.in{opacity:1;transform:none}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 @media (min-width:700px){.wrap{padding-inline:32px}.steps{grid-template-columns:repeat(3,1fr)}.quotes{grid-template-columns:repeat(2,1fr)}.hero .cta{flex-direction:row;align-items:center}.hero .cta .btn{width:auto;min-width:220px}.final .row{flex-direction:row;max-width:none;justify-content:center}.final .row .btn{min-width:220px}}
-@media (min-width:1000px){.wrap{padding-inline:48px}section{padding-block:96px}.top nav{display:flex;gap:26px}.top nav a{font-weight:500;font-size:14px;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}header.top{height:72px}.hero .grid{grid-template-columns:1.1fr .9fr;align-items:center;gap:60px}.hero{min-height:min(760px,calc(100svh - 72px));display:flex;align-items:center}.phone{width:300px}.hero .phone{width:320px}.quotes{grid-template-columns:repeat(3,1fr)}footer{padding-bottom:36px}}
+@media (min-width:1000px){.wrap{padding-inline:48px}section{padding-block:72px}.top nav{display:flex;gap:26px}.top nav a{font-weight:500;font-size:14px;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}header.top{height:72px}.hero .grid{grid-template-columns:1.1fr .9fr;align-items:center;gap:60px}.hero{min-height:min(760px,calc(100svh - 72px));display:flex;align-items:center}.phone{width:300px}.hero .phone{width:320px}.quotes{grid-template-columns:repeat(3,1fr)}footer{padding-bottom:36px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.js .reveal{opacity:1;transform:none}}
 
 .tabs{display:flex;gap:8px;margin:22px 0 18px}
@@ -120,7 +120,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 .priv-mini li{padding-left:22px;position:relative}
 .priv-mini li::before{content:"";position:absolute;left:3px;top:.6em;width:8px;height:8px;border-radius:2px;background:var(--lime)}
 /* capítulos */
-.chap{padding-block:64px;position:relative;scroll-margin-top:56px}
+.chap{padding-block:44px;position:relative;scroll-margin-top:56px}
 .chap.alt{background:var(--surface);border-block:1px solid var(--line)}
 .chap::before{content:"";position:absolute;left:20px;top:-1px;width:44px;height:3px;background:var(--lime);border-radius:0 0 3px 3px}
 .chead{margin-bottom:28px}
@@ -208,14 +208,14 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 .header-ghost{}
 @media (max-width:999px){header.top .btn.sm{background:transparent;color:var(--text);border:1px solid var(--line2)}}
 @media (min-width:700px){.chap::before{left:32px}.adv{grid-template-columns:repeat(4,1fr)}.adv .main{grid-column:span 2}.cta-break{grid-template-columns:1fr auto;align-items:center;text-align:left}.cta-break .btn{min-width:240px}.cta-break .micro{grid-column:1/-1}.duo{grid-auto-flow:row;grid-template-columns:repeat(2,1fr);overflow:visible;margin:0;padding:0;justify-content:center}.coach-cta{flex-direction:row}.coach-cta .btn{min-width:220px}}
-@media (min-width:1000px){.chap{padding-block:96px}.chap::before{left:48px}.cnav{display:none}.top nav{gap:22px}.feat{grid-template-columns:1fr 1fr;gap:80px}.feat.rev .media{order:-1}.vtabs{display:none}.vstage{grid-auto-flow:row;grid-template-columns:repeat(5,1fr);overflow:visible;margin:0;padding:0}.vp:not(.on) .phone{opacity:1;transform:none}.vp .phone{width:min(100%,200px)}.coach-grid{grid-template-columns:.8fr 1.2fr;align-items:center;gap:80px}.sticky{display:none}}
+@media (min-width:1000px){.chap{padding-block:72px}.chap::before{left:48px}.cnav{display:none}.top nav{gap:22px}.feat{grid-template-columns:1fr 1fr;gap:80px}.feat.rev .media{order:-1}.vtabs{display:none}.vstage{grid-auto-flow:row;grid-template-columns:repeat(5,1fr);overflow:visible;margin:0;padding:0}.vp:not(.on) .phone{opacity:1;transform:none}.vp .phone{width:min(100%,200px)}.coach-grid{grid-template-columns:.8fr 1.2fr;align-items:center;gap:80px}.sticky{display:none}}
 @media (max-height:420px){.sticky{display:none}}
 </style>
 </head>
 <body>
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
 <nav class="cnav" id="cnav" aria-label="Capítulos"><ul>
-  <li><a href="#como-funciona">Como funciona</a></li><li><a href="#videos">Vídeos</a></li><li><a href="#vantagens">Vantagens</a></li><li><a href="#recursos">Recursos</a></li><li><a href="#treinadores">Treinadores</a></li><li><a href="#instalar">Instalar</a></li><li><a href="#perguntas">Dúvidas</a></li>
+  <li><a href="#como-funciona">Como funciona</a></li><li><a href="#videos">Vídeos</a></li><li><a href="#vantagens">Vantagens</a></li><li><a href="#treinadores">Treinadores</a></li><li><a href="#instalar">Instalar</a></li><li><a href="#perguntas">Dúvidas</a></li>
 </ul><i class="prog" id="prog"></i></nav>
 <div class="wrap">
 <header class="top">
@@ -318,54 +318,8 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
   </aside>
 </div></section>
 
-<section id="recursos" class="chap alt" data-chapter aria-labelledby="h-rec"><div class="wrap">
-  <header class="chead"><p class="eyebrow"><b>04</b><span>Recursos</span></p>
-  <h2 id="h-rec">O que você faz no Movo.</h2></header>
-
-  <article class="feat reveal" aria-labelledby="h-imp">
-    <div><p class="sub">04.1 · Ficha</p><h2 id="h-imp">Já tem ficha ou histórico? Traga junto.</h2>
-    <p class="lead">Envie PDF, foto, planilha ou o texto do WhatsApp. A IA organiza, você confere antes de salvar.</p>
-    <ul><li>Importa ficha de treino e histórico de treinos</li><li>Você revisa tudo antes de salvar, e o histórico tem desfazer</li><li>Ou monte do zero pelo catálogo de exercícios</li></ul>
-    <p class="note">A leitura por IA tem limite de uso por mês.</p>
-    <p class="vlink" style="text-align:left"><a class="link" href="#videos" data-goto-video="ficha">Ver em vídeo (19 s)</a></p></div>
-    <div class="media"><div class="phone">{{pic importar "Tela de importação do Movo com um texto de treinos colado, pronto para a IA ler e organizar."}}</div></div>
-  </article>
-
-  <article class="feat rev reveal" aria-labelledby="h-agenda">
-    <div><p class="sub">04.2 · Semana e treino</p><h2 id="h-agenda">Sua semana inteira, sem perder o ritmo.</h2>
-    <p class="lead">Academia e atividades de fora na mesma agenda. Marque cada exercício, anote carga e repetições e use o timer de descanso.</p>
-    <ul><li>Fichas de academia e atividades juntas, ajuste só o dia se precisar</li><li>Carga, séries, reps e timer de descanso com aviso</li><li>Semana mudou? O Movo propõe um ajuste, e você aceita ou não (experimental)</li></ul>
-    <p class="vlink" style="text-align:left"><a class="link" href="#videos" data-goto-video="treinar">Ver em vídeo (19 s)</a></p></div>
-    <div class="media"><div class="duo"><div class="phone">{{pic semana "Agenda semanal do Movo com fichas de academia e atividades como corrida e vôlei."}}</div><div class="phone">{{pic treino "Ficha de academia no Movo com exercícios marcados como feitos e o timer de descanso rodando."}}</div></div></div>
-  </article>
-
-  <article class="feat reveal" aria-labelledby="h-evo">
-    <div><p class="sub">04.3 · Evolução</p><h2 id="h-evo">Veja o que mudou de verdade.</h2>
-    <p class="lead">Frequência por semana, mês ou ano e a carga de cada exercício ao longo do tempo. Ao concluir um treino, anote duração e esforço de 0 a 10.</p>
-    <ul><li>Frequência e total por tipo de atividade</li><li>Evolução de carga por exercício</li></ul></div>
-    <div class="media"><div class="phone">{{pic evolucao "Gráficos de frequência e selos de conquista na aba Evolução do Movo."}}</div></div>
-  </article>
-
-  <article class="feat rev reveal" aria-labelledby="h-corrida">
-    <div><p class="sub">04.4 · Corrida e provas</p><h2 id="h-corrida">Prova marcada? O Movo cuida da preparação.</h2>
-    <p class="lead">Veja provas num calendário, marque “Vou nessa”, defina uma meta e peça um plano de corrida com IA. A contagem regressiva aparece na tela Hoje.</p>
-    <ul><li>Calendário mensal e anual de provas</li><li>Metas de distância, tempo ou hábito, sem precisar de inscrição</li><li>Importa suas atividades do Strava quando você mandar</li></ul>
-    <p class="note">O plano com IA tem limite mensal e é uma sugestão: não substitui orientação de profissional.</p>
-    <p class="vlink" style="text-align:left"><a class="link" href="#videos" data-goto-video="corrida">Ver em vídeo (27 s)</a></p></div>
-    <div class="media"><div class="duo"><div class="phone">{{pic provas-cal "Calendário de provas de corrida no Movo, com a opção Vou nessa."}}</div><div class="phone">{{pic provas "Prova marcada em Minhas provas, com a opção de criar um plano de treino."}}</div></div></div>
-  </article>
-
-  <article class="feat reveal" aria-labelledby="h-desafio">
-    <div><p class="sub">04.5 · Desafios</p><h2 id="h-desafio">Treinar com amigo fica mais difícil de faltar.</h2>
-    <p class="lead">Crie um desafio, escolha as regras e convide por link ou código. O app confere os treinos registrados e atualiza o placar.</p>
-    <ul><li>Ranking e placar semanal, com regras que você edita antes de começar</li><li>Cartão pronto para postar nos stories</li><li>Cargas e fichas continuam privadas: só aparece o que conta pontos</li></ul>
-    <p class="vlink" style="text-align:left"><a class="link" href="#videos" data-goto-video="desafios">Ver em vídeo (13 s)</a></p></div>
-    <div class="media"><div class="duo"><div class="phone">{{pic desafio "Placar de um desafio entre amigos no Movo, com ranking semanal e pista animada."}}</div><div class="phone">{{pic cartao "Cartão de compartilhamento do desafio do Movo para postar nos stories."}}</div></div></div>
-  </article>
-</div></section>
-
 <section id="treinadores" class="chap coach" data-chapter data-nosticky aria-labelledby="h-coach"><div class="wrap">
-  <header class="chead"><p class="eyebrow"><b>05</b><span>Para treinadores</span><em class="tag">Beta</em></p>
+  <header class="chead"><p class="eyebrow"><b>04</b><span>Para treinadores</span><em class="tag">Beta</em></p>
   <h2 id="h-coach">Monte a semana do aluno. <span class="hl">Veja quem treinou.</span></h2>
   <p class="lead">Envie a ficha pelo Movo ou importe a que você já tem. O aluno aceita cada mudança e decide o que você pode ver.</p></header>
   <div class="coach-grid">
@@ -383,7 +337,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 </div></section>
 
 <section id="instalar" class="chap" data-chapter aria-labelledby="h-inst"><div class="wrap">
-  <header class="chead"><p class="eyebrow"><b>06</b><span>Instalar</span></p>
+  <header class="chead"><p class="eyebrow"><b>05</b><span>Instalar</span></p>
   <h2 id="h-inst">Instale em 10 segundos. Sem loja de apps.</h2>
   <p class="lead">O Movo é um app web instalável. Abra no celular e adicione à tela inicial: ele ganha ícone próprio, abre em tela cheia e registra seus treinos mesmo sem sinal.</p></header>
   <div class="tabs" role="tablist" aria-label="Sistema do celular">
@@ -398,8 +352,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
     <p class="note">Depois de instalar, entre com o código do e-mail dentro do app instalado. Se o link do e-mail abrir no navegador, volte ao app e digite o código.</p>
   </div>
   <div class="warn" id="inapp" role="note"><b>Está no navegador do Instagram ou do WhatsApp?</b> Ele não deixa instalar. Copie o link e abra no Safari (iPhone) ou no Chrome (Android).<p style="margin-top:12px"><button class="btn ghost sm" id="copy" type="button">Copiar link do app</button> <span id="copied" class="muted" aria-live="polite"></span></p></div>
-  <p class="note" style="margin-top:20px">Não precisa instalar para testar: dá para usar direto no navegador.</p>
-  <div class="priv-mini"><h3>Seus dados são seus.</h3><ul>
+    <div class="priv-mini"><h3>Seus dados são seus.</h3><ul>
     <li>Exporte seus dados e exclua a conta dentro do app.</li>
     <li>O treinador só vê o que você autorizar, e os amigos nunca veem suas cargas.</li>
     <li>Detalhes na <a href="privacidade.html">Política de Privacidade</a> e nos <a href="termos.html">Termos de Uso</a>.</li></ul></div>
@@ -419,18 +372,14 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 </div></section>
 
 <section id="perguntas" class="chap alt" data-chapter data-nosticky aria-labelledby="h-faq"><div class="wrap">
-  <header class="chead"><p class="eyebrow"><b>07</b><span>Dúvidas</span></p>
+  <header class="chead"><p class="eyebrow"><b>06</b><span>Dúvidas</span></p>
   <h2 id="h-faq">Perguntas frequentes</h2></header>
   <div class="faq">
     <details><summary>O Movo é grátis?</summary><p>Sim. Você usa o Movo sem pagar e sem cartão. As funções de IA têm limite de uso por mês.</p></details>
     <details><summary>O que significa beta?</summary><p>Que o Movo já funciona no dia a dia, mas ainda está em construção: entram recursos novos, algumas telas mudam de lugar e pode haver falhas. O modo treinador, por exemplo, está em beta e libera o cadastro depois de uma análise. Há um botão de feedback dentro do app, e a gente lê tudo.</p></details>
     <details><summary>Preciso instalar? Está nas lojas?</summary><p>Não precisa. Dá para usar direto no navegador. Instalar é opcional: o Movo ganha ícone na tela inicial e abre em tela cheia, sem passar pela loja. O Movo é um app web e não há versão na Play Store nem na App Store. O passo a passo está em “Instalar”.</p></details>
-    <details><summary>Funciona sem internet?</summary><p>Em parte. Depois de aberto, o app mostra a semana e registra treinos sem sinal, e sincroniza quando a conexão volta. Entrar na conta, importar com IA, desafios, ranking e Strava precisam de internet.</p></details>
     <details><summary>E meus dados? Quem vê?</summary><p>Seus treinos ficam salvos na sua conta, na nuvem, para você acessar de qualquer aparelho. Amigos de um desafio só veem o que conta pontos, nunca suas cargas ou fichas. Um treinador só vê o que você autorizar. Você pode exportar seus dados e excluir a conta pelo app. Detalhes na <a href="privacidade.html">Política de Privacidade</a>.</p></details>
     <details><summary>Usa IA? O que vai para ela?</summary><p>Algumas funções (importar ficha, montar treino, plano de corrida e ajustar a semana) usam IA da Anthropic e enviam só o necessário para aquela função. Nada é salvo sem você revisar. A IA sugere e não substitui profissional de saúde ou de educação física.</p></details>
-    <details><summary>Já uso planilha ou outro app. Vale trocar?</summary><p>Você não precisa recomeçar do zero: dá para importar a ficha e o histórico, com revisão antes de salvar. O Movo faz sentido desde os treinos mais simples até um acompanhamento completo de diferentes atividades.</p></details>
-    <details><summary>Funciona com Strava?</summary><p>Sim. Você conecta o Strava e importa suas atividades quando quiser. Por regra do Strava, esses dados não entram nas funções de IA.</p></details>
-    <details><summary>Funciona para quem não corre?</summary><p>Sim. A corrida é opcional. Academia, outras atividades, evolução e desafios funcionam sem ela.</p></details>
     <details><summary>Sou treinador. Como entro?</summary><p>Ao entrar, escolha “Sou treinador” e preencha seu perfil. O cadastro passa por análise durante o beta. Depois, é só convidar seus alunos por link ou código. O aluno decide o que você vê.</p></details>
   </div>
   <p class="note" style="margin-top:22px">Não achou sua dúvida? Fale pelo botão de feedback dentro do app ou por e-mail: <a href="mailto:contato@movoapp.com.br" data-cta="email">contato@movoapp.com.br</a>.</p>
