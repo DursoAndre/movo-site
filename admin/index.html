@@ -266,7 +266,7 @@ textarea.fi{resize:vertical;min-height:70px}
   var grupo = "op";
   var cache = {};
   var MSG_TIPOS = [["problema", "🐞 Problema"], ["ideia", "💡 Ideia"], ["elogio", "👍 Elogio"], ["outro", "💬 Outro"]];
-  var params = { relTipo: "", uso: 30, conv: 30, dom: 14, relatos: 30, registro: 30, base: "abriram", ui: false, cOrd: "cadastro", cDir: "desc", cQ: "" };
+  var params = { relTipo: "", erTodos: false, uso: 30, conv: 30, dom: 14, relatos: 30, registro: 30, base: "abriram", ui: false, cOrd: "cadastro", cDir: "desc", cQ: "" };
   var atual = null, reqSeq = 0;
 
   function call(tab) {
@@ -417,11 +417,16 @@ textarea.fi{resize:vertical;min-height:70px}
           '<button class="ib" type="button" data-lido="' + r.id + '" data-v="' + (r.lido ? "0" : "1") + '">' + (r.lido ? "Marcar como novo" : "Marcar como lido") + "</button></div></div>";
       });
       h += "<h2>Erros registrados automaticamente</h2>";
-      var er = d.erros || [];
+      var erTodos = d.erros || [], erNovos = erTodos.filter(function (e) { return +e.novos > 0; });
+      var er = params.erTodos ? erTodos : erNovos;
+      h += '<div class="seg" role="group" aria-label="Erros" style="margin-bottom:8px"><button type="button" data-er="0" aria-pressed="' + !params.erTodos + '">Não revisados ' + erNovos.length + '</button><button type="button" data-er="1" aria-pressed="' + params.erTodos + '">Todos ' + erTodos.length + "</button></div>";
       h += '<div class="card">' + (er.length ? er.map(function (e) {
-        return '<div class="row"><div class="t">' + esc(e.contexto) + '</div><div class="v">' + e.n + "<small>" + pl(e.pessoas, "pessoa", "pessoas") + '</small></div><div class="s">último ' + esc(dt(e.ultimo)) + (e.exemplo ? " · " + esc(e.exemplo) : "") + "</div></div>";
-      }).join("") : '<div class="note">Nenhum erro no período.</div>') + "</div>";
-      h += '<div class="note">Vem de <b>client_errors</b>: falhas que o app registra sozinho (inclusive tela quebrada, mesmo sem a pessoa reportar).</div>';
+        var novo = !params.erTodos, n = novo ? e.novos : e.n, ps = novo ? e.novos_pessoas : e.pessoas, ult = novo ? e.ultimo_novo : e.ultimo, ex = novo ? e.exemplo_novo : e.exemplo;
+        var marca = novo ? "" : +e.novos === 0 ? '<span class="pill ok">revisado</span>' : '<span class="pill warn">' + e.novos + " novo" + (+e.novos > 1 ? "s" : "") + "</span>";
+        return '<div class="row"><div class="t">' + esc(e.contexto) + marca + '</div><div class="v">' + n + "<small>" + pl(ps, "pessoa", "pessoas") + '</small></div><div class="s">último ' + esc(dt(ult)) + (ex ? " · " + esc(ex) : "") + "</div>" +
+          (e.revisao ? '<div class="s" style="color:var(--fg)"><b>' + (novo ? "Revisão anterior do Claude" : "Revisão do Claude") + "</b> " + esc(dt(e.revisado_em)) + " · " + esc(e.revisao) + "</div>" : "") + "</div>";
+      }).join("") : '<div class="note">' + (params.erTodos ? "Nenhum erro no período." : "Nenhum erro novo: tudo do período já foi revisado.") + "</div>") + "</div>";
+      h += '<div class="note">Vem de <b>client_errors</b>: falhas que o app registra sozinho (inclusive tela quebrada, mesmo sem a pessoa reportar). O Claude marca no banco o que já revisou; um erro novo do mesmo tipo volta a aparecer em "Não revisados".</div>';
       return h;
     },
     dom: function (d) {
@@ -1010,6 +1015,7 @@ textarea.fi{resize:vertical;min-height:70px}
     Array.prototype.forEach.call(document.querySelectorAll(".seg"), function (sg) {
       sg.addEventListener("click", function (e) {
         var b = e.target.closest("button"); if (!b) return;
+        if (b.hasAttribute("data-er")) { params.erTodos = b.getAttribute("data-er") === "1"; paint(id, cache[id].data, cache[id].ts); return; }
         if (b.hasAttribute("data-tp")) { params.relTipo = b.getAttribute("data-tp"); paint(id, cache[id].data, cache[id].ts); return; }
         if (b.hasAttribute("data-b")) { params.base = b.getAttribute("data-b"); paint(id, cache[id].data, cache[id].ts); return; }
         params[id] = +b.getAttribute("data-d"); delete cache[id]; open(id, true);
