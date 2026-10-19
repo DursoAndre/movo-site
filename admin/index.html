@@ -112,6 +112,17 @@ input:focus{outline:2px solid var(--ac);outline-offset:0}
 .btn:disabled{opacity:.6}
 .lk{background:none;border:0;color:var(--mut);text-decoration:underline;padding:0 4px;min-height:44px;font-size:14px}
 .lk:disabled{opacity:.5;text-decoration:none}
+.ib.pri{background:var(--ac);border-color:var(--ac);color:var(--ac-d);font-weight:700}
+.ib.danger{color:var(--bad);border-color:rgba(255,122,107,.5)}
+.ib:disabled{opacity:.5}
+.card input,.card select,.card textarea,.fi{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--fg);border-radius:10px;padding:10px 12px;font:inherit;font-size:16px;margin:0 0 8px;min-height:44px}
+textarea.fi{resize:vertical;min-height:70px}
+.tab .bd{display:inline-block;min-width:20px;padding:0 6px;margin-left:6px;border-radius:999px;background:var(--warn);color:#14161A;font-size:12px;font-weight:800;line-height:20px;text-align:center}
+.grp{margin-top:8px}
+.grp button{min-height:40px}
+.ct[data-act]{cursor:pointer}
+.ct[data-act]:active{background:var(--card2)}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:600;z-index:20;max-width:calc(100% - 32px)}
 </style>
 </head>
 <body>
@@ -141,9 +152,11 @@ input:focus{outline:2px solid var(--ac);outline-offset:0}
       <div class="sp"></div>
       <button class="ib" id="reload" type="button">Atualizar</button>
     </div>
+    <div class="cs grp" id="grp" role="group" aria-label="Área do painel"><button type="button" data-g="op">Operação</button><button type="button" data-g="met">Métricas</button></div>
     <div class="tabs" id="tabs" role="tablist" aria-label="Seções do painel"></div>
   </div>
   <main id="main" role="tabpanel" aria-live="polite"></main>
+  <div id="toast" role="status" hidden></div>
   <div class="foot"><span id="foot-info"></span><span class="sp"></span><button class="ib" id="sair" type="button">Sair da conta</button></div>
 </div>
 
@@ -240,15 +253,23 @@ input:focus{outline:2px solid var(--ac);outline-offset:0}
   var GORDEM = ["Entrada", "Onboarding", "Treino", "Corrida e provas", "Desafios e convites", "IA", "Treinador", "Disposição a pagar", "Conta e domínio", "Outros", "Telas abertas", "Interface (diagnóstico)"];
 
   // ---------- abas (cada uma só carrega quando aberta) ----------
+  // g: "op" = Operação (gestão), "met" = Métricas. "conta" e "desafio" são telas de detalhe, sem aba própria.
   var TABS = [
-    { id: "geral", t: "Visão geral" }, { id: "ret", t: "Retenção" }, { id: "funil", t: "Funil" }, { id: "ativ", t: "Ativação" },
-    { id: "uso", t: "Uso" }, { id: "conv", t: "Convites" }, { id: "dom", t: "Domínio" }, { id: "contas", t: "Contas" }, { id: "relatos", t: "Relatos" }
+    { id: "pend", t: "Pendências", g: "op" }, { id: "contas", t: "Contas", g: "op" }, { id: "relatos", t: "Relatos", g: "op" }, { id: "suporte", t: "Suporte", g: "op" },
+    { id: "treinadores", t: "Treinadores", g: "op" }, { id: "catalogo", t: "Catálogo", g: "op" }, { id: "planos", t: "Planos", g: "op" }, { id: "ia", t: "IA", g: "op" },
+    { id: "desafios", t: "Desafios", g: "op" }, { id: "recados", t: "Recados", g: "op" }, { id: "integracoes", t: "Integrações", g: "op" }, { id: "saude", t: "Saúde", g: "op" }, { id: "registro", t: "Registro", g: "op" },
+    { id: "geral", t: "Visão geral", g: "met" }, { id: "ret", t: "Retenção", g: "met" }, { id: "funil", t: "Funil", g: "met" }, { id: "ativ", t: "Ativação", g: "met" },
+    { id: "uso", t: "Uso", g: "met" }, { id: "conv", t: "Convites", g: "met" }, { id: "dom", t: "Domínio", g: "met" }
   ];
+  var DETALHE = { conta: "contas", desafio: "desafios" };
+  function abaDe(id) { return TABS.filter(function (t) { return t.id === (DETALHE[id] || id); })[0]; }
+  var grupo = "op";
   var cache = {};
-  var params = { uso: 30, conv: 30, dom: 14, relatos: 30, base: "abriram", ui: false, cOrd: "cadastro", cDir: "desc", cQ: "" };
+  var params = { uso: 30, conv: 30, dom: 14, relatos: 30, registro: 30, base: "abriram", ui: false, cOrd: "cadastro", cDir: "desc", cQ: "" };
   var atual = null, reqSeq = 0;
 
   function call(tab) {
+    if (OPS_CALL[tab]) return OPS_CALL[tab]();
     if (tab === "geral") return sb.rpc("admin_m_geral");
     if (tab === "ret") return sb.rpc("admin_m_retencao");
     if (tab === "funil") return sb.rpc("admin_m_funil");
@@ -446,11 +467,11 @@ input:focus{outline:2px solid var(--ac);outline-offset:0}
       $("c-dir").textContent = params.cDir === "desc" ? "↓ recentes primeiro" : "↑ antigos primeiro";
       $("c-lista").innerHTML = l.length ? l.map(function (u) {
         var ult = u.ultimo_acesso || u.ultimo_login, porAcesso = params.cOrd === "acesso";
-        return '<div class="ct" role="listitem"><div class="t">' + esc(u.nome || u.email) + (u.teste ? '<span class="pill">você/teste</span>' : "") + (u.treinou ? '<span class="pill ok">treinou</span>' : "") +
+        return '<div class="ct" role="listitem" data-act="ver-conta" data-id="' + esc(u.id) + '"><div class="t">' + esc(u.nome || u.email) + (u.teste ? '<span class="pill">você/teste</span>' : "") + (u.treinou ? '<span class="pill ok">treinou</span>' : "") +
           (u.nome ? '<div class="s">' + esc(u.email) + (u.origem ? " · " + esc(u.origem) : "") + "</div>" : (u.origem ? '<div class="s">' + esc(u.origem) + "</div>" : "")) + "</div>" +
           '<div class="v">' + (porAcesso ? esc(relIso(ult)) : esc(dd(u.cadastro))) + "<small>" + (porAcesso ? "cadastro " + esc(dd(u.cadastro)) : "acesso " + esc(relIso(ult))) + "</small></div></div>";
       }).join("") : '<div class="note">' + (d.length ? "Ninguém com esse nome ou e-mail." : "Nenhuma conta ainda.") + "</div>";
-      $("c-info").textContent = l.length === d.length ? l.length + " contas" : l.length + " de " + d.length + " contas";
+      $("c-info").textContent = (l.length === d.length ? l.length + " contas" : l.length + " de " + d.length + " contas") + " · toque numa conta para abrir a ficha";
     }
     $("c-ord").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; params.cOrd = b.getAttribute("data-o"); desenhar(); });
     $("c-dir").addEventListener("click", function () { params.cDir = params.cDir === "desc" ? "asc" : "desc"; desenhar(); });
@@ -458,15 +479,504 @@ input:focus{outline:2px solid var(--ac);outline-offset:0}
     desenhar();
   }
 
+  // ---------- Operação: gestão que saiu da aba Admin do app (decisão do Andre, 19/10/2026) ----------
+  // As funções admin_* do banco são as mesmas que o app usava; o painel só passou a chamá-las.
+  var PLANOS = {
+    aluno: [{ id: "pro", nome: "Movo Pro" }],
+    treinador: [{ id: "start", nome: "Start" }, { id: "pro", nome: "Pro" }, { id: "studio", nome: "Studio" }]
+  };
+  var ALUNOS_MAX = { gratis: 3, start: 10, pro: 30, studio: 80 };
+  function planoNome(linha, id) {
+    if (id === "teste") return "Teste grátis";
+    var p = (PLANOS[linha] || []).filter(function (x) { return x.id === id; })[0];
+    if (!p) return "Grátis";
+    return linha === "treinador" ? "Treinador " + p.nome : p.nome;
+  }
+  function planoDoTreinador(assin, email) {
+    var a = (assin || []).filter(function (x) { return x.linha === "treinador" && x.email === email; })[0];
+    return a ? a.plano : "gratis";
+  }
+  function usd(n) { n = Number(n || 0); return "US$ " + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: n < 1 ? 4 : 2 }); }
+  function brl(c) { return "R$ " + (Number(c || 0) / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function dia(iso) { return iso ? String(iso).slice(0, 10).split("-").reverse().join("/") : "—"; }
+  function btn(txt, act, attrs, cls) {
+    var a = ""; Object.keys(attrs || {}).forEach(function (k) { a += " data-" + k + '="' + esc(attrs[k]) + '"'; });
+    return '<button class="ib' + (cls ? " " + cls : "") + '" type="button" data-act="' + act + '"' + a + ">" + esc(txt) + "</button>";
+  }
+  function vazio(t) { return '<div class="card"><div class="note">' + esc(t) + "</div></div>"; }
+  function juntar(chaves, promessas) {
+    return Promise.all(promessas).then(function (r) {
+      var er = r.filter(function (x) { return x && x.error; })[0];
+      if (er) return { error: er.error };
+      var d = {}; chaves.forEach(function (k, i) { d[k] = r[i].data; }); return { data: d };
+    });
+  }
+  var REG_TAB = { coach_profiles: "Treinador", assinaturas: "Plano", app_config: "Configuração", feature_access: "Acesso a recurso",
+    shared_races: "Prova da comunidade", exercise_review: "Revisão do catálogo", catalogo_exercicios: "Exercício do catálogo",
+    catalogo_aliases: "Nome alternativo no catálogo", catalogo_grupos: "Grupo do catálogo" };
+  var REG_ACAO = { insert: "criou", update: "mudou", "delete": "removeu", exportar_conta: "Exportou os dados da conta",
+    apagar_conta: "Apagou a conta a pedido", recado_publicado: "Publicou recado", recado_encerrado: "Encerrou recado" };
+  function regTexto(l) {
+    if (l.tabela) {
+      var mud = "";
+      if (l.acao === "update" && l.antes && l.depois) {
+        mud = Object.keys(l.depois).filter(function (k) { return k !== "updated_at" && k !== "atualizado_em" && JSON.stringify(l.antes[k]) !== JSON.stringify(l.depois[k]); })
+          .map(function (k) { return k + ": " + JSON.stringify(l.antes[k]) + " → " + JSON.stringify(l.depois[k]); }).join(" · ");
+      }
+      return (REG_TAB[l.tabela] || l.tabela) + " " + (REG_ACAO[l.acao] || l.acao) + (l.alvo ? " · " + l.alvo : "") + (mud ? " · " + mud : "");
+    }
+    return (REG_ACAO[l.acao] || l.acao) + (l.alvo ? " · " + l.alvo : "");
+  }
+
+  var OPS_CALL = {
+    pend: function () { return juntar(["p", "coaches", "fb", "rev"], [sb.rpc("admin_m_pendencias"), sb.rpc("admin_coach_list"), sb.rpc("admin_feedback_list", { limit_n: 100 }), sb.rpc("admin_revisao_lista")]); },
+    suporte: function () { return juntar(["fb", "erros", "provas", "gaps"], [sb.rpc("admin_feedback_list", { limit_n: 100 }), sb.rpc("admin_client_errors", { limit_n: 50 }), sb.rpc("admin_shared_races"), sb.rpc("admin_exercise_gaps", { dias: 90 })]); },
+    treinadores: function () { return juntar(["coaches", "assin"], [sb.rpc("admin_coach_list"), sb.rpc("admin_plan_list")]); },
+    catalogo: function () { return juntar(["rev", "cat"], [sb.rpc("admin_revisao_lista"), sb.rpc("catalogo_completo")]); },
+    planos: function () { return juntar(["bill", "assin"], [sb.rpc("admin_billing_get"), sb.rpc("admin_plan_list")]); },
+    ia: function () { return juntar(["ctl", "custo", "uso", "feat", "todos"], [sb.rpc("admin_ai_controle"), sb.rpc("admin_ai_cost"), sb.rpc("admin_plan_usage"), sb.rpc("admin_feature_list", { p_feature: "ajuste_semana" }), sb.rpc("admin_feature_todos", { p_feature: "ajuste_semana" })]); },
+    desafios: function () { return sb.rpc("admin_m_desafios"); },
+    desafio: function () { return sb.rpc("admin_m_desafio", { p_id: params.desafio }); },
+    recados: function () { return sb.rpc("admin_m_recados"); },
+    integracoes: function () { return sb.rpc("admin_m_integracoes"); },
+    saude: function () { return juntar(["s", "versoes", "logins"], [sb.rpc("admin_saude"), sb.rpc("admin_versoes", { p_dias: 7 }), sb.rpc("admin_login_stats", { dias: 7 })]); },
+    registro: function () { return sb.rpc("admin_m_registro", { p_dias: params.registro }); },
+    conta: function () { return sb.rpc("admin_m_conta", { p_user: params.conta }); }
+  };
+
+  function coachCard(c, assin) {
+    var st = c.status || (c.liberado ? "ativo" : "suspenso"), pl = planoDoTreinador(assin, c.email), max = ALUNOS_MAX[pl] || 3;
+    var h = '<div class="card"' + (st === "em_analise" ? ' style="border-left:3px solid var(--warn)"' : "") + '><div class="t"><b>' + esc(c.nome_exibicao || c.email) + "</b>" +
+      '<span class="pill' + (st === "ativo" ? " ok" : st === "em_analise" ? " warn" : "") + '">' + (st === "em_analise" ? "em análise" : st) + "</span></div>";
+    h += '<div class="note" style="margin:2px 0 6px">' + esc(c.email) + " · " + c.alunos + "/" + max + " alunos · " + esc(planoNome("treinador", pl)) + (c.cref ? " · CREF " + esc(c.cref) : "") + (c.pedido_em ? " · pedido em " + dia(c.pedido_em) : "") + "</div>";
+    if (c.bio) h += '<div style="white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px">' + esc(c.bio) + "</div>";
+    if (st === "suspenso" && c.motivo) h += '<div class="note">Motivo: ' + esc(c.motivo) + "</div>";
+    h += '<div class="tools">' + (st !== "ativo" ? btn(st === "em_analise" ? "Aprovar" : "Reativar", "coach", { u: c.user_id, s: "ativo" }, "pri") : "") +
+      (st !== "suspenso" ? btn(st === "em_analise" ? "Recusar" : "Suspender", "coach", { u: c.user_id, s: "suspenso" }) : "") + "</div></div>";
+    return h;
+  }
+  function fbCard(f) {
+    return '<div class="card"' + (f.lido ? "" : ' style="border-left:3px solid var(--ac)"') + '><div class="note" style="margin:0 0 6px">' + esc(dt(f.created_at)) + " · " + esc(f.email || "—") + " · <b>" + esc(f.tipo) + "</b> · " + esc(f.versao || "?") + (f.contato ? "" : " · não quer resposta") + "</div>" +
+      '<div style="white-space:pre-wrap;overflow-wrap:anywhere">' + esc(f.mensagem) + '</div><div class="tools">' +
+      (f.email && f.contato ? '<a class="ib" style="display:inline-flex;align-items:center;text-decoration:none" href="mailto:' + esc(f.email) + "?subject=" + encodeURIComponent("Sobre seu feedback no Movo") + '">Responder</a>' : "") +
+      btn(f.lido ? "Marcar como novo" : "Marcar como lido", "fb", { id: f.id, v: f.lido ? "0" : "1" }) + "</div></div>";
+  }
+
+  var OPS_VIEW = {
+    pend: function (d) {
+      var p = d.p || {}, an = (d.coaches || []).filter(function (c) { return c.status === "em_analise"; });
+      var fb = (d.fb || []).filter(function (f) { return f.tipo !== "problema" && !f.lido; }), rev = (d.rev && d.rev.pendentes) || [];
+      var h = '<div class="grid g3">' + stat(p.total || 0, "pendências", p.total ? "warn" : "hi") + stat(p.relatos || 0, "relatos não lidos", p.relatos ? "warn" : "") + stat(p.contestacoes || 0, "acertos contestados", p.contestacoes ? "warn" : "") + "</div>";
+      if (!p.total) h += '<div class="note" style="margin-top:12px">Nada esperando você. Bom treino.</div>';
+      if (an.length) { h += "<h2>Treinadores em análise</h2>"; an.forEach(function (c) { h += coachCard(c, []); }); }
+      if (rev.length) h += "<h2>Catálogo</h2>" + '<div class="card"><div class="row"><div class="t">' + pl(rev.length, "nome novo de exercício", "nomes novos de exercício") + ' para decidir</div><div class="v">' + btn("Abrir", "ir", { tab: "catalogo" }) + "</div></div></div>";
+      if (p.relatos) h += "<h2>Relatos de problema</h2>" + '<div class="card"><div class="row"><div class="t">' + pl(p.relatos, "relato não lido", "relatos não lidos") + '</div><div class="v">' + btn("Abrir", "ir", { tab: "relatos" }) + "</div></div></div>";
+      if (p.contestacoes) h += "<h2>Desafios</h2>" + '<div class="card"><div class="row"><div class="t">' + pl(p.contestacoes, "acerto contestado", "acertos contestados") + ' em aberto</div><div class="v">' + btn("Abrir", "ir", { tab: "desafios" }) + "</div></div></div>";
+      if (fb.length) { h += "<h2>Feedback novo</h2>"; fb.forEach(function (f) { h += fbCard(f); }); }
+      return h;
+    },
+    suporte: function (d) {
+      var fb = (d.fb || []).filter(function (f) { return f.tipo !== "problema"; }), novos = fb.filter(function (f) { return !f.lido; }).length;
+      var h = "<h2>Feedback dos usuários" + (novos ? " · " + novos + " novo" + (novos === 1 ? "" : "s") : "") + "</h2>";
+      h += fb.length ? fb.map(fbCard).join("") : vazio("Nenhum feedback ainda.");
+      h += '<div class="note">Relatos de problema (com detalhes técnicos) ficam na aba Relatos.</div>';
+      h += "<h2>Erros recentes</h2>";
+      h += '<div class="card">' + ((d.erros || []).length ? d.erros.map(function (e) {
+        return '<div class="row"><div class="t"><b>' + esc(e.context) + "</b>" + (e.message ? " · " + esc(e.message) : "") + '</div><div class="s">' + esc(dt(e.created_at)) + " · " + esc(e.email || "—") + "</div></div>";
+      }).join("") : '<div class="note">Nenhum erro registrado.</div>') + "</div>";
+      h += "<h2>Provas cadastradas pela comunidade</h2>";
+      h += '<div class="card">' + ((d.provas || []).length ? d.provas.slice(0, 40).map(function (r) {
+        return '<div class="row"' + (r.oculta ? ' style="opacity:.55"' : "") + '><div class="t">' + esc(r.nome) + '<div class="s">' + dia(r.data_inicio) + (r.cidade ? " · " + esc(r.cidade) + (r.uf ? "/" + esc(r.uf) : "") : "") + " · por " + esc(r.criada_por_email || "?") + '</div></div><div class="v">' +
+          btn(r.oculta ? "Mostrar" : "Esconder", "prova", { id: r.id, v: r.oculta ? "0" : "1" }) + "</div></div>";
+      }).join("") : '<div class="note">Ninguém cadastrou prova ainda.</div>') + "</div>";
+      h += '<div class="note">Esconder tira a prova da lista de todo mundo (quem já marcou continua com a marcação).</div>';
+      h += "<h2>Exercícios fora do catálogo · 90 dias</h2>";
+      h += '<div class="card">' + ((d.gaps || []).length ? d.gaps.slice(0, 20).map(function (g) {
+        return '<div class="row"><div class="t">' + esc(g.nome) + '</div><div class="v">' + g.vezes + "×<small>" + pl(+g.usuarios, "pessoa", "pessoas") + "</small></div></div>";
+      }).join("") : '<div class="note">Ninguém criou exercício livre ainda.</div>') + "</div>";
+      return h;
+    },
+    treinadores: function (d) {
+      var cs = d.coaches || [], assin = d.assin || [];
+      var stDe = function (c) { return c.status || (c.liberado ? "ativo" : "suspenso"); };
+      var at = cs.filter(function (c) { return stDe(c) === "ativo"; }), alunos = at.reduce(function (t, c) { return t + (+c.alunos || 0); }, 0);
+      var pagos = assin.filter(function (a) { return a.linha === "treinador" && a.plano !== "gratis"; }).length;
+      var cheios = at.filter(function (c) { return (+c.alunos || 0) >= (ALUNOS_MAX[planoDoTreinador(assin, c.email)] || 3); }).length;
+      var h = '<div class="grid g3">' + stat(at.length, "ativos") + stat(alunos, "alunos vinculados") + stat(cheios, "no limite do plano", cheios ? "warn" : "") + "</div>";
+      h += '<div class="note">' + pagos + " com plano pago ou cortesia · " + (at.length ? (alunos / at.length).toFixed(1).replace(".", ",") : "0") + " alunos por treinador.</div>";
+      h += "<h2>Treinadores</h2>";
+      h += cs.length ? cs.slice().sort(function (a, b) { return (b.status === "em_analise") - (a.status === "em_analise"); }).map(function (c) { return coachCard(c, assin); }).join("") : vazio("Ninguém cadastrado ainda.");
+      h += "<h2>Liberar direto pelo e-mail</h2><div class=\"card\"><input id=\"co-email\" type=\"email\" inputmode=\"email\" autocapitalize=\"none\" placeholder=\"E-mail da pessoa (já com conta no Movo)\">" +
+        '<input id="co-nome" type="text" placeholder="Nome que os alunos vão ver">' + btn("Liberar treinador", "coach-liberar", {}, "pri") +
+        '<div class="note">Aprovar libera os convites; suspender congela os vínculos e avisa os alunos.</div></div>';
+      return h;
+    },
+    catalogo: function (d) {
+      var rev = d.rev || { pendentes: [], decididos: [], sem_revisao: 0 }, cat = d.cat || { grupos: [], exercicios: [] };
+      var grupos = cat.grupos || [], exs = (cat.exercicios || []).slice().sort(function (a, b) { return a.nome.localeCompare(b.nome); });
+      var glabel = {}; grupos.forEach(function (g) { glabel[g.key] = g.label; });
+      var h = '<div class="tools">' + btn("Rodar a revisão agora", "cat-rodar", {}) + '</div><div class="note">A revisão roda sozinha todo dia às 23h (Brasília). "Rodar agora" chama a IA uma vez (custo de centavos).</div>';
+      h += "<h2>Para decidir</h2>";
+      if (!rev.pendentes.length) h += vazio("Nada pendente. " + (rev.sem_revisao > 0 ? rev.sem_revisao + " nome(s) ainda não passaram pela revisão." : "Tudo revisado."));
+      rev.pendentes.forEach(function (r) {
+        var p = r.proposta || {}, ac = r.acao || "novo";
+        h += '<div class="card" data-rev="' + r.id + '"><div class="t"><b>' + esc(r.nome) + '</b> <span class="mut">· ' + r.qtd + "× · " + pl(r.usuarios, "pessoa", "pessoas") + "</span></div>";
+        if (r.motivo_ia) h += '<div class="note" style="margin:2px 0 8px">IA: ' + esc(r.motivo_ia) + "</div>";
+        h += '<select class="fi" data-f="acao"><option value="alias"' + (ac === "alias" ? " selected" : "") + '>Já existe: só vira outro nome</option><option value="novo"' + (ac === "novo" ? " selected" : "") + '>Exercício novo no catálogo</option><option value="ignorar"' + (ac === "ignorar" ? " selected" : "") + ">Não entra (ignorar)</option></select>";
+        h += '<div data-so="alias"' + (ac === "alias" ? "" : " hidden") + '><select class="fi" data-f="exercicio_id"><option value="">Escolha o exercício…</option>' +
+          exs.map(function (e) { return '<option value="' + esc(e.id) + '"' + (p.exercicio_id === e.id ? " selected" : "") + ">" + esc(e.nome) + " (" + esc(glabel[e.grupo_key] || e.grupo_key) + ")</option>"; }).join("") + "</select></div>";
+        h += '<div data-so="novo"' + (ac === "novo" ? "" : " hidden") + '><input class="fi" data-f="nome" placeholder="Nome no catálogo" value="' + esc(p.nome || r.nome) + '">' +
+          '<select class="fi" data-f="grupo_key"><option value="">Grupo…</option>' + grupos.map(function (g) { return '<option value="' + esc(g.key) + '"' + (p.grupo_key === g.key ? " selected" : "") + ">" + esc(g.label) + "</option>"; }).join("") + '<option value="__novo">+ Criar grupo novo</option></select>' +
+          '<input class="fi" data-f="grupo_novo" placeholder="Nome do grupo novo (se escolheu criar)" value="' + esc(p.grupo_novo || "") + '">' +
+          '<div style="display:flex;gap:8px"><input class="fi" data-f="series" type="number" min="1" placeholder="Séries" value="' + esc(p.series || "") + '"><input class="fi" data-f="repeticoes" placeholder="Reps (ex: 10-12)" value="' + esc(p.repeticoes || "") + '"></div>' +
+          '<input class="fi" data-f="descricao" placeholder="Descrição (opcional)" value="' + esc(p.descricao || "") + '"><input class="fi" data-f="video_url" placeholder="Link de vídeo verificado (opcional)" value="' + esc(p.video_url || "") + '"></div>';
+        h += '<input class="fi" data-f="comentario" placeholder="Comentário (a IA lê na próxima revisão)">';
+        h += '<div class="tools">' + btn("Decidir", "cat-decidir", { id: r.id }, "pri") + btn("Reprovar", "cat-reprovar", { id: r.id }) + "</div></div>";
+      });
+      if (rev.decididos.length) {
+        h += "<h2>Decididos recentes</h2><div class=\"card\">" + rev.decididos.map(function (r) {
+          return '<div class="row"><div class="t">' + (r.status === "aprovado" ? "✓ " : "✗ ") + esc(r.nome) + (r.comentario_admin ? ' <span class="mut">“' + esc(r.comentario_admin) + "”</span>" : "") + '</div><div class="v">' +
+            (r.status === "reprovado" ? btn("Reavaliar", "cat-reavaliar", { id: r.id }) : "<small>" + esc((r.proposta && r.proposta.nome) || "nome alternativo") + "</small>") + "</div></div>";
+        }).join("") + '</div><div class="note">Reprovado só volta se o nome for digitado o dobro de vezes, ou se você tocar em Reavaliar.</div>';
+      }
+      return h;
+    },
+    planos: function (d) {
+      var b = d.bill || {}, assin = d.assin || [];
+      var h = '<div class="grid">' + stat(b.visivel ? "visíveis" : "escondidos", "tela de planos", b.visivel ? "hi" : "") + stat(b.limites ? "valendo" : "desligados", "limites dos planos", b.limites ? "warn" : "") + "</div>";
+      h += '<div class="tools">' + btn(b.visivel ? "Esconder os planos" : "Mostrar os planos pra todos", "bill", { k: "visivel", v: b.visivel ? "0" : "1" }) +
+        btn(b.limites ? "Desligar os limites" : "Aplicar os limites", "bill", { k: "limites", v: b.limites ? "0" : "1" }, b.limites ? "" : "danger") + "</div>";
+      h += '<div class="note">Ligue os limites só depois de dar plano a quem já combinou e de ter o checkout pronto.</div>';
+      h += "<h2>Com plano pago, cortesia ou teste</h2>";
+      h += '<div class="card">' + (assin.length ? assin.map(function (a) {
+        return '<div class="row"><div class="t">' + esc(a.email) + '<div class="s">' + esc(planoNome(a.linha, a.plano)) + " · " + esc(a.status) + (a.origem === "manual" ? " · manual" : "") + (a.teste_ate ? " · teste até " + dia(a.teste_ate) : "") + '</div></div><div class="v">' +
+          btn("Tirar", "plano", { email: a.email, linha: a.linha, plano: "gratis", modo: "ativa" }) + "</div></div>";
+      }).join("") : '<div class="note">Ninguém com plano pago ainda.</div>') + "</div>";
+      h += '<h2>Dar plano</h2><div class="card"><input id="pl-email" type="email" inputmode="email" autocapitalize="none" placeholder="E-mail da pessoa">' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap"><select class="fi" id="pl-linha" style="flex:1"><option value="aluno">Aluno</option><option value="treinador">Treinador</option></select>' +
+        '<select class="fi" id="pl-plano" style="flex:1">' + PLANOS.aluno.map(function (p) { return '<option value="' + p.id + '">' + p.nome + "</option>"; }).join("") + "</select>" +
+        '<select class="fi" id="pl-modo" style="flex:1"><option value="ativa">Cortesia</option><option value="teste">Teste (14 dias)</option></select></div>' + btn("Dar plano", "plano-dar", {}, "pri") + "</div>";
+      return h;
+    },
+    ia: function (d) {
+      var c = d.ctl || {}, teto = +c.teto_usd || 0, hoje = +c.hoje_usd || 0, pct0 = teto > 0 ? Math.min(100, Math.round((hoje / teto) * 100)) : 0;
+      var est = !c.ativa ? "IA desligada para todos" : pct0 >= 100 ? "Teto de hoje atingido" : "IA ligada";
+      var h = '<div class="card"><div class="verdict ' + (!c.ativa || pct0 >= 70 ? "warn" : "ok") + '">' + est + '</div><div class="note">Hoje: ' + usd(hoje) + " de " + usd(teto) + " (" + (teto > 0 ? pct0 + "%" : "sem teto") + '). No teto, as pessoas veem "tente amanhã" (você continua podendo usar). O dia vira à meia-noite de Brasília.</div>' +
+        '<div class="tools">' + btn(c.ativa ? "Desligar a IA" : "Ligar a IA", "ia-ligar", { v: c.ativa ? "0" : "1", t: teto }, c.ativa ? "danger" : "pri") + btn("Mudar teto diário", "ia-teto", { a: c.ativa ? "1" : "0", t: teto }) + "</div></div>";
+      var k = (d.custo || [])[0] || {}, ch = +k.chamadas || 0;
+      h += '<h2>Gasto com IA (API da Anthropic)</h2><div class="grid">' + stat(usd(k.mes_usd), "este mês") + stat(usd(k.total_usd), "total") + "</div>";
+      h += '<div class="note">' + ch + " chamadas (" + (+k.falhas || 0) + " com falha, que também custam) · " + usd(ch ? k.total_usd / ch : 0) + " por chamada. Estimativa pelos preços configurados na função; o valor oficial está no Console da Anthropic." + (k.desde ? " Conta desde " + dia(k.desde) + "." : "") + "</div>";
+      var u = d.uso || [], noMes = u.reduce(function (t, x) { return t + (+x.no_mes); }, 0);
+      h += "<h2>Planos de corrida com IA · este mês</h2>";
+      h += '<div class="card">' + (u.length ? '<div class="note" style="margin-top:0">' + noMes + " no mês · " + u.reduce(function (t, x) { return t + (+x.total); }, 0) + " no total (limite: 3 por pessoa por mês)</div>" + u.slice(0, 20).map(function (x) {
+        return '<div class="row"><div class="t">' + esc(x.email) + '</div><div class="v' + (+x.no_mes >= 3 ? " warn" : "") + '">' + x.no_mes + "/3<small>" + x.total + " no total</small></div></div>";
+      }).join("") : '<div class="note">Ninguém gerou plano com IA ainda.</div>') + "</div>";
+      var todos = d.todos === true, f = d.feat || [];
+      h += "<h2>Experimento · Ajustar minha semana</h2><div class=\"card\"><div class=\"note\" style=\"margin-top:0\">" + (todos ? "Liberado pra todos." : "Só quem está na lista vê o recurso.") + " Quem conectou o Strava fica de fora, mesmo liberado.</div>" +
+        btn(todos ? "Voltar a liberar só a lista" : "Liberar pra todos", "feat-todos", { v: todos ? "0" : "1" }) +
+        f.map(function (x) { return '<div class="row"><div class="t">' + esc(x.email) + (x.tem_strava ? ' <span class="pill">Strava (bloqueado)</span>' : "") + '</div><div class="v">' + btn("Remover", "feat", { email: x.email, v: "0" }) + "</div></div>"; }).join("") +
+        '<input id="ft-email" type="email" inputmode="email" autocapitalize="none" placeholder="E-mail para liberar" style="margin-top:8px">' + btn("Liberar", "feat-add", {}, "pri") + "</div>";
+      return h;
+    },
+    desafios: function (d) {
+      var ativos = d.filter(function (c) { return c.status !== "encerrado"; }).length, cont = d.reduce(function (t, c) { return t + (+c.contestados || 0); }, 0), par = d.reduce(function (t, c) { return t + (+c.parados || 0); }, 0);
+      var h = '<div class="grid g3">' + stat(ativos, "ativos ou para começar") + stat(cont, "acertos contestados", cont ? "warn" : "") + stat(par, "acertos parados 14+ dias", par ? "warn" : "") + "</div>";
+      h += '<div class="note">Só leitura: o livro-caixa é imutável e o Movo não toca no dinheiro. Toque num desafio para ver quem deve a quem.</div><h2>Desafios</h2>';
+      h += d.length ? d.map(function (c) {
+        var premio = (+c.semana_valor || 0) + (+c.final_valor || 0) > 0;
+        return '<button type="button" class="card" data-act="ver-desafio" data-id="' + esc(c.id) + '" style="display:block;width:100%;text-align:left;font:inherit;color:inherit"><div class="t"><b>' + esc(c.nome) + "</b>" +
+          '<span class="pill' + (c.status === "andamento" ? " ok" : "") + '">' + (c.status === "andamento" ? "em andamento" : c.status === "antes" ? "vai começar" : "encerrado") + "</span>" + (premio ? '<span class="pill warn">prêmio</span>' : "") + (+c.contestados ? '<span class="pill warn">' + c.contestados + " contestado</span>" : "") + "</div>" +
+          '<div class="note" style="margin:4px 0 0">' + dia(c.inicio) + " a " + dia(c.fim) + " · " + pl(+c.pessoas, "pessoa", "pessoas") + " · criado por " + esc(c.criador || "?") + (c.lancamentos ? " · " + c.lancamentos + " lançamentos, " + brl(c.total_cents) + " · " + c.abertos + " em aberto" : "") + "</div></button>";
+      }).join("") : vazio("Nenhum desafio ainda.");
+      return h;
+    },
+    desafio: function (d) {
+      if (!d) return '<div class="err">Desafio não encontrado.</div>';
+      var h = '<div class="tools">' + btn("← Desafios", "ir", { tab: "desafios" }) + "</div><h2>" + esc(d.nome) + "</h2>";
+      h += '<div class="note">Começa em ' + dia(d.inicio) + " · " + d.semanas + " semanas" + (d.stakes && (d.stakes.semana || d.stakes.final) ? " · aposta: " + esc([d.stakes.semana, d.stakes.final].filter(Boolean).join(" / ")) : "") + "</div>";
+      h += "<h2>Participantes</h2><div class=\"card\">" + (d.pessoas || []).map(function (p) { return '<div class="row"><div class="t">' + esc(p.nome) + '</div><div class="v"><small>desde ' + dia(p.entrou) + "</small></div></div>"; }).join("") + "</div>";
+      h += "<h2>Livro-caixa</h2>";
+      var lv = d.livro || [];
+      h += lv.length ? '<div class="card">' + lv.map(function (l) {
+        var st = l.recebido ? "recebido" : l.perdoado ? "perdoado" : l.contestado ? "contestado" : l.pago ? "pago, falta confirmar" : "em aberto";
+        return '<div class="row"><div class="t">' + esc(l.de) + " → " + esc(l.para) + '<div class="s">' + (l.tipo === "final" ? "final" : "semana " + ((+l.semana || 0) + 1)) + " · " + dia(l.em) + (l.nota ? " · " + esc(l.nota) : "") + '</div></div><div class="v' + (l.contestado && !l.recebido ? " warn" : "") + '">' + brl(l.valor_cents) + "<small>" + st + "</small></div></div>";
+      }).join("") + "</div>" : vazio("Sem lançamentos (desafio sem prêmio em R$ ou nenhuma semana fechada ainda).");
+      return h;
+    },
+    recados: function (d) {
+      var h = '<div class="note" style="margin-top:0">O recado aparece num cartão no topo da aba Hoje de quem estiver no público escolhido, até a pessoa dispensar ou o prazo acabar. Só dentro do app: e-mail em massa fica para depois, com o custo combinado.</div>';
+      h += '<h2>Novo recado</h2><div class="card"><input id="rc-titulo" maxlength="80" placeholder="Título (até 80 letras)"><textarea id="rc-texto" class="fi" maxlength="400" rows="3" placeholder="Texto curto (até 400 letras)"></textarea>' +
+        '<div style="display:flex;gap:8px"><input id="rc-btxt" maxlength="30" placeholder="Botão (opcional)"><input id="rc-burl" placeholder="https://… (opcional)"></div>' +
+        '<select class="fi" id="rc-pub"><option value="todos">Todos</option><option value="inativos">Quem não abre o app há N dias</option><option value="treinadores">Treinadores ativos</option><option value="desafio_premio">Quem está em desafio com prêmio</option><option value="lista">E-mails escolhidos</option></select>' +
+        '<input id="rc-dias-in" type="number" min="1" value="14" placeholder="N dias sem abrir" hidden><textarea id="rc-lista" class="fi" rows="2" placeholder="E-mails separados por vírgula" hidden></textarea>' +
+        '<div style="display:flex;gap:8px;align-items:center"><span class="mut" style="white-space:nowrap">Fica no ar por</span><input id="rc-dias" type="number" min="1" max="60" value="7" style="margin:0"><span class="mut">dias</span></div>' +
+        '<div class="tools">' + btn("Ver quantos recebem", "rc-previa", {}) + btn("Publicar", "rc-salvar", {}, "pri") + '</div><div class="note" id="rc-nota"></div></div>';
+      h += "<h2>Recados</h2>";
+      h += d.length ? d.map(function (r) {
+        var vivo = r.ativo && new Date(r.valido_ate) > new Date();
+        return '<div class="card"><div class="t"><b>' + esc(r.titulo) + '</b><span class="pill' + (vivo ? " ok" : "") + '">' + (vivo ? "no ar" : "encerrado") + '</span></div><div class="note" style="margin:2px 0 6px">' + esc(dt(r.criado_em)) + " · até " + esc(dt(r.valido_ate)) + " · público: " + esc(r.publico) + (r.publico === "inativos" ? " (" + r.dias_inativo + " dias)" : "") + "</div>" +
+          '<div style="white-space:pre-wrap;overflow-wrap:anywhere">' + esc(r.texto) + "</div>" + (r.botao_txt ? '<div class="note">Botão: ' + esc(r.botao_txt) + " → " + esc(r.botao_url || "") + "</div>" : "") +
+          '<div class="note">' + r.viram + " viram · " + r.clicaram + " tocaram no botão · " + r.dispensaram + " dispensaram</div>" + (vivo ? '<div class="tools">' + btn("Encerrar", "rc-encerrar", { id: r.id }) + "</div>" : "") + "</div>";
+      }).join("") : vazio("Nenhum recado ainda.");
+      return h;
+    },
+    integracoes: function (d) {
+      var st = d.strava || [], lim = d.strava_limite || 10, n = st.length;
+      var h = "<h2>Strava</h2>" + '<div class="grid">' + stat(n + " de " + lim, "atletas conectados", n >= lim ? "warn" : n >= lim - 2 ? "warn" : "hi") + stat(lim - n, "vagas livres") + "</div>";
+      if (n >= lim - 2) h += '<div class="err" style="margin-top:10px">Perto do limite do Strava (' + lim + ' atletas no nível padrão). Ao passar disso, novas conexões falham: peça o aumento de capacidade no painel do desenvolvedor do Strava.</div>';
+      h += '<div class="card" style="margin-top:10px">' + (n ? st.map(function (s) {
+        var velho = !s.ultima_sync || Date.now() - new Date(s.ultima_sync).getTime() > 7 * 86400000;
+        return '<div class="row"><div class="t">' + esc(s.nome) + (s.nome !== s.email ? '<div class="s">' + esc(s.email) + "</div>" : "") + '</div><div class="v' + (velho ? " warn" : "") + '">' + esc(relIso(s.ultima_sync)) + "<small>última sincronização</small></div></div>";
+      }).join("") : '<div class="note">Ninguém conectado.</div>') + "</div>";
+      h += '<div class="note">Sincronização com mais de 7 dias aparece em amarelo: a pessoa pode ter parado de usar o Strava ou o acesso pode ter caído.</div>';
+      var NOMES = { pedido_treinador: "Pedido a treinador", relatorio: "Relatório compartilhado", convite: "Convite de desafio", amigo: "Aviso a amigo convidado" };
+      var linhas = function (o) { var ks = Object.keys(o || {}); return ks.length ? ks.map(function (k) { return '<div class="row"><div class="t">' + esc(NOMES[k] || k) + '</div><div class="v">' + o[k] + "</div></div>"; }).join("") : '<div class="note">Nenhum envio.</div>'; };
+      h += "<h2>E-mails · 7 dias</h2><div class=\"card\">" + linhas(d.avisos_7d) + linhas(d.convites_7d) + "</div>";
+      h += '<div class="note">' + (d.no_limite_dia ? "<b>" + d.no_limite_dia + "</b> vez(es) alguém bateu o limite de 15 e-mails por dia." : "Ninguém bateu o limite de 15 e-mails por dia.") + " Conta os envios registrados pelo app; se um e-mail não chegou, o motivo aparece no Resend › Logs.</div>";
+      return h;
+    },
+    saude: function (d) {
+      var s = d.s || {}, e24 = +s.erros_24h || 0, eAnt = +s.erros_24h_antes || 0, iaF = +s.ia_falhas_24h || 0, iaT = +s.ia_total_24h || 0, db = +s.banco_mb || 0;
+      var alerta = +s.erros_30min >= 10 || (+s.ia_falhas_1h >= 3 && +s.ia_falhas_1h / Math.max(1, +s.ia_total_1h) >= 0.5) || db >= 400;
+      var aviso = !alerta && (e24 > Math.max(10, eAnt * 2) || db >= 300);
+      var h = '<div class="card"><div class="verdict ' + (alerta || aviso ? "warn" : "ok") + '">' + (alerta ? "Atenção: algo fora do normal" : aviso ? "Vale ficar de olho" : "Tudo normal") + "</div>";
+      h += '<div class="grid g3" style="margin-top:8px">' + stat(e24, "erros em 24 h", "", eAnt ? "antes: " + eAnt : "") + stat(iaF + "/" + iaT, "IA com falha 24 h") + stat(db.toFixed(0), "MB de 500 no banco", db >= 300 ? "warn" : "") + "</div>";
+      if ((s.erros_top || []).length) h += '<div class="note">Mais comuns (24 h): ' + s.erros_top.map(function (t) { return esc(t.context) + " (" + t.n + "×)"; }).join(" · ") + "</div>";
+      h += '<div class="note">' + (+s.ativos_24h || 0) + " pessoas abriram o app em 24 h. Você recebe e-mail se houver pico de erros, a IA falhar muito, o gasto da IA chegar a 70% do teto ou o banco passar de 400 MB.</div></div>";
+      var v = d.versoes || [], tot = v.reduce(function (t, x) { return t + x.pessoas; }, 0);
+      h += "<h2>Versão em uso · quem abriu em 7 dias (" + tot + ")</h2><div class=\"card\">" + (v.length ? v.map(function (x) { return '<div class="row"><div class="t">' + esc(x.versao) + '</div><div class="v">' + x.pessoas + "</div></div>"; }).join("") : '<div class="note">Sem aberturas.</div>') + "</div>";
+      var lg = d.logins || [];
+      h += "<h2>Logins por conta · 7 dias</h2><div class=\"card\">" + (lg.length ? lg.map(function (u) {
+        var semSair = +u.logins - +u.logouts;
+        return '<div class="row"><div class="t">' + esc(u.email) + '</div><div class="v' + (semSair >= 3 ? " warn" : "") + '">' + u.logins + "<small>" + u.logouts + " saídas</small></div></div>";
+      }).join("") : '<div class="note">Nenhum login.</div>') + '</div><div class="note">Em amarelo: 3 ou mais logins sem tocar em "Sair", sinal de que a sessão está caindo sozinha.</div>';
+      return h;
+    },
+    registro: function (d) {
+      var h = '<div class="tools">' + seg("seg-registro", [7, 30, 90], params.registro, " dias") + "</div>";
+      h += '<div class="note">Tudo o que você muda pelo painel (ou pela conta de admin no app) fica gravado aqui e não pode ser apagado.</div>';
+      h += d.length ? '<div class="card">' + d.map(function (l) {
+        return '<div class="row"><div class="t">' + esc(regTexto(l)) + '<div class="s">' + esc(dt(l.criado_em)) + (l.alvo_email ? " · conta: " + esc(l.alvo_email) : "") + (l.admin_email ? " · por " + esc(l.admin_email) : "") + "</div></div></div>";
+      }).join("") + "</div>" : vazio("Nada registrado no período.");
+      return h;
+    },
+    conta: function (d) {
+      if (!d) return '<div class="tools">' + btn("← Contas", "ir", { tab: "contas" }) + '</div><div class="err">Conta não encontrada (pode ter sido apagada).</div>';
+      var u = d.uso || {}, ab = d.ultima_abertura || {}, og = d.origem || {};
+      var h = '<div class="tools">' + btn("← Contas", "ir", { tab: "contas" }) + "</div><h2>" + esc(d.nome || d.email) + "</h2>";
+      h += '<div class="card"><div class="row"><div class="t">E-mail</div><div class="v"><small>' + esc(d.email) + "</small></div></div>" +
+        '<div class="row"><div class="t">Cadastro</div><div class="v"><small>' + esc(dt(d.cadastro)) + (og.convite || og.src ? " · " + esc(og.convite || og.src) : "") + "</small></div></div>" +
+        '<div class="row"><div class="t">Última abertura</div><div class="v"><small>' + (ab.em ? esc(relIso(ab.em)) + " · " + esc(ab.versao || "?") + " · endereço " + esc(ab.site || "?") + (ab.instalado ? " · instalado" : "") : "nunca") + "</small></div></div>" +
+        '<div class="row"><div class="t">Acessos</div><div class="v"><small>' + (u.acessos_7d || 0) + " em 7 dias · " + (u.acessos_30d || 0) + " em 30</small></div></div>" +
+        '<div class="row"><div class="t">Dias com treino</div><div class="v"><small>' + (u.dias_ativos_7d || 0) + " em 7 dias · " + (u.dias_ativos_30d || 0) + " em 30</small></div></div>" +
+        '<div class="row"><div class="t">Configuração inicial</div><div class="v"><small>' + (u.fez_onboarding ? "feita" : "não fez") + "</small></div></div></div>";
+      h += "<h2>Vínculos</h2><div class=\"card\">";
+      h += '<div class="row"><div class="t">Plano</div><div class="v"><small>' + ((d.planos || []).length ? d.planos.map(function (p) { return esc(planoNome(p.linha, p.plano)) + " (" + esc(p.status) + ")"; }).join(", ") : "Grátis") + "</small></div></div>";
+      h += '<div class="row"><div class="t">Treinador</div><div class="v"><small>' + ((d.treinadores || []).length ? d.treinadores.map(function (t) { return esc(t.nome || "?") + " (" + esc(t.status) + ")"; }).join(", ") : "nenhum") + "</small></div></div>";
+      if (d.como_treinador) h += '<div class="row"><div class="t">É treinador</div><div class="v"><small>' + esc(d.como_treinador.status) + " · " + d.como_treinador.alunos + " alunos</small></div></div>";
+      h += '<div class="row"><div class="t">Strava</div><div class="v"><small>' + (d.strava ? "conectado · sync " + esc(relIso(d.strava.ultima_sync)) : "não") + "</small></div></div>";
+      h += '<div class="row"><div class="t">Desafios</div><div class="v"><small>' + ((d.desafios || []).length ? d.desafios.map(function (c) { return esc(c.nome); }).join(", ") : "nenhum") + "</small></div></div></div>";
+      if ((d.erros || []).length) h += "<h2>Erros recentes</h2><div class=\"card\">" + d.erros.map(function (e) { return '<div class="row"><div class="t"><b>' + esc(e.context) + "</b>" + (e.message ? " · " + esc(e.message) : "") + '<div class="s">' + esc(dt(e.created_at)) + "</div></div></div>"; }).join("") + "</div>";
+      if ((d.mensagens || []).length) h += "<h2>Mensagens que mandou</h2><div class=\"card\">" + d.mensagens.map(function (m) { return '<div class="row"><div class="t">' + esc(m.mensagem) + '<div class="s">' + esc(dt(m.created_at)) + " · " + esc(m.tipo) + "</div></div></div>"; }).join("") + "</div>";
+      if ((d.registro || []).length) h += "<h2>Mudanças feitas pelo admin</h2><div class=\"card\">" + d.registro.map(function (l) { return '<div class="row"><div class="t">' + esc(regTexto(l)) + '<div class="s">' + esc(dt(l.criado_em)) + "</div></div></div>"; }).join("") + "</div>";
+      h += '<h2>Ações</h2><div class="card"><div class="note" style="margin-top:0">Plano: use a aba Planos com o e-mail desta conta.</div><div class="tools">' + btn("Abrir em Planos", "conta-plano", { email: d.email }) +
+        btn("Baixar os dados (LGPD)", "conta-exportar", { u: d.id, email: d.email }) + (d.admin ? "" : btn("Apagar a conta a pedido", "conta-apagar", { u: d.id }, "danger")) + "</div>" +
+        '<div class="note">A ficha mostra só contagens e vínculos: treinos, cargas e notas da pessoa não aparecem aqui. Exportar e apagar ficam no Registro.</div></div>';
+      return h;
+    }
+  };
+
+  // ---------- pendências: contador nas abas e no ícone do painel ----------
+  var pend = {};
+  var BADGE = { pend: "total", treinadores: "treinadores", catalogo: "catalogo", relatos: "relatos", suporte: "feedback", desafios: "contestacoes" };
+  function carregarPendencias() {
+    sb.rpc("admin_m_pendencias").then(function (r) {
+      if (r.error || !r.data) return;
+      pend = r.data; desenharAbas();
+      try { if (navigator.setAppBadge) { if (pend.total) navigator.setAppBadge(pend.total); else navigator.clearAppBadge(); } } catch (e) {}
+    });
+  }
+
+  // ---------- ações dos botões (data-act) ----------
+  function rpcOk(nome, args, msgOk) {
+    return sb.rpc(nome, args).then(function (r) {
+      if (r.error) { alert("Não consegui salvar: " + r.error.message); return false; }
+      if (msgOk) aviso(msgOk);
+      return r.data === undefined ? true : r.data;
+    });
+  }
+  function aviso(m) { var t = $("toast"); t.textContent = m; t.hidden = false; clearTimeout(aviso.t); aviso.t = setTimeout(function () { t.hidden = true; }, 2600); }
+  function recarregar(ids) { (ids || [atual]).forEach(function (k) { delete cache[k]; }); delete cache.pend; carregarPendencias(); open(atual, true); }
+  function baixarJson(obj, nome) {
+    var url = URL.createObjectURL(new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" }));
+    var a = document.createElement("a"); a.href = url; a.download = nome; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+  }
+  function lerCard(card) { var o = {}; Array.prototype.forEach.call(card.querySelectorAll("[data-f]"), function (el) { o[el.getAttribute("data-f")] = el.value; }); return o; }
+  var ACOES = {
+    ir: function (b) { open(b.getAttribute("data-tab")); },
+    "ver-desafio": function (b) { params.desafio = b.getAttribute("data-id"); delete cache.desafio; open("desafio"); },
+    "ver-conta": function (b) { params.conta = b.getAttribute("data-id"); delete cache.conta; open("conta"); },
+    coach: function (b) {
+      var s = b.getAttribute("data-s"), motivo = null;
+      if (s === "suspenso") { motivo = prompt("Motivo (opcional, o aluno não vê). Suspender congela os vínculos e avisa os alunos.", ""); if (motivo === null) return; }
+      return rpcOk("admin_coach_decide", { p_user: b.getAttribute("data-u"), p_status: s, p_motivo: motivo || null }, s === "ativo" ? "Treinador aprovado" : "Treinador suspenso").then(function (ok) { if (ok) recarregar(["treinadores", "pend"]); });
+    },
+    "coach-liberar": function () {
+      var em = $("co-email").value.trim(); if (!em) return aviso("Digite o e-mail");
+      return sb.rpc("admin_set_coach", { p_email: em, p_nome: $("co-nome").value.trim(), p_liberado: true }).then(function (r) {
+        if (r.error) return alert(/usuario_nao_encontrado/.test(r.error.message) ? "Esse e-mail não tem conta no Movo" : "Não consegui: " + r.error.message);
+        aviso("Treinador liberado"); recarregar();
+      });
+    },
+    fb: function (b) { return rpcOk("admin_feedback_lido", { p_id: +b.getAttribute("data-id"), p_lido: b.getAttribute("data-v") === "1" }).then(function (ok) { if (ok) recarregar(["suporte", "pend"]); }); },
+    prova: function (b) { return rpcOk("admin_set_race_oculta", { p_id: +b.getAttribute("data-id"), p_oculta: b.getAttribute("data-v") === "1" }, b.getAttribute("data-v") === "1" ? "Prova escondida de todos" : "Prova visível de novo").then(function (ok) { if (ok) recarregar(); }); },
+    bill: function (b) {
+      var k = b.getAttribute("data-k"), v = b.getAttribute("data-v") === "1";
+      if (v && k === "visivel" && !confirm("Mostrar a tela de planos e preços pra todos os usuários? Nada é cobrado.")) return;
+      if (v && k === "limites" && !confirm("Aplicar os limites dos planos agora? Quem está no grátis passa a ter 2 usos de IA por mês em cada recurso e treinador grátis só 3 alunos.")) return;
+      return rpcOk("admin_billing_set", { p_chave: k, p_on: v }, "Salvo").then(function (ok) { if (ok) recarregar(); });
+    },
+    plano: function (b, f) {
+      f = f || { email: b.getAttribute("data-email"), linha: b.getAttribute("data-linha"), plano: b.getAttribute("data-plano"), modo: b.getAttribute("data-modo") };
+      if (!f.email) return aviso("Digite o e-mail");
+      if (f.plano === "gratis" && !confirm("Voltar " + f.email + " para o grátis?")) return;
+      return sb.rpc("admin_plan_set", { p_email: f.email, p_linha: f.linha, p_plano: f.plano, p_ciclo: "mensal", p_status: f.modo === "teste" ? "teste" : "ativa", p_dias: f.modo === "teste" ? 14 : null }).then(function (r) {
+        if (r.error) return alert("Não consegui salvar: " + r.error.message);
+        if (r.data === "usuario_nao_encontrado") return alert("Ninguém com esse e-mail");
+        aviso(f.plano === "gratis" ? "Voltou pro grátis" : "Plano dado"); recarregar();
+      });
+    },
+    "plano-dar": function () { return ACOES.plano(null, { email: $("pl-email").value.trim(), linha: $("pl-linha").value, plano: $("pl-plano").value, modo: $("pl-modo").value }); },
+    "ia-ligar": function (b) {
+      var v = b.getAttribute("data-v") === "1";
+      if (!v && !confirm("Desligar a IA para todos os usuários agora?")) return;
+      return rpcOk("admin_ai_definir", { p_ativa: v, p_teto: +b.getAttribute("data-t") }, v ? "IA ligada" : "IA desligada para todos").then(function (ok) { if (ok) recarregar(); });
+    },
+    "ia-teto": function (b) {
+      var x = prompt("Teto diário em US$ (0 = sem teto):", b.getAttribute("data-t")); if (x == null) return;
+      var n = Number(String(x).replace(",", ".")); if (!isFinite(n) || n < 0) return alert("Valor inválido");
+      return rpcOk("admin_ai_definir", { p_ativa: b.getAttribute("data-a") === "1", p_teto: n }, "Teto salvo").then(function (ok) { if (ok) recarregar(); });
+    },
+    "feat-todos": function (b) {
+      var v = b.getAttribute("data-v") === "1"; if (v && !confirm("Liberar o ajuste da semana pra todos os usuários (sem Strava)?")) return;
+      return rpcOk("admin_feature_todos_set", { p_feature: "ajuste_semana", p_on: v }, "Salvo").then(function (ok) { if (ok) recarregar(); });
+    },
+    feat: function (b, em, v) {
+      em = em || b.getAttribute("data-email"); v = v === undefined ? b.getAttribute("data-v") === "1" : v;
+      return sb.rpc("admin_feature_set", { p_email: em, p_feature: "ajuste_semana", p_on: v }).then(function (r) {
+        if (r.error) return alert("Não consegui salvar: " + r.error.message);
+        if (r.data === "usuario_nao_encontrado") return alert("Ninguém com esse e-mail");
+        aviso(v ? "Liberado" : "Removido"); recarregar();
+      });
+    },
+    "feat-add": function () { var em = $("ft-email").value.trim(); if (em) return ACOES.feat(null, em, true); },
+    "cat-rodar": function (b) {
+      b.disabled = true; b.textContent = "Revisando…";
+      return sb.auth.getSession().then(function (s) {
+        return fetch(SB_URL + "/functions/v1/revisar-catalogo", { method: "POST", headers: { Authorization: "Bearer " + s.data.session.access_token, apikey: SB_KEY, "Content-Type": "application/json" }, body: JSON.stringify({ origem: "admin" }) });
+      }).then(function (resp) { return resp.json().catch(function () { return {}; }).then(function (j) { aviso(!resp.ok ? (j.error || "A revisão falhou") : j.novas ? j.novas + " sugestão(ões) nova(s)" : "Nada novo pra revisar"); }); })
+        .catch(function () { aviso("A revisão falhou"); }).then(function () { recarregar(["catalogo", "pend"]); });
+    },
+    "cat-decidir": function (b) {
+      var card = b.closest("[data-rev]"), f = lerCard(card), id = +b.getAttribute("data-id");
+      if (f.acao === "ignorar") return ACOES["cat-reprovar"](b);
+      var p = { acao: f.acao };
+      if (f.acao === "alias") { if (!f.exercicio_id) return aviso("Escolha o exercício"); p.exercicio_id = f.exercicio_id; }
+      else {
+        if (!f.nome.trim()) return aviso("Dê um nome");
+        if (f.grupo_key === "__novo" || (!f.grupo_key && f.grupo_novo.trim())) { if (!f.grupo_novo.trim()) return aviso("Dê um nome ao grupo novo"); p.grupo_novo = f.grupo_novo.trim(); }
+        else if (f.grupo_key) p.grupo_key = f.grupo_key; else return aviso("Escolha o grupo");
+        p.nome = f.nome.trim(); p.series = f.series; p.repeticoes = f.repeticoes; p.descricao = f.descricao; p.video_url = f.video_url;
+      }
+      return sb.rpc("admin_revisao_decidir", { p_id: id, p_decisao: "aprovar", p_comentario: f.comentario || null, p_proposta: p }).then(function (r) {
+        if (r.error || !r.data || !r.data.ok) return alert("Não deu: " + ((r.error && r.error.message) || "erro"));
+        aviso("Aprovado: entra no catálogo de todos na próxima abertura do app"); recarregar(["catalogo", "pend"]);
+      });
+    },
+    "cat-reprovar": function (b) {
+      var card = b.closest("[data-rev]"), f = lerCard(card);
+      return sb.rpc("admin_revisao_decidir", { p_id: +b.getAttribute("data-id"), p_decisao: "reprovar", p_comentario: f.comentario || null, p_proposta: null }).then(function (r) {
+        if (r.error || !r.data || !r.data.ok) return alert("Não deu: " + ((r.error && r.error.message) || "erro"));
+        aviso("Reprovado"); recarregar(["catalogo", "pend"]);
+      });
+    },
+    "cat-reavaliar": function (b) { return rpcOk("admin_revisao_reavaliar", { p_id: +b.getAttribute("data-id") }, "Volta pra fila na próxima revisão").then(function (ok) { if (ok) recarregar(); }); },
+    "rc-previa": function () {
+      var pub = $("rc-pub").value;
+      return emailsParaIds(pub).then(function (lista) {
+        if (lista === false) return;
+        return sb.rpc("admin_m_recado_previa", { p_publico: pub, p_dias: +$("rc-dias-in").value || 14, p_lista: lista }).then(function (r) {
+          $("rc-nota").textContent = r.error ? "Não consegui calcular: " + r.error.message : pl(r.data, "pessoa recebe", "pessoas recebem") + " (as que abrirem o app no período).";
+        });
+      });
+    },
+    "rc-salvar": function () {
+      var t = $("rc-titulo").value.trim(), x = $("rc-texto").value.trim(), bt = $("rc-btxt").value.trim(), bu = $("rc-burl").value.trim(), pub = $("rc-pub").value;
+      if (!t || !x) return aviso("Preencha título e texto");
+      if (bt && !/^https:\/\//.test(bu)) return aviso("O link do botão precisa começar com https://");
+      return emailsParaIds(pub).then(function (lista) {
+        if (lista === false) return;
+        return sb.rpc("admin_m_recado_previa", { p_publico: pub, p_dias: +$("rc-dias-in").value || 14, p_lista: lista }).then(function (pv) {
+          if (!confirm("Publicar para " + (pv.error ? "o público escolhido" : pl(pv.data, "pessoa", "pessoas")) + "?\n\n" + t + "\n" + x)) return;
+          return rpcOk("admin_m_recado_salvar", { p: { titulo: t, texto: x, botao_txt: bt || null, botao_url: bt ? bu : null, publico: pub, dias_inativo: +$("rc-dias-in").value || 14, lista: lista, dias: +$("rc-dias").value || 7 } }, "Recado publicado").then(function (ok) { if (ok) recarregar(); });
+        });
+      });
+    },
+    "rc-encerrar": function (b) { if (!confirm("Tirar este recado do ar?")) return; return rpcOk("admin_m_recado_encerrar", { p_id: +b.getAttribute("data-id") }, "Recado encerrado").then(function (ok) { if (ok) recarregar(); }); },
+    "conta-plano": function (b) { open("planos"); setTimeout(function () { var i = $("pl-email"); if (i) i.value = b.getAttribute("data-email"); }, 600); },
+    "conta-exportar": function (b) {
+      if (!confirm("Baixar os dados de " + b.getAttribute("data-email") + "? Use só a pedido da pessoa (LGPD). Fica no Registro.")) return;
+      return rpcOk("admin_m_conta_exportar", { p_user: b.getAttribute("data-u") }).then(function (d) { if (d) { baixarJson(d, "movo-dados-" + b.getAttribute("data-email") + ".json"); aviso("Arquivo baixado"); } });
+    },
+    "conta-apagar": function (b) {
+      var em = prompt("Apagar a conta é definitivo: treinos, desafios, amigos e Strava somem. Use só a pedido da pessoa.\n\nPara confirmar, digite o e-mail da conta:");
+      if (!em) return;
+      return sb.rpc("admin_m_conta_apagar", { p_user: b.getAttribute("data-u"), p_email: em.trim() }).then(function (r) {
+        if (r.error) return alert(/email_nao_confere/.test(r.error.message) ? "O e-mail digitado não confere. Nada foi apagado." : "Não consegui: " + r.error.message);
+        aviso("Conta apagada"); delete cache.contas; open("contas", true);
+      });
+    }
+  };
+  // Público "lista": e-mails -> ids, usando a lista de contas que o painel já carrega.
+  function emailsParaIds(pub) {
+    if (pub !== "lista") return Promise.resolve(null);
+    var ems = $("rc-lista").value.split(/[\s,;]+/).map(function (s) { return s.trim().toLowerCase(); }).filter(Boolean);
+    if (!ems.length) { aviso("Digite ao menos um e-mail"); return Promise.resolve(false); }
+    return (cache.contas ? Promise.resolve({ data: cache.contas.data }) : sb.rpc("admin_m_contas")).then(function (r) {
+      var mapa = {}; (r.data || []).forEach(function (u) { mapa[String(u.email || "").toLowerCase()] = u.id; });
+      var fora = ems.filter(function (e) { return !mapa[e]; });
+      if (fora.length) { alert("Sem conta no Movo: " + fora.join(", ")); return false; }
+      return ems.map(function (e) { return mapa[e]; });
+    });
+  }
+  function ligarOps(id) {
+    var pubSel = $("rc-pub");
+    if (pubSel) pubSel.onchange = function () { $("rc-dias-in").hidden = this.value !== "inativos"; $("rc-lista").hidden = this.value !== "lista"; };
+    var lin = $("pl-linha");
+    if (lin) lin.onchange = function () { $("pl-plano").innerHTML = PLANOS[this.value].map(function (p) { return '<option value="' + p.id + '">' + p.nome + "</option>"; }).join(""); };
+    Array.prototype.forEach.call(document.querySelectorAll("[data-rev] [data-f=acao]"), function (s) {
+      s.onchange = function () { var c = s.closest("[data-rev]"); Array.prototype.forEach.call(c.querySelectorAll("[data-so]"), function (x) { x.hidden = x.getAttribute("data-so") !== s.value; }); };
+    });
+  }
+  function cliqueAcao(e) {
+    var b = e.target.closest("[data-act]"); if (!b || b.disabled) return;
+    var f = ACOES[b.getAttribute("data-act")]; if (!f) return;
+    var p = f(b);
+    if (p && p.then && b.tagName === "BUTTON" && b.getAttribute("data-act") !== "cat-rodar") { b.disabled = true; p.then(function () { b.disabled = false; }, function () { b.disabled = false; }); }
+  }
+
+
   function metaHtml(ts) { return '<div class="meta"><span id="upd" data-ts="' + ts + '">Atualizado ' + ago(ts) + "</span></div>"; }
   function paint(id, d, ts) {
     $("main").classList.remove("busy");
     var h;
-    try { h = metaHtml(ts) + VIEW[id](d); }
+    try { h = metaHtml(ts) + (VIEW[id] || OPS_VIEW[id])(d); }
     catch (e) { h = '<div class="err">Não consegui montar esta tela com os dados recebidos.</div><p><button class="ib" id="tentar" type="button">Tentar de novo</button></p>'; }
     $("main").innerHTML = h;
     var t = $("tentar"); if (t) t.onclick = function () { open(id, true); };
     ligarGraficos();
+    ligarOps(id);
     if (id === "contas") ligarContas(d);
     var rv = $("rv-claude");
     if (rv) rv.onclick = function () {
@@ -477,12 +987,13 @@ input:focus{outline:2px solid var(--ac);outline-offset:0}
       (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () { aviso("Pedido copiado. Cole no chat do projeto que abriu."); }, function () { aviso("Não consegui copiar. Cole isto no chat do projeto: " + txt); });
       window.open("https://claude.ai/code/project/chan_01Wmq9AvvQbE1ejrYfdReouZ", "_blank", "noopener");
     };
-    $("main").onclick = id !== "relatos" ? null : function (e) {
+    $("main").onclick = function (e) {
+      cliqueAcao(e);
       var b = e.target.closest("[data-lido]"); if (!b || b.disabled) return;
       b.disabled = true;
       sb.rpc("admin_m_relato_lido", { p_id: +b.getAttribute("data-lido"), p_lido: b.getAttribute("data-v") === "1" }).then(function (r) {
         if (r.error) { b.disabled = false; b.textContent = "Não consegui salvar"; return; }
-        delete cache.relatos; open("relatos", true);
+        delete cache.relatos; carregarPendencias(); open("relatos", true);
       });
     };
     Array.prototype.forEach.call(document.querySelectorAll(".seg"), function (sg) {
@@ -511,10 +1022,12 @@ input:focus{outline:2px solid var(--ac);outline-offset:0}
   }
 
   function open(id, force) {
-    atual = id; lsSet("movo-admin-tab", id);
-    try { history.replaceState(null, "", "#" + id); } catch (e) {}
+    atual = id;
+    if (!DETALHE[id]) { lsSet("movo-admin-tab", id); try { history.replaceState(null, "", "#" + id); } catch (e) {} }
+    var aba = abaDe(id);
+    if (aba && aba.g !== grupo) { grupo = aba.g; desenharAbas(); }
     Array.prototype.forEach.call($("tabs").children, function (b) {
-      var on = b.getAttribute("data-id") === id;
+      var on = b.getAttribute("data-id") === (DETALHE[id] || id);
       b.setAttribute("aria-selected", String(on));
       if (on && b.scrollIntoView) b.scrollIntoView({ inline: "center", block: "nearest" });
     });
@@ -550,15 +1063,31 @@ input:focus{outline:2px solid var(--ac);outline-offset:0}
     $("f1").hidden = false; $("f2").hidden = true; $("lmsg").textContent = "Acesso restrito. Entre com o seu e-mail de admin.";
     try { var pend = JSON.parse(lsGet("movo-admin-pend") || "null"); if (pend && Date.now() - pend.ts < 15 * 60 * 1000) { $("email").value = pend.email; passoCodigo(pend.email); } } catch (e) {}
   }
+  function desenharAbas() {
+    Array.prototype.forEach.call($("grp").children, function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-g") === grupo)); });
+    var sel = DETALHE[atual] || atual;
+    $("tabs").innerHTML = TABS.filter(function (t) { return t.g === grupo; }).map(function (t) {
+      var n = BADGE[t.id] ? +pend[BADGE[t.id]] || 0 : 0;
+      return '<button class="tab" role="tab" type="button" data-id="' + t.id + '" aria-selected="' + (t.id === sel) + '">' + t.t + (n ? '<span class="bd">' + n + "</span>" : "") + "</button>";
+    }).join("");
+    var opBtn = $("grp").children[0]; opBtn.textContent = "Operação" + (pend.total ? " (" + pend.total + ")" : "");
+  }
   function mostrarApp() {
     $("login").hidden = true; $("app").hidden = false; lsSet("movo-admin-pend", null);
-    if (!$("tabs").children.length) {
-      $("tabs").innerHTML = TABS.map(function (t) { return '<button class="tab" role="tab" type="button" data-id="' + t.id + '" aria-selected="false">' + t.t + "</button>"; }).join("");
+    if (!mostrarApp.ligado) {
+      mostrarApp.ligado = true;
       $("tabs").addEventListener("click", function (e) { var b = e.target.closest(".tab"); if (b) open(b.getAttribute("data-id")); });
+      $("grp").addEventListener("click", function (e) {
+        var b = e.target.closest("button"); if (!b || b.getAttribute("data-g") === grupo) return;
+        grupo = b.getAttribute("data-g"); desenharAbas();
+        open(TABS.filter(function (t) { return t.g === grupo; })[0].id);
+      });
     }
+    carregarPendencias();
     $("foot-info").textContent = "Dados de São Paulo (UTC−3) · sem você e contas de teste";
     var h = (location.hash || "").slice(1), ini = lsGet("movo-admin-tab");
-    var id = TABS.some(function (t) { return t.id === h; }) ? h : TABS.some(function (t) { return t.id === ini; }) ? ini : "geral";
+    var id = TABS.some(function (t) { return t.id === h; }) ? h : TABS.some(function (t) { return t.id === ini; }) ? ini : "pend";
+    grupo = abaDe(id).g; desenharAbas();
     open(id);
   }
   sb.auth.onAuthStateChange(function (ev) { if (ev === "SIGNED_OUT") { cache = {}; mostrarLogin(); } });
