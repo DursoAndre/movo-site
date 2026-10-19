@@ -255,7 +255,7 @@ textarea.fi{resize:vertical;min-height:70px}
   // ---------- abas (cada uma só carrega quando aberta) ----------
   // g: "op" = Operação (gestão), "met" = Métricas. "conta" e "desafio" são telas de detalhe, sem aba própria.
   var TABS = [
-    { id: "pend", t: "Pendências", g: "op" }, { id: "contas", t: "Contas", g: "op" }, { id: "relatos", t: "Relatos", g: "op" }, { id: "suporte", t: "Suporte", g: "op" },
+    { id: "pend", t: "Pendências", g: "op" }, { id: "contas", t: "Contas", g: "op" }, { id: "relatos", t: "Mensagens", g: "op" }, { id: "suporte", t: "Suporte", g: "op" },
     { id: "treinadores", t: "Treinadores", g: "op" }, { id: "catalogo", t: "Catálogo", g: "op" }, { id: "planos", t: "Planos", g: "op" }, { id: "ia", t: "IA", g: "op" },
     { id: "desafios", t: "Desafios", g: "op" }, { id: "recados", t: "Recados", g: "op" }, { id: "integracoes", t: "Integrações", g: "op" }, { id: "saude", t: "Saúde", g: "op" }, { id: "registro", t: "Registro", g: "op" },
     { id: "geral", t: "Visão geral", g: "met" }, { id: "ret", t: "Retenção", g: "met" }, { id: "funil", t: "Funil", g: "met" }, { id: "ativ", t: "Ativação", g: "met" },
@@ -265,7 +265,8 @@ textarea.fi{resize:vertical;min-height:70px}
   function abaDe(id) { return TABS.filter(function (t) { return t.id === (DETALHE[id] || id); })[0]; }
   var grupo = "op";
   var cache = {};
-  var params = { uso: 30, conv: 30, dom: 14, relatos: 30, registro: 30, base: "abriram", ui: false, cOrd: "cadastro", cDir: "desc", cQ: "" };
+  var MSG_TIPOS = [["problema", "🐞 Problema"], ["ideia", "💡 Ideia"], ["elogio", "👍 Elogio"], ["outro", "💬 Outro"]];
+  var params = { relTipo: "", uso: 30, conv: 30, dom: 14, relatos: 30, registro: 30, base: "abriram", ui: false, cOrd: "cadastro", cDir: "desc", cQ: "" };
   var atual = null, reqSeq = 0;
 
   function call(tab) {
@@ -385,28 +386,34 @@ textarea.fi{resize:vertical;min-height:70px}
       return h;
     },
     relatos: function (d) {
-      var rel = d.relatos || [], novos = rel.filter(function (r) { return !r.lido; }).length;
-      var semRev = rel.filter(function (r) { return !r.revisado_em; }).length;
+      var todas = d.relatos || [], novos = todas.filter(function (r) { return !r.lido; }).length;
+      var rel = params.relTipo ? todas.filter(function (r) { return (r.tipo || "outro") === params.relTipo; }) : todas;
+      var probs = todas.filter(function (r) { return r.tipo === "problema"; }), semRev = probs.filter(function (r) { return !r.revisado_em; }).length;
       var h = '<div class="tools">' + seg("seg-relatos", [7, 30, 90], params.relatos, " dias") + "</div>";
-      h += '<div class="grid g3" style="margin-top:10px">' + stat(rel.length, "relatos") + stat(novos, "não lidos", novos ? "warn" : "") + stat(semRev, "sem revisão do Claude") + "</div>";
-      var abertos = rel.filter(function (r) { return !r.lido; });
-      if (abertos.length) h += '<div class="tools"><button class="ib" id="rv-claude" type="button" style="color:var(--fg)">Revisar ' + pl(abertos.length, "relato aberto", "relatos abertos") + ' com o Claude</button></div>' +
+      h += '<div class="seg" role="group" aria-label="Categoria" style="margin-top:8px">' + [["", "Todas"]].concat(MSG_TIPOS).map(function (t) {
+        var n = t[0] ? todas.filter(function (r) { return (r.tipo || "outro") === t[0]; }).length : todas.length;
+        return '<button type="button" data-tp="' + t[0] + '" aria-pressed="' + ((params.relTipo || "") === t[0]) + '">' + t[1] + " " + n + "</button>";
+      }).join("") + "</div>";
+      h += '<div class="grid g3" style="margin-top:10px">' + stat(todas.length, "mensagens") + stat(novos, "não lidas", novos ? "warn" : "") + stat(semRev, "problemas sem revisão do Claude") + "</div>";
+      var abertos = probs.filter(function (r) { return !r.lido; });
+      if (abertos.length) h += '<div class="tools"><button class="ib" id="rv-claude" type="button" style="color:var(--fg)">Revisar ' + pl(abertos.length, "problema aberto", "problemas abertos") + ' com o Claude</button></div>' +
         '<div class="note" id="rv-nota">Copia um pedido pronto e abre o projeto do Movo no Claude: é só colar no chat. Só gasta quando você usar.</div>';
-      h += "<h2>Relatos de problema</h2>";
-      if (!rel.length) h += '<div class="card"><div class="note">Nenhum relato no período.</div></div>';
+      h += "<h2>Fale com a gente</h2>";
+      if (!rel.length) h += '<div class="card"><div class="note">Nenhuma mensagem no período.</div></div>';
       rel.forEach(function (r) {
-        var cx = r.contexto || {}, orig = r.origem === "tela_quebrou" ? "tela quebrou" : r.origem === "erro" ? "erro no app" : "pelo menu";
+        var cx = r.contexto || {}, tp = MSG_TIPOS.filter(function (t) { return t[0] === (r.tipo || "outro"); })[0] || [r.tipo, r.tipo];
+        var orig = r.origem === "tela_quebrou" ? "veio de erro: tela quebrou" : r.origem === "erro" ? "veio de erro" : "";
         h += '<div class="card"' + (r.lido ? "" : ' style="border-left:3px solid var(--ac)"') + ">";
-        h += '<div class="t"><b>' + esc(r.nome || r.email || "(sem conta)") + "</b>" + '<span class="pill' + (r.origem === "tela_quebrou" ? " warn" : "") + '">' + esc(orig) + "</span>" + (r.lido ? "" : '<span class="pill ok">novo</span>') + "</div>";
+        h += '<div class="t"><b>' + esc(r.nome || r.email || "(sem conta)") + "</b>" + '<span class="pill">' + esc(tp[1]) + "</span>" + (orig ? '<span class="pill warn">' + esc(orig) + "</span>" : "") + (r.lido ? "" : '<span class="pill ok">novo</span>') + "</div>";
         h += '<div class="note" style="margin:2px 0 8px">' + esc(dt(r.criado)) + " · " + esc(r.versao || "?") + (cx.aba ? " · " + esc(cx.aba) : "") + (cx.instalado ? " · instalado" : "") + (r.nome && r.email ? " · " + esc(r.email) : "") + (r.contato ? "" : " · não quer resposta") + "</div>";
         h += '<div style="white-space:pre-wrap;overflow-wrap:anywhere">' + esc(r.mensagem) + "</div>";
         if (r.prints && r.prints.length) h += '<div class="rp" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">' + r.prints.map(function (pt) {
           return '<a data-print="' + esc(pt) + '" target="_blank" rel="noopener" style="display:block;width:88px;height:88px;border-radius:8px;border:1px solid var(--line);background:var(--card2);overflow:hidden"></a>';
         }).join("") + "</div>";
         if (r.revisao) h += '<div style="margin-top:10px;padding:8px 10px;border-left:3px solid var(--new);background:var(--card2);border-radius:8px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px"><b>Revisão do Claude</b> <span class="mut">' + esc(dt(r.revisado_em)) + "</span>\n" + esc(r.revisao) + "</div>";
-        else h += '<div class="note">Aguardando revisão do Claude (roda de hora em hora).</div>';
+        else if (r.tipo === "problema") h += '<div class="note">Sem revisão do Claude ainda.</div>';
         if (r.contexto) h += '<details style="margin-top:8px"><summary class="mut" style="cursor:pointer;min-height:32px">Detalhes técnicos</summary><pre style="white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;background:var(--card2);border-radius:8px;padding:8px;max-height:320px;overflow:auto">' + esc(JSON.stringify(r.contexto, null, 1)) + "</pre></details>";
-        h += '<div class="tools">' + (r.email && r.contato ? '<a class="ib" style="display:inline-flex;align-items:center;text-decoration:none" href="mailto:' + esc(r.email) + "?subject=" + encodeURIComponent("Sobre o problema que você relatou no Movo") + '">Responder</a>' : "") +
+        h += '<div class="tools">' + (r.email && r.contato ? '<a class="ib" style="display:inline-flex;align-items:center;text-decoration:none" href="mailto:' + esc(r.email) + "?subject=" + encodeURIComponent("Sobre sua mensagem no Movo") + '">Responder</a>' : "") +
           '<button class="ib" type="button" data-lido="' + r.id + '" data-v="' + (r.lido ? "0" : "1") + '">' + (r.lido ? "Marcar como novo" : "Marcar como lido") + "</button></div></div>";
       });
       h += "<h2>Erros registrados automaticamente</h2>";
@@ -532,8 +539,8 @@ textarea.fi{resize:vertical;min-height:70px}
   }
 
   var OPS_CALL = {
-    pend: function () { return juntar(["p", "coaches", "fb", "rev"], [sb.rpc("admin_m_pendencias"), sb.rpc("admin_coach_list"), sb.rpc("admin_feedback_list", { limit_n: 100 }), sb.rpc("admin_revisao_lista")]); },
-    suporte: function () { return juntar(["fb", "erros", "provas", "gaps"], [sb.rpc("admin_feedback_list", { limit_n: 100 }), sb.rpc("admin_client_errors", { limit_n: 50 }), sb.rpc("admin_shared_races"), sb.rpc("admin_exercise_gaps", { dias: 90 })]); },
+    pend: function () { return juntar(["p", "coaches", "rev"], [sb.rpc("admin_m_pendencias"), sb.rpc("admin_coach_list"), sb.rpc("admin_revisao_lista")]); },
+    suporte: function () { return juntar(["erros", "provas", "gaps"], [sb.rpc("admin_client_errors", { limit_n: 50 }), sb.rpc("admin_shared_races"), sb.rpc("admin_exercise_gaps", { dias: 90 })]); },
     treinadores: function () { return juntar(["coaches", "assin"], [sb.rpc("admin_coach_list"), sb.rpc("admin_plan_list")]); },
     catalogo: function () { return juntar(["rev", "cat"], [sb.rpc("admin_revisao_lista"), sb.rpc("catalogo_completo")]); },
     planos: function () { return juntar(["bill", "assin"], [sb.rpc("admin_billing_get"), sb.rpc("admin_plan_list")]); },
@@ -558,31 +565,21 @@ textarea.fi{resize:vertical;min-height:70px}
       (st !== "suspenso" ? btn(st === "em_analise" ? "Recusar" : "Suspender", "coach", { u: c.user_id, s: "suspenso" }) : "") + "</div></div>";
     return h;
   }
-  function fbCard(f) {
-    return '<div class="card"' + (f.lido ? "" : ' style="border-left:3px solid var(--ac)"') + '><div class="note" style="margin:0 0 6px">' + esc(dt(f.created_at)) + " · " + esc(f.email || "—") + " · <b>" + esc(f.tipo) + "</b> · " + esc(f.versao || "?") + (f.contato ? "" : " · não quer resposta") + "</div>" +
-      '<div style="white-space:pre-wrap;overflow-wrap:anywhere">' + esc(f.mensagem) + '</div><div class="tools">' +
-      (f.email && f.contato ? '<a class="ib" style="display:inline-flex;align-items:center;text-decoration:none" href="mailto:' + esc(f.email) + "?subject=" + encodeURIComponent("Sobre seu feedback no Movo") + '">Responder</a>' : "") +
-      btn(f.lido ? "Marcar como novo" : "Marcar como lido", "fb", { id: f.id, v: f.lido ? "0" : "1" }) + "</div></div>";
-  }
 
   var OPS_VIEW = {
     pend: function (d) {
       var p = d.p || {}, an = (d.coaches || []).filter(function (c) { return c.status === "em_analise"; });
-      var fb = (d.fb || []).filter(function (f) { return f.tipo !== "problema" && !f.lido; }), rev = (d.rev && d.rev.pendentes) || [];
-      var h = '<div class="grid g3">' + stat(p.total || 0, "pendências", p.total ? "warn" : "hi") + stat(p.relatos || 0, "relatos não lidos", p.relatos ? "warn" : "") + stat(p.contestacoes || 0, "acertos contestados", p.contestacoes ? "warn" : "") + "</div>";
+      var rev = (d.rev && d.rev.pendentes) || [], msgs = (+p.relatos || 0) + (+p.feedback || 0);
+      var h = '<div class="grid g3">' + stat(p.total || 0, "pendências", p.total ? "warn" : "hi") + stat(msgs, "mensagens não lidas", msgs ? "warn" : "") + stat(p.contestacoes || 0, "acertos contestados", p.contestacoes ? "warn" : "") + "</div>";
       if (!p.total) h += '<div class="note" style="margin-top:12px">Nada esperando você. Bom treino.</div>';
       if (an.length) { h += "<h2>Treinadores em análise</h2>"; an.forEach(function (c) { h += coachCard(c, []); }); }
       if (rev.length) h += "<h2>Catálogo</h2>" + '<div class="card"><div class="row"><div class="t">' + pl(rev.length, "nome novo de exercício", "nomes novos de exercício") + ' para decidir</div><div class="v">' + btn("Abrir", "ir", { tab: "catalogo" }) + "</div></div></div>";
-      if (p.relatos) h += "<h2>Relatos de problema</h2>" + '<div class="card"><div class="row"><div class="t">' + pl(p.relatos, "relato não lido", "relatos não lidos") + '</div><div class="v">' + btn("Abrir", "ir", { tab: "relatos" }) + "</div></div></div>";
+      if (msgs) h += "<h2>Fale com a gente</h2>" + '<div class="card"><div class="row"><div class="t">' + pl(msgs, "mensagem não lida", "mensagens não lidas") + (p.relatos ? " · " + pl(p.relatos, "problema", "problemas") : "") + '</div><div class="v">' + btn("Abrir", "ir", { tab: "relatos" }) + "</div></div></div>";
       if (p.contestacoes) h += "<h2>Desafios</h2>" + '<div class="card"><div class="row"><div class="t">' + pl(p.contestacoes, "acerto contestado", "acertos contestados") + ' em aberto</div><div class="v">' + btn("Abrir", "ir", { tab: "desafios" }) + "</div></div></div>";
-      if (fb.length) { h += "<h2>Feedback novo</h2>"; fb.forEach(function (f) { h += fbCard(f); }); }
       return h;
     },
     suporte: function (d) {
-      var fb = (d.fb || []).filter(function (f) { return f.tipo !== "problema"; }), novos = fb.filter(function (f) { return !f.lido; }).length;
-      var h = "<h2>Feedback dos usuários" + (novos ? " · " + novos + " novo" + (novos === 1 ? "" : "s") : "") + "</h2>";
-      h += fb.length ? fb.map(fbCard).join("") : vazio("Nenhum feedback ainda.");
-      h += '<div class="note">Relatos de problema (com detalhes técnicos) ficam na aba Relatos.</div>';
+      var h = '<div class="note">As mensagens do "Fale com a gente" (problemas, ideias, elogios) ficam na aba Mensagens.</div>';
       h += "<h2>Erros recentes</h2>";
       h += '<div class="card">' + ((d.erros || []).length ? d.erros.map(function (e) {
         return '<div class="row"><div class="t"><b>' + esc(e.context) + "</b>" + (e.message ? " · " + esc(e.message) : "") + '</div><div class="s">' + esc(dt(e.created_at)) + " · " + esc(e.email || "—") + "</div></div>";
@@ -791,11 +788,11 @@ textarea.fi{resize:vertical;min-height:70px}
 
   // ---------- pendências: contador nas abas e no ícone do painel ----------
   var pend = {};
-  var BADGE = { pend: "total", treinadores: "treinadores", catalogo: "catalogo", relatos: "relatos", suporte: "feedback", desafios: "contestacoes" };
+  var BADGE = { pend: "total", treinadores: "treinadores", catalogo: "catalogo", relatos: "mensagens", desafios: "contestacoes" };
   function carregarPendencias() {
     sb.rpc("admin_m_pendencias").then(function (r) {
       if (r.error || !r.data) return;
-      pend = r.data; desenharAbas();
+      pend = r.data; pend.mensagens = (+pend.relatos || 0) + (+pend.feedback || 0); desenharAbas();
       try { if (navigator.setAppBadge) { if (pend.total) navigator.setAppBadge(pend.total); else navigator.clearAppBadge(); } } catch (e) {}
     });
   }
@@ -832,7 +829,6 @@ textarea.fi{resize:vertical;min-height:70px}
         aviso("Treinador liberado"); recarregar();
       });
     },
-    fb: function (b) { return rpcOk("admin_feedback_lido", { p_id: +b.getAttribute("data-id"), p_lido: b.getAttribute("data-v") === "1" }).then(function (ok) { if (ok) recarregar(["suporte", "pend"]); }); },
     prova: function (b) { return rpcOk("admin_set_race_oculta", { p_id: +b.getAttribute("data-id"), p_oculta: b.getAttribute("data-v") === "1" }, b.getAttribute("data-v") === "1" ? "Prova escondida de todos" : "Prova visível de novo").then(function (ok) { if (ok) recarregar(); }); },
     bill: function (b) {
       var k = b.getAttribute("data-k"), v = b.getAttribute("data-v") === "1";
@@ -995,7 +991,7 @@ textarea.fi{resize:vertical;min-height:70px}
     });
     var rv = $("rv-claude");
     if (rv) rv.onclick = function () {
-      var ab = (d.relatos || []).filter(function (r) { return !r.lido; });
+      var ab = (d.relatos || []).filter(function (r) { return !r.lido && r.tipo === "problema"; });
       var txt = "Revisar os relatos de problema abertos do Movo (aba Relatos do painel de métricas, user_feedback tipo 'problema' e lido = false), ids: " +
         ab.map(function (r) { return r.id; }).join(", ") + ". Para cada um: ache a causa no código (contexto, stack, versão), grave o diagnóstico em revisao/revisado_em e me proponha a correção antes de mexer em qualquer coisa.";
       var aviso = function (m) { $("rv-nota").textContent = m; };
@@ -1008,12 +1004,13 @@ textarea.fi{resize:vertical;min-height:70px}
       b.disabled = true;
       sb.rpc("admin_m_relato_lido", { p_id: +b.getAttribute("data-lido"), p_lido: b.getAttribute("data-v") === "1" }).then(function (r) {
         if (r.error) { b.disabled = false; b.textContent = "Não consegui salvar"; return; }
-        delete cache.relatos; carregarPendencias(); open("relatos", true);
+        delete cache.relatos; delete cache.pend; carregarPendencias(); open("relatos", true);
       });
     };
     Array.prototype.forEach.call(document.querySelectorAll(".seg"), function (sg) {
       sg.addEventListener("click", function (e) {
         var b = e.target.closest("button"); if (!b) return;
+        if (b.hasAttribute("data-tp")) { params.relTipo = b.getAttribute("data-tp"); paint(id, cache[id].data, cache[id].ts); return; }
         if (b.hasAttribute("data-b")) { params.base = b.getAttribute("data-b"); paint(id, cache[id].data, cache[id].ts); return; }
         params[id] = +b.getAttribute("data-d"); delete cache[id]; open(id, true);
       });
