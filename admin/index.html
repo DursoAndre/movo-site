@@ -242,10 +242,10 @@ input:focus{outline:2px solid var(--ac);outline-offset:0}
   // ---------- abas (cada uma só carrega quando aberta) ----------
   var TABS = [
     { id: "geral", t: "Visão geral" }, { id: "ret", t: "Retenção" }, { id: "funil", t: "Funil" }, { id: "ativ", t: "Ativação" },
-    { id: "uso", t: "Uso" }, { id: "conv", t: "Convites" }, { id: "dom", t: "Domínio" }, { id: "contas", t: "Contas" }
+    { id: "uso", t: "Uso" }, { id: "conv", t: "Convites" }, { id: "dom", t: "Domínio" }, { id: "contas", t: "Contas" }, { id: "relatos", t: "Relatos" }
   ];
   var cache = {};
-  var params = { uso: 30, conv: 30, dom: 14, base: "abriram", ui: false, cOrd: "cadastro", cDir: "desc", cQ: "" };
+  var params = { uso: 30, conv: 30, dom: 14, relatos: 30, base: "abriram", ui: false, cOrd: "cadastro", cDir: "desc", cQ: "" };
   var atual = null, reqSeq = 0;
 
   function call(tab) {
@@ -259,6 +259,7 @@ input:focus{outline:2px solid var(--ac);outline-offset:0}
     if (tab === "uso") return sb.rpc("admin_m_funcoes", { p_dias: params.uso });
     if (tab === "conv") return sb.rpc("admin_m_convites", { p_dias: params.conv });
     if (tab === "contas") return sb.rpc("admin_m_contas");
+    if (tab === "relatos") return sb.rpc("admin_m_relatos", { p_dias: params.relatos });
     return sb.rpc("admin_m_dominio", { p_dias: params.dom });
   }
 
@@ -362,6 +363,33 @@ input:focus{outline:2px solid var(--ac);outline-offset:0}
       h += '<div class="card cl" id="c-lista" role="list"></div><div class="note" id="c-info"></div>';
       return h;
     },
+    relatos: function (d) {
+      var rel = d.relatos || [], novos = rel.filter(function (r) { return !r.lido; }).length;
+      var semRev = rel.filter(function (r) { return !r.revisado_em; }).length;
+      var h = '<div class="tools">' + seg("seg-relatos", [7, 30, 90], params.relatos, " dias") + "</div>";
+      h += '<div class="grid g3" style="margin-top:10px">' + stat(rel.length, "relatos") + stat(novos, "não lidos", novos ? "warn" : "") + stat(semRev, "sem revisão do Claude") + "</div>";
+      h += "<h2>Relatos de problema</h2>";
+      if (!rel.length) h += '<div class="card"><div class="note">Nenhum relato no período.</div></div>';
+      rel.forEach(function (r) {
+        var cx = r.contexto || {}, orig = r.origem === "tela_quebrou" ? "tela quebrou" : r.origem === "erro" ? "erro no app" : "pelo menu";
+        h += '<div class="card"' + (r.lido ? "" : ' style="border-left:3px solid var(--ac)"') + ">";
+        h += '<div class="t"><b>' + esc(r.nome || r.email || "(sem conta)") + "</b>" + '<span class="pill' + (r.origem === "tela_quebrou" ? " warn" : "") + '">' + esc(orig) + "</span>" + (r.lido ? "" : '<span class="pill ok">novo</span>') + "</div>";
+        h += '<div class="note" style="margin:2px 0 8px">' + esc(dt(r.criado)) + " · " + esc(r.versao || "?") + (cx.aba ? " · " + esc(cx.aba) : "") + (cx.instalado ? " · instalado" : "") + (r.nome && r.email ? " · " + esc(r.email) : "") + (r.contato ? "" : " · não quer resposta") + "</div>";
+        h += '<div style="white-space:pre-wrap;overflow-wrap:anywhere">' + esc(r.mensagem) + "</div>";
+        if (r.revisao) h += '<div style="margin-top:10px;padding:8px 10px;border-left:3px solid var(--new);background:var(--card2);border-radius:8px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px"><b>Revisão do Claude</b> <span class="mut">' + esc(dt(r.revisado_em)) + "</span>\n" + esc(r.revisao) + "</div>";
+        else h += '<div class="note">Aguardando revisão do Claude (roda de hora em hora).</div>';
+        if (r.contexto) h += '<details style="margin-top:8px"><summary class="mut" style="cursor:pointer;min-height:32px">Detalhes técnicos</summary><pre style="white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;background:var(--card2);border-radius:8px;padding:8px;max-height:320px;overflow:auto">' + esc(JSON.stringify(r.contexto, null, 1)) + "</pre></details>";
+        h += '<div class="tools">' + (r.email && r.contato ? '<a class="ib" style="display:inline-flex;align-items:center;text-decoration:none" href="mailto:' + esc(r.email) + "?subject=" + encodeURIComponent("Sobre o problema que você relatou no Movo") + '">Responder</a>' : "") +
+          '<button class="ib" type="button" data-lido="' + r.id + '" data-v="' + (r.lido ? "0" : "1") + '">' + (r.lido ? "Marcar como novo" : "Marcar como lido") + "</button></div></div>";
+      });
+      h += "<h2>Erros registrados automaticamente</h2>";
+      var er = d.erros || [];
+      h += '<div class="card">' + (er.length ? er.map(function (e) {
+        return '<div class="row"><div class="t">' + esc(e.contexto) + '</div><div class="v">' + e.n + "<small>" + pl(e.pessoas, "pessoa", "pessoas") + '</small></div><div class="s">último ' + esc(dt(e.ultimo)) + (e.exemplo ? " · " + esc(e.exemplo) : "") + "</div></div>";
+      }).join("") : '<div class="note">Nenhum erro no período.</div>') + "</div>";
+      h += '<div class="note">Vem de <b>client_errors</b>: falhas que o app registra sozinho (inclusive tela quebrada, mesmo sem a pessoa reportar).</div>';
+      return h;
+    },
     dom: function (d) {
       var mapa = {}; d.serie.forEach(function (x) { (mapa[x.dia] = mapa[x.dia] || { antigo: 0, novo: 0 })[x.site] = x.pessoas; });
       var serie = ultimosDias(params.dom).map(function (k) { var m = mapa[k] || { antigo: 0, novo: 0 }; return { dia: k, antigo: m.antigo, novo: m.novo }; });
@@ -437,6 +465,14 @@ input:focus{outline:2px solid var(--ac);outline-offset:0}
     var t = $("tentar"); if (t) t.onclick = function () { open(id, true); };
     ligarGraficos();
     if (id === "contas") ligarContas(d);
+    $("main").onclick = id !== "relatos" ? null : function (e) {
+      var b = e.target.closest("[data-lido]"); if (!b || b.disabled) return;
+      b.disabled = true;
+      sb.rpc("admin_m_relato_lido", { p_id: +b.getAttribute("data-lido"), p_lido: b.getAttribute("data-v") === "1" }).then(function (r) {
+        if (r.error) { b.disabled = false; b.textContent = "Não consegui salvar"; return; }
+        delete cache.relatos; open("relatos", true);
+      });
+    };
     Array.prototype.forEach.call(document.querySelectorAll(".seg"), function (sg) {
       sg.addEventListener("click", function (e) {
         var b = e.target.closest("button"); if (!b) return;
