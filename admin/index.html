@@ -400,6 +400,9 @@ textarea.fi{resize:vertical;min-height:70px}
         h += '<div class="t"><b>' + esc(r.nome || r.email || "(sem conta)") + "</b>" + '<span class="pill' + (r.origem === "tela_quebrou" ? " warn" : "") + '">' + esc(orig) + "</span>" + (r.lido ? "" : '<span class="pill ok">novo</span>') + "</div>";
         h += '<div class="note" style="margin:2px 0 8px">' + esc(dt(r.criado)) + " · " + esc(r.versao || "?") + (cx.aba ? " · " + esc(cx.aba) : "") + (cx.instalado ? " · instalado" : "") + (r.nome && r.email ? " · " + esc(r.email) : "") + (r.contato ? "" : " · não quer resposta") + "</div>";
         h += '<div style="white-space:pre-wrap;overflow-wrap:anywhere">' + esc(r.mensagem) + "</div>";
+        if (r.prints && r.prints.length) h += '<div class="rp" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">' + r.prints.map(function (pt) {
+          return '<a data-print="' + esc(pt) + '" target="_blank" rel="noopener" style="display:block;width:88px;height:88px;border-radius:8px;border:1px solid var(--line);background:var(--card2);overflow:hidden"></a>';
+        }).join("") + "</div>";
         if (r.revisao) h += '<div style="margin-top:10px;padding:8px 10px;border-left:3px solid var(--new);background:var(--card2);border-radius:8px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px"><b>Revisão do Claude</b> <span class="mut">' + esc(dt(r.revisado_em)) + "</span>\n" + esc(r.revisao) + "</div>";
         else h += '<div class="note">Aguardando revisão do Claude (roda de hora em hora).</div>';
         if (r.contexto) h += '<details style="margin-top:8px"><summary class="mut" style="cursor:pointer;min-height:32px">Detalhes técnicos</summary><pre style="white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;background:var(--card2);border-radius:8px;padding:8px;max-height:320px;overflow:auto">' + esc(JSON.stringify(r.contexto, null, 1)) + "</pre></details>";
@@ -978,6 +981,18 @@ textarea.fi{resize:vertical;min-height:70px}
     ligarGraficos();
     ligarOps(id);
     if (id === "contas") ligarContas(d);
+    // prints dos relatos: bucket privado, URL assinada (1 h) só para o admin
+    var pts = Array.prototype.map.call(document.querySelectorAll("[data-print]"), function (a) { return a.getAttribute("data-print"); });
+    if (id === "relatos" && pts.length) sb.storage.from("relatos").createSignedUrls(pts, 3600).then(function (r) {
+      (r.data || []).forEach(function (u) {
+        if (!u.signedUrl) return;
+        Array.prototype.forEach.call(document.querySelectorAll("[data-print]"), function (a) {
+          if (a.getAttribute("data-print") !== u.path) return;
+          a.href = u.signedUrl;
+          a.innerHTML = '<img src="' + esc(u.signedUrl) + '" alt="Print" style="width:100%;height:100%;object-fit:cover;display:block">';
+        });
+      });
+    });
     var rv = $("rv-claude");
     if (rv) rv.onclick = function () {
       var ab = (d.relatos || []).filter(function (r) { return !r.lido; });
