@@ -1,5 +1,5 @@
 // Service worker do painel admin: guarda só o "casco" (página, ícones). Dados do Supabase nunca passam por aqui.
-const CACHE = "movo-admin-v5";
+const CACHE = "movo-admin-v6";
 const CASCO = ["/admin/", "/admin/manifest.webmanifest", "/admin/icon-192.png", "/admin/icon-512.png"];
 self.addEventListener("install", (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CASCO)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", (e) => { e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim())); });

@@ -368,6 +368,9 @@ input:focus{outline:2px solid var(--ac);outline-offset:0}
       var semRev = rel.filter(function (r) { return !r.revisado_em; }).length;
       var h = '<div class="tools">' + seg("seg-relatos", [7, 30, 90], params.relatos, " dias") + "</div>";
       h += '<div class="grid g3" style="margin-top:10px">' + stat(rel.length, "relatos") + stat(novos, "não lidos", novos ? "warn" : "") + stat(semRev, "sem revisão do Claude") + "</div>";
+      var abertos = rel.filter(function (r) { return !r.lido; });
+      if (abertos.length) h += '<div class="tools"><button class="ib" id="rv-claude" type="button" style="color:var(--fg)">Revisar ' + pl(abertos.length, "relato aberto", "relatos abertos") + ' com o Claude</button></div>' +
+        '<div class="note" id="rv-nota">Copia um pedido pronto e abre o projeto do Movo no Claude: é só colar no chat. Só gasta quando você usar.</div>';
       h += "<h2>Relatos de problema</h2>";
       if (!rel.length) h += '<div class="card"><div class="note">Nenhum relato no período.</div></div>';
       rel.forEach(function (r) {
@@ -465,6 +468,15 @@ input:focus{outline:2px solid var(--ac);outline-offset:0}
     var t = $("tentar"); if (t) t.onclick = function () { open(id, true); };
     ligarGraficos();
     if (id === "contas") ligarContas(d);
+    var rv = $("rv-claude");
+    if (rv) rv.onclick = function () {
+      var ab = (d.relatos || []).filter(function (r) { return !r.lido; });
+      var txt = "Revisar os relatos de problema abertos do Movo (aba Relatos do painel de métricas, user_feedback tipo 'problema' e lido = false), ids: " +
+        ab.map(function (r) { return r.id; }).join(", ") + ". Para cada um: ache a causa no código (contexto, stack, versão), grave o diagnóstico em revisao/revisado_em e me proponha a correção antes de mexer em qualquer coisa.";
+      var aviso = function (m) { $("rv-nota").textContent = m; };
+      (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () { aviso("Pedido copiado. Cole no chat do projeto que abriu."); }, function () { aviso("Não consegui copiar. Cole isto no chat do projeto: " + txt); });
+      window.open("https://claude.ai/code/project/chan_01Wmq9AvvQbE1ejrYfdReouZ", "_blank", "noopener");
+    };
     $("main").onclick = id !== "relatos" ? null : function (e) {
       var b = e.target.closest("[data-lido]"); if (!b || b.disabled) return;
       b.disabled = true;
