@@ -951,12 +951,19 @@ textarea.fi{resize:vertical;min-height:70px}
       if (+i.acertos_abertos) extra.push(pl(+i.acertos_abertos, "acerto de desafio em aberto some", "acertos de desafio em aberto somem") + " do livro-caixa dos outros participantes");
       if (+i.desafios_dono) extra.push(pl(+i.desafios_dono, "desafio criado por ela passa", "desafios criados por ela passam") + " para o participante mais antigo (sem participantes, é apagado)");
       if (+i.alunos) extra.push(pl(+i.alunos, "aluno perde", "alunos perdem") + " o vínculo com ela como treinadora");
-      var em = prompt("Apagar a conta é definitivo: treinos, desafios, amigos e Strava somem. Use só a pedido da pessoa." + (extra.length ? "\n\nAlém disso:\n- " + extra.join("\n- ") : "") + "\n\nPara confirmar, digite o e-mail da conta:");
+      var em = prompt("Apagar a conta é definitivo: treinos, desafios, amigos, foto e a conexão com o Strava somem. Use só a pedido da pessoa." + (extra.length ? "\n\nAlém disso:\n- " + extra.join("\n- ") : "") + "\n\nPara confirmar, digite o e-mail da conta:");
       if (!em) return;
-      return sb.rpc("admin_m_conta_apagar", { p_user: b.getAttribute("data-u"), p_email: em.trim() }).then(function (r) {
-        if (r.error) return alert(/email_nao_confere/.test(r.error.message) ? "O e-mail digitado não confere. Nada foi apagado." : "Não consegui: " + r.error.message);
-        aviso("Conta apagada"); delete cache.contas; open("contas", true);
-      });
+      // Edge function admin-apagar-conta: desconecta o Strava, apaga a foto e depois a conta (admin_m_conta_apagar).
+      return sb.functions.invoke("admin-apagar-conta", { body: { user: b.getAttribute("data-u"), email: em.trim() } }).then(function (r) {
+        var j = r.data || {};
+        if (r.error || !j.ok) {
+          var e = j.erro || (r.error && r.error.message) || "erro";
+          return alert(/email_nao_confere/.test(e) ? "O e-mail digitado não confere. Nada foi apagado." : "Não consegui: " + e);
+        }
+        var ps = j.passos || {};
+        aviso("Conta apagada" + (ps.strava === "desconectado" ? " · Strava desconectado" : "") + (/^falhou/.test(ps.strava || "") ? " · Strava não respondeu (a conexão foi apagada mesmo assim)" : ""));
+        delete cache.contas; open("contas", true);
+      }, function () { alert("Não consegui: sem conexão. Nada foi apagado."); });
       });
     }
   };
