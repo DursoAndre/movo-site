@@ -709,19 +709,23 @@ textarea.fi{resize:vertical;min-height:70px}
       return h;
     },
     recados: function (d) {
-      var h = '<div class="note" style="margin-top:0">O recado aparece num cartão no topo da aba Hoje de quem estiver no público escolhido, até a pessoa dispensar ou o prazo acabar. Só dentro do app: e-mail em massa fica para depois, com o custo combinado.</div>';
+      var c = d.cota || {}, livre = Math.max(0, Math.min((c.dia_max || 0) - (c.hoje || 0), (c.mes_max || 0) - (c.mes || 0)));
+      var h = '<div class="note" style="margin-top:0">O recado aparece num cartão no topo da aba Hoje de quem estiver no público escolhido, até a pessoa dispensar ou o prazo acabar. Por e-mail (opcional): no máximo ' + (c.dia_max || 80) + " por dia e " + (c.mes_max || 2000) + " por mês, para caber no plano grátis do Resend junto com os e-mails de login. Hoje ainda dá para mandar <b>" + livre + "</b>. Quem passar disso fica na fila para o dia seguinte." + (d.sairam ? " " + pl(d.sairam, "pessoa saiu", "pessoas saíram") + " da lista de e-mail." : "") + "</div>";
+      d = d.recados || [];
       h += '<h2>Novo recado</h2><div class="card"><input id="rc-titulo" maxlength="80" placeholder="Título (até 80 letras)"><textarea id="rc-texto" class="fi" maxlength="400" rows="3" placeholder="Texto curto (até 400 letras)"></textarea>' +
         '<div style="display:flex;gap:8px"><input id="rc-btxt" maxlength="30" placeholder="Botão (opcional)"><input id="rc-burl" placeholder="https://… (opcional)"></div>' +
         '<select class="fi" id="rc-pub"><option value="todos">Todos</option><option value="inativos">Quem não abre o app há N dias</option><option value="treinadores">Treinadores ativos</option><option value="desafio_premio">Quem está em desafio com prêmio</option><option value="lista">E-mails escolhidos</option></select>' +
         '<input id="rc-dias-in" type="number" min="1" value="14" placeholder="N dias sem abrir" hidden><textarea id="rc-lista" class="fi" rows="2" placeholder="E-mails separados por vírgula" hidden></textarea>' +
         '<div style="display:flex;gap:8px;align-items:center"><span class="mut" style="white-space:nowrap">Fica no ar por</span><input id="rc-dias" type="number" min="1" max="60" value="7" style="margin:0"><span class="mut">dias</span></div>' +
+        '<label style="display:flex;gap:10px;align-items:center;min-height:44px;cursor:pointer"><input type="checkbox" id="rc-email" style="width:22px;min-height:22px;margin:0"> Também mandar por e-mail</label>' +
         '<div class="tools">' + btn("Ver quantos recebem", "rc-previa", {}) + btn("Publicar", "rc-salvar", {}, "pri") + '</div><div class="note" id="rc-nota"></div></div>';
       h += "<h2>Recados</h2>";
       h += d.length ? d.map(function (r) {
         var vivo = r.ativo && new Date(r.valido_ate) > new Date();
         return '<div class="card"><div class="t"><b>' + esc(r.titulo) + '</b><span class="pill' + (vivo ? " ok" : "") + '">' + (vivo ? "no ar" : "encerrado") + '</span></div><div class="note" style="margin:2px 0 6px">' + esc(dt(r.criado_em)) + " · até " + esc(dt(r.valido_ate)) + " · público: " + esc(r.publico) + (r.publico === "inativos" ? " (" + r.dias_inativo + " dias)" : "") + "</div>" +
           '<div style="white-space:pre-wrap;overflow-wrap:anywhere">' + esc(r.texto) + "</div>" + (r.botao_txt ? '<div class="note">Botão: ' + esc(r.botao_txt) + " → " + esc(r.botao_url || "") + "</div>" : "") +
-          '<div class="note">' + r.viram + " viram · " + r.clicaram + " tocaram no botão · " + r.dispensaram + " dispensaram</div>" + (vivo ? '<div class="tools">' + btn("Encerrar", "rc-encerrar", { id: r.id }) + "</div>" : "") + "</div>";
+          '<div class="note">' + r.viram + " viram · " + r.clicaram + " tocaram no botão · " + r.dispensaram + " dispensaram" + (r.emails ? " · " + pl(+r.emails, "e-mail enviado", "e-mails enviados") : "") + "</div>" +
+          (vivo ? '<div class="tools">' + (+r.emails_pendentes ? btn((r.emails ? "Enviar o restante por e-mail (" : "Enviar por e-mail (") + r.emails_pendentes + ")", "rc-email", { id: r.id, n: r.emails_pendentes }) : "") + btn("Encerrar", "rc-encerrar", { id: r.id }) + "</div>" : "") + "</div>";
       }).join("") : vazio("Nenhum recado ainda.");
       return h;
     },
@@ -923,9 +927,17 @@ textarea.fi{resize:vertical;min-height:70px}
         if (lista === false) return;
         return sb.rpc("admin_m_recado_previa", { p_publico: pub, p_dias: +$("rc-dias-in").value || 14, p_lista: lista }).then(function (pv) {
           if (!confirm("Publicar para " + (pv.error ? "o público escolhido" : pl(pv.data, "pessoa", "pessoas")) + "?\n\n" + t + "\n" + x)) return;
-          return rpcOk("admin_m_recado_salvar", { p: { titulo: t, texto: x, botao_txt: bt || null, botao_url: bt ? bu : null, publico: pub, dias_inativo: +$("rc-dias-in").value || 14, lista: lista, dias: +$("rc-dias").value || 7 } }, "Recado publicado").then(function (ok) { if (ok) recarregar(); });
+          var porEmail = $("rc-email").checked;
+          return rpcOk("admin_m_recado_salvar", { p: { titulo: t, texto: x, botao_txt: bt || null, botao_url: bt ? bu : null, publico: pub, dias_inativo: +$("rc-dias-in").value || 14, lista: lista, dias: +$("rc-dias").value || 7 } }, "Recado publicado").then(function (id) {
+            if (!id) return;
+            return (porEmail ? enviarRecadoEmail(id) : Promise.resolve()).then(function () { recarregar(); });
+          });
         });
       });
+    },
+    "rc-email": function (b) {
+      if (!confirm("Mandar este recado por e-mail para " + pl(+b.getAttribute("data-n"), "pessoa", "pessoas") + "? (até o limite do dia; o resto fica na fila)")) return;
+      return enviarRecadoEmail(+b.getAttribute("data-id")).then(function () { recarregar(); });
     },
     "rc-encerrar": function (b) { if (!confirm("Tirar este recado do ar?")) return; return rpcOk("admin_m_recado_encerrar", { p_id: +b.getAttribute("data-id") }, "Recado encerrado").then(function (ok) { if (ok) recarregar(); }); },
     "conta-plano": function (b) { open("planos"); setTimeout(function () { var i = $("pl-email"); if (i) i.value = b.getAttribute("data-email"); }, 600); },
@@ -934,14 +946,29 @@ textarea.fi{resize:vertical;min-height:70px}
       return rpcOk("admin_m_conta_exportar", { p_user: b.getAttribute("data-u") }).then(function (d) { if (d) { baixarJson(d, "movo-dados-" + b.getAttribute("data-email") + ".json"); aviso("Arquivo baixado"); } });
     },
     "conta-apagar": function (b) {
-      var em = prompt("Apagar a conta é definitivo: treinos, desafios, amigos e Strava somem. Use só a pedido da pessoa.\n\nPara confirmar, digite o e-mail da conta:");
+      return sb.rpc("admin_m_conta_impacto", { p_user: b.getAttribute("data-u") }).then(function (ir) {
+      var i = ir.data || {}, extra = [];
+      if (+i.acertos_abertos) extra.push(pl(+i.acertos_abertos, "acerto de desafio em aberto some", "acertos de desafio em aberto somem") + " do livro-caixa dos outros participantes");
+      if (+i.desafios_dono) extra.push(pl(+i.desafios_dono, "desafio criado por ela passa", "desafios criados por ela passam") + " para o participante mais antigo (sem participantes, é apagado)");
+      if (+i.alunos) extra.push(pl(+i.alunos, "aluno perde", "alunos perdem") + " o vínculo com ela como treinadora");
+      var em = prompt("Apagar a conta é definitivo: treinos, desafios, amigos e Strava somem. Use só a pedido da pessoa." + (extra.length ? "\n\nAlém disso:\n- " + extra.join("\n- ") : "") + "\n\nPara confirmar, digite o e-mail da conta:");
       if (!em) return;
       return sb.rpc("admin_m_conta_apagar", { p_user: b.getAttribute("data-u"), p_email: em.trim() }).then(function (r) {
         if (r.error) return alert(/email_nao_confere/.test(r.error.message) ? "O e-mail digitado não confere. Nada foi apagado." : "Não consegui: " + r.error.message);
         aviso("Conta apagada"); delete cache.contas; open("contas", true);
       });
+      });
     }
   };
+  // Recado por e-mail: a edge function recado-email manda o lote que cabe na cota e devolve quantos ficaram na fila.
+  function enviarRecadoEmail(id) {
+    aviso("Enviando e-mails…");
+    return sb.functions.invoke("recado-email", { body: { id: id } }).then(function (r) {
+      var j = r.data || {};
+      if (r.error || !j.ok) { alert("E-mail não saiu: " + ((j && j.erro) || (r.error && r.error.message) || "erro") + (j && j.enviados ? " (" + j.enviados + " já tinham saído)" : "")); return; }
+      aviso(j.enviados ? pl(j.enviados, "e-mail enviado", "e-mails enviados") + (j.pendentes > 0 ? " · " + j.pendentes + " na fila para amanhã" : "") : (j.pendentes > 0 ? "Limite de hoje atingido: " + j.pendentes + " na fila" : "Ninguém para receber por e-mail"));
+    }, function () { alert("E-mail não saiu: sem conexão"); });
+  }
   // Público "lista": e-mails -> ids, usando a lista de contas que o painel já carrega.
   function emailsParaIds(pub) {
     if (pub !== "lista") return Promise.resolve(null);
