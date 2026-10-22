@@ -25,10 +25,6 @@ button{font:inherit;color:inherit;cursor:pointer}
 .sp{flex:1}
 .ib{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:0 14px;min-height:44px;font-size:14px;color:var(--mut)}
 .ib:active{background:var(--card2)}
-.tabs{display:flex;gap:6px;overflow-x:auto;padding:10px 2px 4px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 92%,transparent);mask-image:linear-gradient(90deg,#000 92%,transparent)}
-.tabs::-webkit-scrollbar{display:none}
-.tab{flex:none;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:0 16px;min-height:44px;font-size:14px;color:var(--mut)}
-.tab[aria-selected=true]{background:var(--ac);border-color:var(--ac);color:var(--ac-d);font-weight:700}
 main{max-width:760px;margin:0 auto;padding-top:6px;transition:opacity .15s}
 main.busy{opacity:.45;pointer-events:none}
 h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin:22px 0 8px;font-weight:700}
@@ -135,12 +131,43 @@ input:focus{outline:2px solid var(--ac);outline-offset:0}
 .ib:disabled{opacity:.5}
 .card input,.card select,.card textarea,.fi{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--fg);border-radius:10px;padding:10px 12px;font:inherit;font-size:16px;margin:0 0 8px;min-height:44px}
 textarea.fi{resize:vertical;min-height:70px}
-.tab .bd{display:inline-block;min-width:20px;padding:0 6px;margin-left:6px;border-radius:999px;background:var(--warn);color:#14161A;font-size:12px;font-weight:800;line-height:20px;text-align:center}
-.grp{margin-top:8px}
-.grp button{min-height:40px}
 .ct[data-act]{cursor:pointer}
 .ct[data-act]:active{background:var(--card2)}
-#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:600;z-index:20;max-width:calc(100% - 32px)}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:600;z-index:20;max-width:calc(100% - 32px)}
+/* navegação: barra inferior (celular) / lateral (computador) */
+body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
+.top .bar{min-height:48px}
+.top h1{flex:1;font-size:20px;font-weight:800;letter-spacing:-.02em;margin:0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ib.ic{width:44px;padding:0;display:grid;place-items:center;font-size:18px}
+.ib.ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;height:calc(64px + env(safe-area-inset-bottom,0px));padding:0 max(4px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(4px,env(safe-area-inset-left,0px));background:var(--card);border-top:1px solid var(--line)}
+.nav button{flex:1;min-width:0;background:none;border:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11.5px;color:var(--mut)}
+.nav .ico{position:relative;width:56px;height:28px;border-radius:14px;display:grid;place-items:center}
+.nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav [aria-current=page]{color:var(--ac);font-weight:700}
+.nav [aria-current=page] .ico{background:rgba(190,242,48,.14)}
+.nav .bd{position:absolute;top:-5px;right:6px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:var(--warn);color:#14161A;font:800 11px/17px system-ui,sans-serif;font-style:normal;text-align:center}
+.subs{display:flex;flex-wrap:wrap;gap:6px;max-width:760px;margin:2px auto 6px}
+.subs button{min-height:40px;padding:0 14px;border-radius:999px;background:none;border:1px solid var(--line);color:var(--mut);font-size:14px}
+.subs button[aria-selected=true]{background:var(--fg);border-color:var(--fg);color:var(--bg);font-weight:700}
+.subs .dot::after{content:"";display:inline-block;width:7px;height:7px;border-radius:4px;background:var(--warn);margin-left:7px;vertical-align:middle}
+.mais .row{min-height:52px}
+.mais .row .v{color:var(--mut);font-weight:500}
+.mais .row .v .n{display:inline-block;min-width:20px;padding:0 6px;margin-right:8px;border-radius:999px;background:var(--warn);color:#14161A;font-size:12px;font-weight:800;line-height:20px;text-align:center}
+.vd{display:flex;align-items:center;gap:10px}
+@media (min-width:900px){
+  body{padding-left:248px;padding-bottom:32px}
+  .nav{top:0;right:auto;width:224px;height:auto;flex-direction:column;justify-content:flex-start;gap:2px;padding:calc(18px + env(safe-area-inset-top,0px)) 10px 16px;border-top:0;border-right:1px solid var(--line)}
+  .nav::before{content:"movo.admin";color:var(--fg);font-weight:800;font-size:18px;letter-spacing:-.02em;padding:0 10px 14px}
+  .nav button{flex:none;flex-direction:row;justify-content:flex-start;gap:10px;min-height:44px;font-size:14.5px;padding:0 6px;border-radius:12px}
+  .nav .ico{width:40px}
+  .nav .bd{top:-4px;right:0}
+  .nav [aria-current=page]{background:rgba(190,242,48,.10)}
+  .nav [aria-current=page] .ico{background:none}
+  .nav button:hover{background:var(--card2)}
+  .top{max-width:760px;margin:0 auto}
+  #toast{bottom:calc(20px + env(safe-area-inset-bottom,0px))}
+}
 </style>
 </head>
 <body>
@@ -166,16 +193,15 @@ textarea.fi{resize:vertical;min-height:70px}
 <div id="app" hidden>
   <div class="top">
     <div class="bar">
-      <div class="logo">movo<b>.</b>admin</div>
-      <div class="sp"></div>
-      <button class="ib" id="reload" type="button">Atualizar</button>
+      <button class="ib ic" id="voltar-mais" type="button" aria-label="Voltar para Mais" hidden>←</button>
+      <h1 id="tt">Início</h1>
+      <button class="ib ic" id="reload" type="button" aria-label="Atualizar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5"/></svg></button>
     </div>
-    <div class="cs grp" id="grp" role="group" aria-label="Área do painel"><button type="button" data-g="op">Operação</button><button type="button" data-g="met">Métricas</button></div>
-    <div class="tabs" id="tabs" role="tablist" aria-label="Seções do painel"></div>
   </div>
+  <div class="subs" id="subs" role="tablist" aria-label="Seções" hidden></div>
   <main id="main" role="tabpanel" aria-live="polite"></main>
+  <nav class="nav" id="nav" aria-label="Painel"></nav>
   <div id="toast" role="status" hidden></div>
-  <div class="foot"><span id="foot-info"></span><span class="sp"></span><button class="ib" id="sair" type="button">Sair da conta</button></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
@@ -272,16 +298,28 @@ textarea.fi{resize:vertical;min-height:70px}
 
   // ---------- abas (cada uma só carrega quando aberta) ----------
   // g: "op" = Operação (gestão), "met" = Métricas. "conta" e "desafio" são telas de detalhe, sem aba própria.
+  // Navegação (22/10/2026, revisão de UX e design): 5 destinos na barra inferior; Pessoas e Números têm sub-seções;
+  // o resto mora em "Mais", em grupos. Os ids das abas antigas continuam valendo (links #id e aba lembrada).
   var TABS = [
-    { id: "pend", t: "Pendências", g: "op" }, { id: "contas", t: "Contas", g: "op" }, { id: "relatos", t: "Mensagens", g: "op" }, { id: "suporte", t: "Suporte", g: "op" },
-    { id: "treinadores", t: "Treinadores", g: "op" }, { id: "catalogo", t: "Catálogo", g: "op" }, { id: "planos", t: "Planos", g: "op" }, { id: "ia", t: "IA", g: "op" },
-    { id: "desafios", t: "Desafios", g: "op" }, { id: "recados", t: "Recados", g: "op" }, { id: "integracoes", t: "Integrações", g: "op" }, { id: "midia", t: "Fotos e vídeos", g: "op" }, { id: "saude", t: "Saúde", g: "op" }, { id: "registro", t: "Registro", g: "op" },
-    { id: "geral", t: "Visão geral", g: "met" }, { id: "ret", t: "Retenção", g: "met" }, { id: "funil", t: "Funil", g: "met" }, { id: "ativ", t: "Ativação", g: "met" },
-    { id: "uso", t: "Uso", g: "met" }, { id: "conv", t: "Convites", g: "met" }, { id: "dom", t: "Domínio", g: "met" }
+    { id: "pend", t: "Início" }, { id: "relatos", t: "Mensagens" }, { id: "contas", t: "Contas" }, { id: "treinadores", t: "Treinadores" },
+    { id: "geral", t: "Resumo" }, { id: "ret", t: "Retenção" }, { id: "uso", t: "Uso" }, { id: "conv", t: "Convites" }, { id: "mais", t: "Mais" },
+    { id: "catalogo", t: "Catálogo", s: "Exercícios, grupos e nomes novos" }, { id: "desafios", t: "Desafios", s: "Desafios e acertos" },
+    { id: "recados", t: "Recados", s: "Avisos no app e por e-mail" }, { id: "suporte", t: "Provas e exercícios livres", s: "Provas da comunidade e exercícios fora do catálogo" },
+    { id: "planos", t: "Planos", s: "Preços, limites e assinaturas" }, { id: "ia", t: "IA", s: "Custo, teto e recursos" }, { id: "midia", t: "Fotos e vídeos", s: "Arquivos enviados" },
+    { id: "integracoes", t: "Integrações", s: "Strava e e-mails" }, { id: "saude", t: "Saúde", s: "Erros, limites do plano grátis e publicação" },
+    { id: "registro", t: "Registro", s: "O que foi mudado pelo painel" }, { id: "dom", t: "Domínio", s: "Migração para app.movoapp.com.br" }
   ];
-  var DETALHE = { conta: "contas", desafio: "desafios" };
+  var DEST = [
+    { d: "ini", t: "Início", tabs: ["pend"], ic: '<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>' },
+    { d: "msg", t: "Mensagens", tabs: ["relatos"], ic: '<path d="M4 5h16v11H9l-5 4z"/>' },
+    { d: "pes", t: "Pessoas", tabs: ["contas", "treinadores"], ic: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.3-5.5 6.5-5.5s5.7 1.9 6.5 5.5M16 4.8a3.4 3.4 0 0 1 0 6.4M18.5 14.8c1.6.8 2.6 2.6 3 5.2"/>' },
+    { d: "num", t: "Números", tabs: ["geral", "ret", "uso", "conv"], ic: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>' },
+    { d: "mais", t: "Mais", tabs: ["mais"], ic: '<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>' }
+  ];
+  var MAIS = [["Sistema", ["saude", "registro", "dom"]], ["Conteúdo", ["catalogo", "desafios", "recados", "suporte"]], ["Configurações", ["planos", "ia", "midia", "integracoes"]]];
+  var DETALHE = { conta: "contas", desafio: "desafios" }, ANTIGA = { funil: "ret", ativ: "ret" };
   function abaDe(id) { return TABS.filter(function (t) { return t.id === (DETALHE[id] || id); })[0]; }
-  var grupo = "op";
+  function destDe(id) { var t = DETALHE[id] || id; return DEST.filter(function (x) { return x.tabs.indexOf(t) >= 0; })[0] || DEST[4]; }
   var cache = {};
   var MSG_TIPOS = [["problema", "🐞 Problema"], ["ideia", "💡 Ideia"], ["elogio", "👍 Elogio"], ["outro", "💬 Outro"]];
   var params = { relTipo: "", erTodos: false, uso: 30, conv: 30, dom: 14, relatos: 30, registro: 30, base: "abriram", ui: false, cOrd: "cadastro", cDir: "desc", cQ: "" };
@@ -318,7 +356,7 @@ textarea.fi{resize:vertical;min-height:70px}
       h += '<div class="note">Não entram na conta: ' + pl(d.excluidas, "conta (você/teste)", "contas (você/testes)") + ". “Instalados” só vale para aberturas da v176 em diante.</div>";
       return h;
     },
-    ret: function (d) {
+    ret1: function (d) {
       var t = d.total;
       function cel(a, b) { return b > 0 ? '<td class="' + (b < 10 ? "low" : "") + '"><b>' + a + "/" + b + "</b> <small>" + pct(a, b) + "</small></td>" : '<td class="low"><small>sem dados</small></td>'; }
       function card(a, b, titulo, vazio) {
@@ -492,6 +530,19 @@ textarea.fi{resize:vertical;min-height:70px}
     out.push({ rot: "Atletas no Strava", sub: "Strava · contas conectadas (aumento é pedido ao Strava)", uso: +l.strava || 0, max: +l.strava_limite || 10, u: num(l.strava), de: num(l.strava_limite || 10) });
     return out;
   }
+  // Veredito da Saúde (usado na aba Saúde e no Início): erros, IA, limites do plano grátis e publicação.
+  function vereditoSaude(d) {
+    var s = d.s || {}, e24 = +s.erros_24h || 0, eAnt = +s.erros_24h_antes || 0;
+    var lims = limitesLista(d.lim || {}, d.resend), pior = lims.reduce(function (m, x) { return Math.max(m, x.uso / x.max); }, 0);
+    var pubs = [["App", "do app", d.ghApp], ["Site e painel", "do site e painel", d.ghSite]];
+    var falhas = pubs.filter(function (p) { return p[2] && p[2].status === "completed" && p[2].conclusion !== "success"; });
+    var alerta = +s.erros_30min >= 10 || (+s.ia_falhas_1h >= 3 && +s.ia_falhas_1h / Math.max(1, +s.ia_total_1h) >= 0.5) || pior >= 0.9;
+    var aviso = !alerta && (e24 > Math.max(10, eAnt * 2) || pior >= 0.7 || falhas.length > 0);
+    var porque = lims.filter(function (x) { return x.uso / x.max >= 0.7; }).map(function (x) { return x.rot + " em " + Math.round(x.uso / x.max * 100) + "% do limite"; })
+      .concat(falhas.map(function (p) { return "Publicação " + p[1] + " falhou"; }));
+    if (alerta && +s.erros_30min >= 10) porque.unshift(s.erros_30min + " erros em 30 min");
+    return { cls: alerta || aviso ? "warn" : "ok", titulo: alerta ? "Atenção: algo fora do normal" : aviso ? "Vale ficar de olho" : "Tudo normal", porque: porque, lims: lims, pubs: pubs };
+  }
   function relIso(iso) {
     if (!iso) return "nunca";
     var min = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
@@ -576,9 +627,23 @@ textarea.fi{resize:vertical;min-height:70px}
     return (REG_ACAO[l.acao] || l.acao) + (l.alvo ? " · " + l.alvo : "");
   }
 
+  // Último run da main no GitHub (API pública, sem chave); falha não derruba a aba.
+  function ghRun(repo) {
+    return fetch("https://api.github.com/repos/DursoAndre/" + repo + "/actions/runs?per_page=1&branch=main").then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) { return { data: (j && j.workflow_runs && j.workflow_runs[0]) || null }; }, function () { return { data: null }; });
+  }
+  // Números › Retenção junta o funil, a ativação e a volta ao app, na ordem: cadastro → 1º treino → voltou.
+  VIEW.ret = function (d) { return VIEW.funil(d.funil) + VIEW.ativ(d.ativ) + VIEW.ret1(d.ret); };
   var OPS_CALL = {
-    pend: function () { return juntar(["p", "coaches", "rev"], [sb.rpc("admin_m_pendencias"), sb.rpc("admin_coach_list"), sb.rpc("admin_revisao_lista")]); },
-    suporte: function () { return juntar(["erros", "provas", "gaps"], [sb.rpc("admin_client_errors", { limit_n: 50 }), sb.rpc("admin_shared_races"), sb.rpc("admin_exercise_gaps", { dias: 90 })]); },
+    pend: function () {
+      return juntar(["p", "coaches", "rev", "s", "lim", "ghApp", "ghSite", "geral"], [sb.rpc("admin_m_pendencias"), sb.rpc("admin_coach_list"), sb.rpc("admin_revisao_lista"),
+        sb.rpc("admin_saude"), sb.rpc("admin_limites"), ghRun("movo-app"), ghRun("movo-site"), sb.rpc("admin_m_geral")]);
+    },
+    mais: function () { return Promise.resolve({ data: {} }); },
+    ret: function () {
+      return juntar(["funil", "ativ", "ret"], [sb.rpc("admin_m_funil"), call("ativ"), sb.rpc("admin_m_retencao")]);
+    },
+    suporte: function () { return juntar(["provas", "gaps"], [sb.rpc("admin_shared_races"), sb.rpc("admin_exercise_gaps", { dias: 90 })]); },
     treinadores: function () { return juntar(["coaches", "assin"], [sb.rpc("admin_coach_list"), sb.rpc("admin_plan_list")]); },
     catalogo: function () { return juntar(["rev", "cat"], [sb.rpc("admin_revisao_lista"), sb.rpc("catalogo_completo")]); },
     planos: function () { return juntar(["bill", "assin"], [sb.rpc("admin_billing_get"), sb.rpc("admin_plan_list")]); },
@@ -591,10 +656,7 @@ textarea.fi{resize:vertical;min-height:70px}
     saude: function () {
       // Uso do Resend (edge function admin-limites) e último deploy no GitHub (API pública) podem falhar sem derrubar a aba.
       var re = sb.functions.invoke("admin-limites").then(function (r) { return { data: (r.data && r.data.ok) ? r.data.resend : null }; }, function () { return { data: null }; });
-      var gh = function (repo) {
-        return fetch("https://api.github.com/repos/DursoAndre/" + repo + "/actions/runs?per_page=1&branch=main").then(function (r) { return r.ok ? r.json() : null; })
-          .then(function (j) { return { data: (j && j.workflow_runs && j.workflow_runs[0]) || null }; }, function () { return { data: null }; });
-      };
+      var gh = ghRun;
       return juntar(["s", "versoes", "logins", "lim", "resend", "ghApp", "ghSite"], [sb.rpc("admin_saude"), sb.rpc("admin_versoes", { p_dias: 7 }), sb.rpc("admin_login_stats", { dias: 7 }),
         sb.rpc("admin_limites"), re, gh("movo-app"), gh("movo-site")]);
     },
@@ -615,23 +677,41 @@ textarea.fi{resize:vertical;min-height:70px}
   }
 
   var OPS_VIEW = {
-    pend: function (d) {
-      var p = d.p || {}, an = (d.coaches || []).filter(function (c) { return c.status === "em_analise"; });
-      var rev = (d.rev && d.rev.pendentes) || [], msgs = (+p.relatos || 0) + (+p.feedback || 0);
-      var h = '<div class="grid g3">' + stat(p.total || 0, "pendências", p.total ? "warn" : "hi") + stat(msgs, "mensagens não lidas", msgs ? "warn" : "") + stat(p.contestacoes || 0, "acertos contestados", p.contestacoes ? "warn" : "") + "</div>";
-      if (!p.total) h += '<div class="note" style="margin-top:12px">Nada esperando você. Bom treino.</div>';
-      if (an.length) { h += "<h2>Treinadores em análise</h2>"; an.forEach(function (c) { h += coachCard(c, []); }); }
-      if (rev.length) h += "<h2>Catálogo</h2>" + '<div class="card"><div class="row"><div class="t">' + pl(rev.length, "nome novo de exercício", "nomes novos de exercício") + ' para decidir</div><div class="v">' + btn("Abrir", "ir", { tab: "catalogo" }) + "</div></div></div>";
-      if (msgs) h += "<h2>Fale com a gente</h2>" + '<div class="card"><div class="row"><div class="t">' + pl(msgs, "mensagem não lida", "mensagens não lidas") + (p.relatos ? " · " + pl(p.relatos, "problema", "problemas") : "") + '</div><div class="v">' + btn("Abrir", "ir", { tab: "relatos" }) + "</div></div></div>";
-      if (p.contestacoes) h += "<h2>Desafios</h2>" + '<div class="card"><div class="row"><div class="t">' + pl(p.contestacoes, "acerto contestado", "acertos contestados") + ' em aberto</div><div class="v">' + btn("Abrir", "ir", { tab: "desafios" }) + "</div></div></div>";
+    mais: function () {
+      var h = "";
+      MAIS.forEach(function (gr) {
+        h += "<h2>" + gr[0] + '</h2><div class="card mais">' + gr[1].map(function (id) {
+          var t = abaDe(id), n = nPend(id);
+          return '<div class="row ct" data-act="ir" data-tab="' + id + '" role="button" tabindex="0"><div class="t">' + esc(t.t) + '<div class="s">' + esc(t.s || "") + '</div></div><div class="v">' + (n ? '<span class="n">' + n + "</span>" : "") + "›</div></div>";
+        }).join("") + "</div>";
+      });
+      h += '<div class="foot"><span>Dados de São Paulo (UTC−3) · sem você e contas de teste</span><span class="sp"></span><button class="ib" id="sair" type="button">Sair da conta</button></div>';
       return h;
     },
+    pend: function (d) {
+      var p = d.p || {}, an = (d.coaches || []).filter(function (c) { return c.status === "em_analise"; });
+      var rev = (d.rev && d.rev.pendentes) || [], msgs = (+p.relatos || 0) + (+p.feedback || 0), g = d.geral || {};
+      var acao = function (txt, tab) { return '<div class="row ct" data-act="ir" data-tab="' + tab + '"><div class="t">' + txt + '</div><div class="v">' + btn(tab === "relatos" ? "Ler" : "Revisar", "ir", { tab: tab }) + "</div></div>"; };
+      var h = "<h2>Precisa de você</h2><div class=\"card\">";
+      if (msgs) h += acao(pl(msgs, "mensagem não lida", "mensagens não lidas") + (p.relatos ? '<div class="s">' + pl(p.relatos, "problema", "problemas") + "</div>" : ""), "relatos");
+      if (an.length) h += acao(pl(an.length, "treinador em análise", "treinadores em análise"), "treinadores");
+      if (rev.length) h += acao(pl(rev.length, "nome novo de exercício", "nomes novos de exercício") + " para decidir", "catalogo");
+      if (p.contestacoes) h += acao(pl(p.contestacoes, "acerto contestado", "acertos contestados") + " em desafio", "desafios");
+      if (!msgs && !an.length && !rev.length && !p.contestacoes) h += '<div class="note">Nada esperando você. Bom treino.</div>';
+      h += "</div>";
+      var vd = vereditoSaude(d);
+      h += "<h2>Sistema</h2>" + '<div class="card"><div class="row ct" data-act="ir" data-tab="saude"><div class="t"><div class="verdict ' + vd.cls + '" style="margin:0">' + vd.titulo + "</div>" +
+        (vd.porque.length ? '<div class="s">' + esc(vd.porque.join(" · ")) + "</div>" : '<div class="s">Erros, IA, limites do plano grátis e publicação</div>') + '</div><div class="v">' + btn("Saúde", "ir", { tab: "saude" }) + "</div></div></div>";
+      if (d.geral) {
+        h += '<h2>O app</h2><div class="grid">' + stat(g.dau, "abriram o app hoje", "hi", "ontem " + g.dau_ontem) + stat(g.treinaram_7d, "treinaram em 7 dias", "hi", g.dois_dias_7d + " em 2 dias ou mais") +
+          stat(g.wau, "abriram em 7 dias") + stat(g.novas_7d, "contas novas em 7 dias", "", g.novas_hoje ? g.novas_hoje + " hoje" : "") + "</div>";
+        h += '<div class="tools">' + btn("Ver todos os números", "ir", { tab: "geral" }) + "</div>";
+      }
+      return h;
+    },
+
     suporte: function (d) {
-      var h = '<div class="note">As mensagens do "Fale com a gente" (problemas, ideias, elogios) ficam na aba Mensagens.</div>';
-      h += "<h2>Erros recentes</h2>";
-      h += '<div class="card">' + ((d.erros || []).length ? d.erros.map(function (e) {
-        return '<div class="row"><div class="t"><b>' + esc(e.context) + "</b>" + (e.message ? " · " + esc(e.message) : "") + '</div><div class="s">' + esc(dt(e.created_at)) + " · " + esc(e.email || "—") + "</div></div>";
-      }).join("") : '<div class="note">Nenhum erro registrado.</div>') + "</div>";
+      var h = "";
       h += "<h2>Provas cadastradas pela comunidade</h2>";
       h += '<div class="card">' + ((d.provas || []).length ? d.provas.slice(0, 40).map(function (r) {
         return '<div class="row"' + (r.oculta ? ' style="opacity:.55"' : "") + '><div class="t">' + esc(r.nome) + '<div class="s">' + dia(r.data_inicio) + (r.cidade ? " · " + esc(r.cidade) + (r.uf ? "/" + esc(r.uf) : "") : "") + " · por " + esc(r.criada_por_email || "?") + '</div></div><div class="v">' +
@@ -654,7 +734,7 @@ textarea.fi{resize:vertical;min-height:70px}
       h += '<div class="note">' + pagos + " com plano pago ou cortesia · " + (at.length ? (alunos / at.length).toFixed(1).replace(".", ",") : "0") + " alunos por treinador.</div>";
       h += "<h2>Treinadores</h2>";
       h += cs.length ? cs.slice().sort(function (a, b) { return (b.status === "em_analise") - (a.status === "em_analise"); }).map(function (c) { return coachCard(c, assin); }).join("") : vazio("Ninguém cadastrado ainda.");
-      h += "<h2>Liberar direto pelo e-mail</h2><div class=\"card\"><input id=\"co-email\" type=\"email\" inputmode=\"email\" autocapitalize=\"none\" placeholder=\"E-mail da pessoa (já com conta no Movo)\">" +
+      h += "<h2>Liberar direto pelo e-mail</h2><div class=\"card\"><input id=\"co-email\" type=\"email\" inputmode=\"email\" autocapitalize=\"none\" placeholder=\"E-mail da conta no Movo\">" +
         '<input id="co-nome" type="text" placeholder="Nome que os alunos vão ver">' + btn("Liberar treinador", "coach-liberar", {}, "pri") +
         '<div class="note">Aprovar libera os convites; suspender congela os vínculos e avisa os alunos.</div></div>';
       return h;
@@ -700,7 +780,7 @@ textarea.fi{resize:vertical;min-height:70px}
         return '<div class="row"><div class="t">' + esc(a.email) + '<div class="s">' + esc(planoNome(a.linha, a.plano)) + " · " + esc(a.status) + (a.origem === "manual" ? " · manual" : "") + (a.teste_ate ? " · teste até " + dia(a.teste_ate) : "") + '</div></div><div class="v">' +
           btn("Tirar", "plano", { email: a.email, linha: a.linha, plano: "gratis", modo: "ativa" }) + "</div></div>";
       }).join("") : '<div class="note">Ninguém com plano pago ainda.</div>') + "</div>";
-      h += '<h2>Dar plano</h2><div class="card"><input id="pl-email" type="email" inputmode="email" autocapitalize="none" placeholder="E-mail da pessoa">' +
+      h += '<h2>Dar plano</h2><div class="card"><input id="pl-email" type="email" inputmode="email" autocapitalize="none" placeholder="E-mail da conta no Movo">' +
         '<div style="display:flex;gap:8px;flex-wrap:wrap"><select class="fi" id="pl-linha" style="flex:1"><option value="aluno">Aluno</option><option value="treinador">Treinador</option></select>' +
         '<select class="fi" id="pl-plano" style="flex:1">' + PLANOS.aluno.map(function (p) { return '<option value="' + p.id + '">' + p.nome + "</option>"; }).join("") + "</select>" +
         '<select class="fi" id="pl-modo" style="flex:1"><option value="ativa">Cortesia</option><option value="teste">Teste (14 dias)</option></select></div>' + btn("Dar plano", "plano-dar", {}, "pri") + "</div>";
@@ -816,17 +896,11 @@ textarea.fi{resize:vertical;min-height:70px}
       return h;
     },
     saude: function (d) {
-      var s = d.s || {}, e24 = +s.erros_24h || 0, eAnt = +s.erros_24h_antes || 0, iaF = +s.ia_falhas_24h || 0, iaT = +s.ia_total_24h || 0, NB = " ";
-      var lims = limitesLista(d.lim || {}, d.resend), pior = lims.reduce(function (m, x) { return Math.max(m, x.uso / x.max); }, 0);
-      var pubs = [["App", "do app", d.ghApp], ["Site e painel", "do site e painel", d.ghSite]];
-      var falhas = pubs.filter(function (p) { return p[2] && p[2].status === "completed" && p[2].conclusion !== "success"; });
-      var alerta = +s.erros_30min >= 10 || (+s.ia_falhas_1h >= 3 && +s.ia_falhas_1h / Math.max(1, +s.ia_total_1h) >= 0.5) || pior >= 0.9;
-      var aviso = !alerta && (e24 > Math.max(10, eAnt * 2) || pior >= 0.7 || falhas.length > 0);
-      var h = '<div class="card"><div class="verdict ' + (alerta || aviso ? "warn" : "ok") + '">' + (alerta ? "Atenção: algo fora do normal" : aviso ? "Vale ficar de olho" : "Tudo normal") + "</div>";
+      var s = d.s || {}, e24 = +s.erros_24h || 0, eAnt = +s.erros_24h_antes || 0, iaF = +s.ia_falhas_24h || 0, iaT = +s.ia_total_24h || 0, NB = "\u00a0";
+      var vd = vereditoSaude(d), lims = vd.lims, pubs = vd.pubs, porque = vd.porque;
+      var h = '<div class="card"><div class="verdict ' + vd.cls + '">' + vd.titulo + "</div>";
       h += '<div class="grid g3" style="margin-top:8px">' + stat(e24, "erros (24" + NB + "h)", "", eAnt ? "dia anterior: " + eAnt : "") +
         (iaT ? stat(iaF + " de " + iaT, "falhas da IA (24" + NB + "h)", iaF ? "warn" : "") : stat("—", "IA sem uso em 24" + NB + "h")) + stat(+s.ativos_24h || 0, "abriram o app (24" + NB + "h)") + "</div>";
-      var porque = lims.filter(function (x) { return x.uso / x.max >= 0.7; }).map(function (x) { return x.rot + " em " + Math.round(x.uso / x.max * 100) + "% do limite"; })
-        .concat(falhas.map(function (p) { return "Publicação " + p[1] + " falhou"; }));
       if (porque.length) h += '<div class="note"><b>' + esc(porque.join(" · ")) + "</b></div>";
       if ((s.erros_top || []).length) h += '<div class="note">Mais comuns (24 h): ' + s.erros_top.map(function (t) { return esc(t.context) + " (" + t.n + "×)"; }).join(" · ") + "</div>";
       h += '<div class="note">Você recebe e-mail se houver pico de erros, a IA falhar muito, o gasto da IA chegar a 70% do teto ou o banco passar de 400 MB. Os outros limites só aparecem aqui.</div></div>';
@@ -892,7 +966,7 @@ textarea.fi{resize:vertical;min-height:70px}
   function carregarPendencias() {
     sb.rpc("admin_m_pendencias").then(function (r) {
       if (r.error || !r.data) return;
-      pend = r.data; pend.mensagens = (+pend.relatos || 0) + (+pend.feedback || 0); desenharAbas();
+      pend = r.data; pend.mensagens = (+pend.relatos || 0) + (+pend.feedback || 0); if (atual) desenharNav();
       try { if (navigator.setAppBadge) { if (pend.total) navigator.setAppBadge(pend.total); else navigator.clearAppBadge(); } } catch (e) {}
     });
   }
@@ -1105,7 +1179,7 @@ textarea.fi{resize:vertical;min-height:70px}
   function paint(id, d, ts) {
     $("main").classList.remove("busy");
     var h;
-    try { h = metaHtml(ts) + (VIEW[id] || OPS_VIEW[id])(d); }
+    try { h = (id === "mais" ? "" : metaHtml(ts)) + (VIEW[id] || OPS_VIEW[id])(d); }
     catch (e) { h = '<div class="err">Não consegui montar esta tela com os dados recebidos.</div><p><button class="ib" id="tentar" type="button">Tentar de novo</button></p>'; }
     $("main").innerHTML = h;
     var t = $("tentar"); if (t) t.onclick = function () { open(id, true); };
@@ -1171,14 +1245,8 @@ textarea.fi{resize:vertical;min-height:70px}
 
   function open(id, force) {
     atual = id;
-    if (!DETALHE[id]) { lsSet("movo-admin-tab", id); try { history.replaceState(null, "", "#" + id); } catch (e) {} }
-    var aba = abaDe(id);
-    if (aba && aba.g !== grupo) { grupo = aba.g; desenharAbas(); }
-    Array.prototype.forEach.call($("tabs").children, function (b) {
-      var on = b.getAttribute("data-id") === (DETALHE[id] || id);
-      b.setAttribute("aria-selected", String(on));
-      if (on && b.scrollIntoView) b.scrollIntoView({ inline: "center", block: "nearest" });
-    });
+    if (!DETALHE[id]) { lsSet("movo-admin-tab", id); lsSet("movo-admin-sub-" + destDe(id).d, id); try { history.replaceState(null, "", "#" + id); } catch (e) {} }
+    desenharNav();
     var c = cache[id];
     if (c && !force) { paint(id, c.data, c.ts); return; }
     var my = ++reqSeq;
@@ -1211,31 +1279,42 @@ textarea.fi{resize:vertical;min-height:70px}
     $("f1").hidden = false; $("f2").hidden = true; $("lmsg").textContent = "Acesso restrito. Entre com o seu e-mail de admin.";
     try { var pend = JSON.parse(lsGet("movo-admin-pend") || "null"); if (pend && Date.now() - pend.ts < 15 * 60 * 1000) { $("email").value = pend.email; passoCodigo(pend.email); } } catch (e) {}
   }
-  function desenharAbas() {
-    Array.prototype.forEach.call($("grp").children, function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-g") === grupo)); });
-    var sel = DETALHE[atual] || atual;
-    $("tabs").innerHTML = TABS.filter(function (t) { return t.g === grupo; }).map(function (t) {
-      var n = BADGE[t.id] ? +pend[BADGE[t.id]] || 0 : 0;
-      return '<button class="tab" role="tab" type="button" data-id="' + t.id + '" aria-selected="' + (t.id === sel) + '">' + t.t + (n ? '<span class="bd">' + n + "</span>" : "") + "</button>";
+  // Selo: número na barra (Início, Mensagens, Pessoas, Mais); ponto nos chips; número nas linhas de "Mais".
+  function nPend(id) { return BADGE[id] ? +pend[BADGE[id]] || 0 : 0; }
+  function nDest(x) { return x.d === "mais" ? MAIS.reduce(function (t, g) { return t + g[1].reduce(function (u, id) { return u + nPend(id); }, 0); }, 0) : x.d === "num" || x.d === "ini" ? 0 : x.tabs.reduce(function (t, id) { return t + nPend(id); }, 0); }
+  function desenharNav() {
+    var sel = DETALHE[atual] || atual, dst = destDe(atual), aba = abaDe(atual) || {}, emMais = dst.d === "mais" && sel !== "mais";
+    $("nav").innerHTML = DEST.map(function (x) {
+      var n = nDest(x);
+      return '<button type="button" data-d="' + x.d + '" aria-label="' + x.t + (n ? ", " + n + (n > 1 ? " pendentes" : " pendente") : "") + '"' + (x === dst ? ' aria-current="page"' : "") + '><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">' + x.ic + "</svg>" +
+        (n ? '<i class="bd">' + n + "</i>" : "") + "</span>" + x.t + "</button>";
     }).join("");
-    var opBtn = $("grp").children[0]; opBtn.textContent = "Operação" + (pend.total ? " (" + pend.total + ")" : "");
+    $("tt").textContent = emMais ? aba.t : dst.t;
+    $("voltar-mais").hidden = !emMais;
+    var subs = dst.tabs.length > 1;
+    $("subs").hidden = !subs;
+    $("subs").innerHTML = subs ? dst.tabs.map(function (id) {
+      return '<button type="button" role="tab" data-id="' + id + '" aria-selected="' + (id === sel) + '"' + (nPend(id) ? ' class="dot"' : "") + ">" + esc(abaDe(id).t) + "</button>";
+    }).join("") : "";
   }
   function mostrarApp() {
     $("login").hidden = true; $("app").hidden = false; lsSet("movo-admin-pend", null);
     if (!mostrarApp.ligado) {
       mostrarApp.ligado = true;
-      $("tabs").addEventListener("click", function (e) { var b = e.target.closest(".tab"); if (b) open(b.getAttribute("data-id")); });
-      $("grp").addEventListener("click", function (e) {
-        var b = e.target.closest("button"); if (!b || b.getAttribute("data-g") === grupo) return;
-        grupo = b.getAttribute("data-g"); desenharAbas();
-        open(TABS.filter(function (t) { return t.g === grupo; })[0].id);
+      $("subs").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) open(b.getAttribute("data-id")); });
+      $("nav").addEventListener("click", function (e) {
+        var b = e.target.closest("button"); if (!b) return;
+        var x = DEST.filter(function (y) { return y.d === b.getAttribute("data-d"); })[0];
+        var ultimo = lsGet("movo-admin-sub-" + x.d);
+        open(x.tabs.indexOf(ultimo) >= 0 ? ultimo : x.tabs[0]);
+        try { window.scrollTo(0, 0); } catch (er) {}
       });
+      $("voltar-mais").addEventListener("click", function () { open("mais"); });
     }
     carregarPendencias();
-    $("foot-info").textContent = "Dados de São Paulo (UTC−3) · sem você e contas de teste";
     var h = (location.hash || "").slice(1), ini = lsGet("movo-admin-tab");
+    h = ANTIGA[h] || h; ini = ANTIGA[ini] || ini;
     var id = TABS.some(function (t) { return t.id === h; }) ? h : TABS.some(function (t) { return t.id === ini; }) ? ini : "pend";
-    grupo = abaDe(id).g; desenharAbas();
     open(id);
   }
   sb.auth.onAuthStateChange(function (ev) { if (ev === "SIGNED_OUT") { cache = {}; mostrarLogin(); } });
@@ -1270,7 +1349,7 @@ textarea.fi{resize:vertical;min-height:70px}
     }, function () { $("b2").disabled = false; $("lerr").hidden = false; $("lerr").textContent = "Sem conexão. Tente de novo."; });
   });
   $("voltar").addEventListener("click", function () { lsSet("movo-admin-pend", null); mostrarLogin(); });
-  $("sair").addEventListener("click", function () { lsSet("movo-admin-pend", null); sb.auth.signOut(); });
+  document.addEventListener("click", function (e) { if (e.target.closest("#sair")) { lsSet("movo-admin-pend", null); sb.auth.signOut(); } });
   $("reload").addEventListener("click", function () { if (atual) { delete cache[atual]; open(atual, true); } });
   document.addEventListener("visibilitychange", function () {
     if (document.visibilityState !== "visible" || !atual || $("app").hidden) return;
