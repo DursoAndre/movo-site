@@ -292,9 +292,9 @@ textarea.fi{resize:vertical;min-height:70px}
     if (tab === "geral") return sb.rpc("admin_m_geral");
     if (tab === "ret") return sb.rpc("admin_m_retencao");
     if (tab === "funil") return sb.rpc("admin_m_funil");
-    if (tab === "ativ") return Promise.all([sb.rpc("admin_m_ativacao"), sb.rpc("admin_m_canais"), sb.rpc("admin_m_usoretorno")]).then(function (r) {
-      var er = r.filter(function (x) { return x.error; })[0];
-      return er ? { error: er.error } : { data: { ativ: r[0].data, canais: r[1].data, usoret: r[2].data } };
+    if (tab === "ativ") return Promise.all([sb.rpc("admin_m_ativacao"), sb.rpc("admin_m_canais"), sb.rpc("admin_m_usoretorno"), sb.rpc("admin_m_migracao")]).then(function (r) {
+      var er = r.slice(0, 3).filter(function (x) { return x.error; })[0];
+      return er ? { error: er.error } : { data: { ativ: r[0].data, canais: r[1].data, usoret: r[2].data, mig: r[3].error ? null : r[3].data } };
     });
     if (tab === "uso") return sb.rpc("admin_m_funcoes", { p_dias: params.uso });
     if (tab === "conv") return sb.rpc("admin_m_convites", { p_dias: params.conv });
@@ -362,6 +362,17 @@ textarea.fi{resize:vertical;min-height:70px}
         }).join("") + "</div>";
       }
       h += '<div class="note">Só direção, não causa: quem usa mais recursos já costuma ser mais engajado. Com menos de 10 pessoas por linha, trate como pista para conversar com a pessoa.</div>';
+      if (d.mig) {
+        var m = d.mig, an = m.anamnese || {}, im = m.importacoes || {};
+        h += '<h2>Migração (90 dias)</h2>';
+        h += '<div class="grid g3">' + stat(an.respondidas ? an.em_48h + " de " + an.respondidas : "—", "anamneses respondidas em até 48 h", "", an.pedidas + " " + (an.pedidas === 1 ? "pedida" : "pedidas")) +
+          stat(im.total ? im.csv + " de " + im.total : "—", "importações por CSV", "", im.total ? "média de " + String(im.novos_ex_media == null ? 0 : im.novos_ex_media).replace(".", ",") + " exercícios novos" + (im.csv ? " (CSV: " + String(im.novos_ex_csv == null ? 0 : im.novos_ex_csv).replace(".", ",") + ")" : "") : "") +
+          stat(im.medidas || 0, "registros de medidas importados", "", pl(im.medidas_vezes || 0, "importação", "importações")) + "</div>";
+        h += '<div class="card scroll"><table><tr><th>Treinador</th><th>1º convite</th><th>Alunos com treino</th><th>Até o 3º aluno</th></tr>';
+        if (!m.treinadores.length) h += '<tr><td colspan="4" class="low"><small>Nenhum treinador novo no período.</small></td></tr>';
+        m.treinadores.forEach(function (t) { h += "<tr><td>" + esc(t.nome) + "</td><td>" + dm(String(t.primeiro).slice(0, 10)) + "</td><td>" + t.alunos + "</td><td>" + (t.dias == null ? '<small class="low">ainda não</small>' : String(t.dias).replace(".", ",") + " dias") + "</td></tr>"; });
+        h += '</table></div><div class="note"><b>Até o 3º aluno</b>: tempo entre o 1º convite do treinador e o 3º aluno com treino enviado. <b>Exercícios novos</b> são os que não acharam par no catálogo na importação (quanto menor, melhor). Anamnese conta só a 1ª resposta de cada pedido, pelo tempo desde o pedido.</div>';
+      }
       return h;
     },
     uso: function (d) {
