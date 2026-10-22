@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Movo: app de treino para academia, corrida e esportes</title>
-<meta name="description" content="Reúna ficha de academia, corrida, vôlei, CrossFit e Hyrox em um só lugar e acompanhe sua evolução. Instale pelo celular, sem loja. Comece grátis.">
+<meta name="description" content="Musculação, corrida, HYROX e esportes na mesma semana. Use sua ficha, siga um plano pronto ou receba do seu treinador. Grátis durante o beta, sem loja.">
 <link rel="canonical" href="https://movoapp.com.br/">
 <meta name="theme-color" content="#14161A">
 <meta name="color-scheme" content="dark">
@@ -12,7 +12,7 @@
 <meta property="og:locale" content="pt_BR">
 <meta property="og:site_name" content="Movo">
 <meta property="og:title" content="Movo: todo o seu treino em um só lugar">
-<meta property="og:description" content="Ficha de academia, corrida e esportes em um só lugar, com evolução de carga e frequência. Instale pelo navegador e comece grátis.">
+<meta property="og:description" content="Musculação, corrida e esportes na mesma semana, com plano pronto ou do seu treinador. Grátis durante o beta.">
 <meta property="og:url" content="https://movoapp.com.br/">
 <meta property="og:image" content="https://movoapp.com.br/media/og.jpg">
 <meta property="og:image:width" content="1200">
@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Movo","applicationCategory":"HealthApplication","operatingSystem":"Android, iOS (web app)","inLanguage":"pt-BR","url":"https://movoapp.com.br/","image":"https://movoapp.com.br/media/og.jpg","description":"App de treino que reúne ficha de academia, corrida e esportes em um só lugar, com evolução de carga e frequência.","offers":{"@type":"Offer","price":"0","priceCurrency":"BRL"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Movo","applicationCategory":"HealthApplication","operatingSystem":"Android, iOS (web app)","inLanguage":"pt-BR","url":"https://movoapp.com.br/","image":"https://movoapp.com.br/media/og.jpg","description":"App de treino que reúne musculação, corrida e esportes na mesma semana, com plano de semanas, desafios e modo treinador.","offers":{"@type":"Offer","price":"0","priceCurrency":"BRL"}}</script>
 <style>
 :root{--bg:#14161A;--surface:#1D2024;--surface2:#24282E;--line:#2A2E34;--line2:#737A82;--text:#F2F4F5;--muted:#A9AFB5;--lime:#C6F135;--r:14px}
 *{box-sizing:border-box}
@@ -221,18 +221,27 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 @media (min-width:700px){.chap::before{left:32px}.adv{grid-template-columns:repeat(4,1fr)}.adv .main{grid-column:span 2}.cta-break{grid-template-columns:1fr auto;align-items:center;text-align:left}.cta-break .btn{min-width:240px}.cta-break .micro{grid-column:1/-1}.duo{grid-auto-flow:row;grid-template-columns:repeat(2,1fr);overflow:visible;margin:0;padding:0;justify-content:center}.coach-cta{flex-direction:row}.coach-cta .btn{min-width:220px}}
 @media (min-width:1000px){.chap{padding-block:72px}.chap::before{left:48px}.cnav{display:none}.top nav{gap:22px}.feat{grid-template-columns:1fr 1fr;gap:80px}.feat.rev .media{order:-1}.vtabs{display:none}.vstage{grid-auto-flow:row;grid-template-columns:repeat(5,1fr);overflow:visible;margin:0;padding:0}.vp:not(.on) .phone{opacity:1;transform:none}.vp .phone{width:min(100%,200px)}.coach-grid{grid-template-columns:.8fr 1.2fr;align-items:center;gap:80px}.sticky{display:none}}
 @media (max-height:420px){.sticky{display:none}}
+/* O app: 3 motivos com print (celular: print à esquerda; computador: 3 colunas) */
+.motivos{list-style:none;margin:0;padding:0;display:grid;gap:26px}
+.motivos figure{margin:0;display:grid;grid-template-columns:132px 1fr;gap:18px;align-items:center}
+.motivos .phone{width:132px;border-width:5px;border-radius:22px;margin:0}
+.motivos figcaption{min-width:0}
+.motivos figcaption b{display:block;font:700 21px/1.15 Oswald,sans-serif}
+.motivos figcaption span{display:block;margin-top:6px;color:var(--muted);font-size:15px;max-width:36ch}
+.faq .ans{padding:0 0 18px}.faq .ans>p{padding-bottom:0}.faq .tabs{margin:16px 0 14px}.faq .guide ol{color:var(--muted);font-size:15px}
+@media (min-width:1000px){.motivos{grid-template-columns:repeat(3,1fr);gap:40px}.motivos figure{grid-template-columns:1fr;text-align:center;gap:22px}.motivos .phone{width:220px;border-width:7px;border-radius:32px;margin-inline:auto}.motivos figcaption span{margin-inline:auto}}
 </style>
 </head>
 <body>
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
 <nav class="cnav" id="cnav" aria-label="Capítulos"><ul>
-  <li><a href="#como-funciona">Como funciona</a></li><li><a href="#vantagens">Recursos</a></li><li><a href="#treinadores">Treinadores</a></li><li><a href="#instalar">Instalar</a></li><li><a href="#perguntas">Dúvidas</a></li>
+  <li><a href="#como-funciona">Como funciona</a></li><li><a href="#app">O app</a></li><li><a href="#treinadores">Treinadores</a></li><li><a href="#perguntas">Dúvidas</a></li>
 </ul><i class="prog" id="prog"></i></nav>
 <div class="wrap">
 <header class="top">
   <a class="logo" href="./" aria-label="Movo, início"><svg width="30" height="30" viewBox="0 0 240 240" fill="none" aria-hidden="true"><rect x="36" y="126" width="44" height="74" rx="14" fill="#C6F135"/><rect x="98" y="84" width="44" height="116" rx="14" fill="#C6F135"/><rect x="160" y="40" width="44" height="160" rx="14" fill="#C6F135"/></svg>movo</a>
-  <nav aria-label="Seções"><a href="#como-funciona">Como funciona</a><a href="#vantagens">Recursos</a><a href="#treinadores">Treinadores</a><a href="#instalar">Instalar</a><a href="#perguntas">Dúvidas</a></nav>
-  <a class="btn sm" href="{{APP}}?utm_source=lp&pos=nav" data-cta="nav">Começar</a>
+  <nav aria-label="Seções"><a href="#como-funciona">Como funciona</a><a href="#app">O app</a><a href="#treinadores">Treinadores</a><a href="#perguntas">Dúvidas</a></nav>
+  <a class="btn sm" href="{{APP}}?utm_source=lp&pos=nav" data-cta="nav">Começar grátis</a>
 </header>
 </div>
 <main id="conteudo" tabindex="-1">
@@ -240,98 +249,63 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 <section class="hero" aria-labelledby="h1">
 <div class="wrap"><div class="grid">
   <div>
-    <p class="eyebrow">Comece agora, já grátis</p>
+    <p class="eyebrow">Grátis durante o beta</p>
     <h1 id="h1">Todo o seu treino <span class="hl">em um só lugar.</span></h1>
-    <p class="lead">Ficha de academia, corrida, vôlei, CrossFit, Hyrox. Monte a semana, marque o que fez e veja sua evolução, no celular.</p>
+    <p class="lead">Musculação, corrida, HYROX e o seu esporte na mesma semana. Use sua ficha, siga um plano pronto ou receba do seu treinador.</p>
     <div class="cta">
-      <a class="btn" href="{{APP}}?utm_source=lp&pos=hero" data-cta="hero">Montar meu treino</a>
-      <a class="link" href="#vantagens">Ver o app em ação</a>
+      <a class="btn" href="{{APP}}?utm_source=lp&pos=hero" data-cta="hero">Começar grátis</a>
+      <a class="link" href="#app">Ver o app</a>
     </div>
-    <p class="micro">Entre com um código no e-mail. Sem senha, sem cartão. Instala direto do navegador.</p>
+    <p class="micro">Entre com um código no e-mail. Sem senha e sem cartão.</p>
+    <div class="warn" id="inapp" role="note"><b>Está no navegador do Instagram ou do WhatsApp?</b> Ele não deixa instalar. Copie o link e abra no Safari (iPhone) ou no Chrome (Android).<p style="margin-top:12px"><button class="btn ghost sm" id="copy" type="button">Copiar link do app</button> <span id="copied" class="muted" aria-live="polite"></span></p></div>
   </div>
-  <div class="phone-wrap"><div class="phone">{{pic hoje "Tela inicial do Movo mostrando o treino do dia, a contagem regressiva de uma prova e o desafio da semana." eager}}</div></div>
+  <div class="phone-wrap"><div class="phone">{{pic plano "Aba Treinos do Movo com um plano híbrido de 8 semanas: fases, semana leve e a semana atual com treinos de força e corridas." eager}}</div></div>
 </div></div>
 </section>
 
 <section id="como-funciona" class="chap" data-chapter aria-labelledby="h-como"><div class="wrap">
-  <header class="chead"><p class="eyebrow"><b>01</b><span>Como funciona</span></p>
+  <header class="chead"><p class="eyebrow"><span>Como funciona</span></p>
   <h2 id="h-como">Seu treino está em vários lugares. Junte tudo em três passos.</h2>
   <p class="lead">A ficha num PDF no WhatsApp, a corrida em outro app, o vôlei só na memória. O Movo junta tudo em um só lugar.</p></header>
   <ol class="steps">
     <li class="reveal"><span class="n">01</span><h3>Entre pelo e-mail</h3><p>Você recebe um código, digita e pronto. Sem senha.</p></li>
-    <li class="reveal"><span class="n">02</span><h3>Traga sua ficha</h3><p>Importe de PDF, foto, planilha ou texto, ou monte pelo catálogo de exercícios.</p></li>
-    <li class="reveal"><span class="n">03</span><h3>Treine e marque</h3><p>Carga, séries, reps e descanso na mão. Atividades de fora entram com um toque em “fui”.</p></li>
+    <li class="reveal"><span class="n">02</span><h3>Traga seu treino</h3><p>Importe a ficha de PDF, foto ou planilha, e traga seus treinos de outro app sem esforço. Ou monte pelo catálogo.</p></li>
+    <li class="reveal"><span class="n">03</span><h3>Treine e marque</h3><p>Carga, séries e descanso na mão. Vôlei, CrossFit e o que mais você fizer entram com um toque.</p></li>
   </ol>
 </div></section>
 
-<section id="vantagens" class="chap" data-chapter aria-labelledby="h-van"><div class="wrap">
-  <header class="chead"><p class="eyebrow"><b>02</b><span>Em ação</span></p>
-  <h2 id="h-van">Menos planilha. Mais treino.</h2></header>
-  <ul class="demos">
-    <li><figure class="vp on" id="vp-ficha" data-src="media/v-ficha.mp4" data-poster="media/v-ficha.webp" data-t="ficha">
-      <div class="phone"><img src="media/v-ficha.webp" width="540" height="1168" loading="lazy" decoding="async" alt="Tela de importação do Movo com um texto de treinos colado."><button class="play" type="button" aria-label="Reproduzir vídeo: Montar a ficha, 19 segundos"><span><svg width="28" height="28" viewBox="0 0 24 24" fill="#14161A" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></button></div>
-      <figcaption><b>Traga a ficha e monte sua semana</b><span>Importe de PDF, foto ou planilha, confira e salve.</span><em>0:19</em><a class="nojs link" href="media/v-ficha.mp4">Assistir ao vídeo</a></figcaption>
-    </figure></li>
-    <li><figure class="vp on" id="vp-treinar" data-src="media/v-treinar.mp4" data-poster="media/v-treinar.webp" data-t="treinar">
-      <div class="phone"><img src="media/v-treinar.webp" width="540" height="1168" loading="lazy" decoding="async" alt="Tela do treino do dia no Movo com exercícios e o botão de iniciar."><button class="play" type="button" aria-label="Reproduzir vídeo: Treinar, 19 segundos"><span><svg width="28" height="28" viewBox="0 0 24 24" fill="#14161A" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></button></div>
-      <figcaption><b>Registre carga e descanso</b><span>Marque feito, anote a carga e use o timer.</span><em>0:19</em><a class="nojs link" href="media/v-treinar.mp4">Assistir ao vídeo</a></figcaption>
-    </figure></li>
-    <li><figure class="vp on" id="vp-desafios" data-src="media/v-desafios.mp4" data-poster="media/v-desafios.webp" data-t="desafios">
-      <div class="phone"><img src="media/v-desafios.webp" width="540" height="1168" loading="lazy" decoding="async" alt="Tela inicial do Movo com o desafio da semana."><button class="play" type="button" aria-label="Reproduzir vídeo: Desafios, 13 segundos"><span><svg width="28" height="28" viewBox="0 0 24 24" fill="#14161A" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></button></div>
-      <figcaption><b>Desafie quem treina com você</b><span>Regras, placar semanal e cartão para os stories.</span><em>0:13</em><a class="nojs link" href="media/v-desafios.mp4">Assistir ao vídeo</a></figcaption>
-    </figure></li>
-    <li><figure class="vp on" id="vp-corrida" data-src="media/v-corrida.mp4" data-poster="media/v-corrida.webp" data-t="corrida">
-      <div class="phone"><img src="media/v-corrida.webp" width="540" height="1168" loading="lazy" decoding="async" alt="Plano de treino de corrida gerado pelo Movo, com as semanas até a prova."><button class="play" type="button" aria-label="Reproduzir vídeo: Corrida e provas, 27 segundos"><span><svg width="28" height="28" viewBox="0 0 24 24" fill="#14161A" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></button></div>
-      <figcaption><b>Da prova marcada ao plano de treino</b><span>Calendário de provas, “Vou nessa” e plano de corrida gerado com IA.</span><em>0:27</em><a class="nojs link" href="media/v-corrida.mp4">Assistir ao vídeo</a></figcaption>
-    </figure></li>
+<section id="app" class="chap" data-chapter aria-labelledby="h-app"><div class="wrap">
+  <header class="chead"><p class="eyebrow"><span>O app</span></p>
+  <h2 id="h-app">Menos planilha. Mais treino.</h2></header>
+  <ul class="motivos">
+    <li><figure><div class="phone">{{pic treino "Treino de pernas em andamento no Movo, com séries, carga, repetições e o descanso contando."}}</div>
+      <figcaption><b>Sua ficha, do seu jeito</b><span>Carga, séries e descanso na mão, com a carga da última vez ao lado. Seus recordes aparecem sozinhos.</span></figcaption></figure></li>
+    <li><figure><div class="phone">{{pic origens "Tela O que você quer treinar, com as opções Força, Corrida, Híbrido e Sob medida com IA."}}</div>
+      <figcaption><b>Um plano de semanas pronto</b><span>Força, corrida ou híbrido, com semanas leves para recuperar. Tem prova marcada? A IA monta o plano até o dia.</span></figcaption></figure></li>
+    <li><figure><div class="phone">{{pic desafio "Desafio entre amigos no Movo, com a meta da semana e o placar de cada participante."}}</div>
+      <figcaption><b>Treine junto</b><span>Desafios com placar semanal e cartão para os stories. Tem treinador? Ele monta sua semana pelo Movo.</span></figcaption></figure></li>
   </ul>
   <aside class="cta-break" data-nosticky aria-label="Começar">
     <p class="t">Pronto para juntar tudo? <span class="muted">Leva menos de 2 minutos.</span></p>
-    <a class="btn" href="{{APP}}?utm_source=lp&pos=vantagens" data-cta="vantagens">Criar minha semana</a>
-    <p class="micro">Entre com um código no e-mail, sem senha.</p>
+    <a class="btn" href="{{APP}}?utm_source=lp&pos=vantagens" data-cta="vantagens">Começar grátis</a>
   </aside>
 </div></section>
 
 <section id="treinadores" class="chap coach" data-chapter data-nosticky aria-labelledby="h-coach"><div class="wrap">
-  <header class="chead"><p class="eyebrow"><b>03</b><span>Para treinadores</span><em class="tag">Beta</em></p>
+  <header class="chead"><p class="eyebrow"><span>Para treinadores</span></p>
   <h2 id="h-coach">Monte a semana do aluno. <span class="hl">Veja quem treinou.</span></h2>
-  <p class="lead">Envie a ficha pelo Movo ou importe a que você já tem. O aluno aceita cada mudança e decide o que você pode ver.</p></header>
+  <p class="lead">Força e corrida no mesmo app, para você e para o aluno. Ele aceita cada mudança e decide o que você pode ver.</p></header>
   <div class="coach-grid">
-    <div class="media"><figure class="vp on" id="vp-treinadores" data-src="media/v-treinadores.mp4" data-poster="media/v-treinadores.webp" data-t="treinadores">
-      <div class="phone lime"><img src="media/v-treinadores.webp" width="540" height="1168" loading="lazy" decoding="async" alt="Modo treinador do Movo com a lista de alunos."><button class="play" type="button" aria-label="Reproduzir vídeo: Para treinadores, 11 segundos"><span><svg width="28" height="28" viewBox="0 0 24 24" fill="#14161A" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></button></div>
-      
-    </figure></div>
+    <div class="media"><div class="phone lime">{{pic treinador "Modo treinador do Movo com a lista de alunos, quem treinou hoje e quem precisa de atenção."}}</div></div>
     <ul class="cb">
-      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l16-8-6 16-2-7z"/></svg><div><b>Envie a ficha pelo Movo</b><span>Ou importe de foto, PDF, planilha e WhatsApp.</span></div></li>
-      <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/></svg><div><b>Veja quem treinou</b><span>E quem precisa de atenção, num relance. Comente cada sessão.</span></div></li>
-      <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg><div><b>Modelos e semana duplicada</b><span>Sem refazer a ficha do zero toda vez.</span></div></li>
-      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/></svg><div><b>O aluno no controle</b><span>Aceita mudanças, define permissões e encerra o vínculo quando quiser.</span></div></li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l16-8-6 16-2-7z"/></svg><div><b>Envie a semana ou um plano</b><span>Uma semana ou várias, com fases. Importe a ficha que você já tem de foto, PDF ou planilha.</span></div></li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/></svg><div><b>Veja quem treinou</b><span>A lista “Para hoje” mostra quem treinou, quem sentiu dor e quem precisa de atenção.</span></div></li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="9" r="3.5"/><circle cx="17" cy="10" r="2.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M15 20c0-2.5 1.2-4.5 3-5.3 1.8.8 3 2.8 3 5.3"/></svg><div><b>Turmas</b><span>Monte a semana uma vez e envie para a turma toda.</span></div></li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/></svg><div><b>Anamnese, avaliação e seus vídeos</b><span>Questionário de saúde, medidas e vídeos seus em cada exercício. Funciona também no computador.</span></div></li>
     </ul>
   </div>
-  <div class="coach-cta"><a class="btn" href="{{APP}}?utm_source=lp-treinador&pos=treinador" data-cta="treinador">Sou treinador</a><a class="btn ghost" href="#perguntas">Como o aluno autoriza</a></div>
-  <p class="note">Modo treinador em beta: o cadastro passa por análise antes de liberar, e alguns recursos ainda vão mudar. Prefere falar antes? <a href="mailto:contato@movoapp.com.br" data-cta="email">contato@movoapp.com.br</a></p>
-</div></section>
-
-<section id="instalar" class="chap" data-chapter aria-labelledby="h-inst"><div class="wrap">
-  <header class="chead"><p class="eyebrow"><b>04</b><span>Instalar</span></p>
-  <h2 id="h-inst">Instale em 10 segundos. Sem loja de apps.</h2>
-  <p class="lead">O Movo é um app web instalável. Abra no celular e adicione à tela inicial: ele ganha ícone próprio, abre em tela cheia e registra seus treinos mesmo sem sinal.</p></header>
-  <div class="tabs" role="tablist" aria-label="Sistema do celular">
-    <button role="tab" id="t-android" aria-selected="true" aria-controls="g-android">Android</button>
-    <button role="tab" id="t-ios" aria-selected="false" aria-controls="g-ios">iPhone</button>
-  </div>
-  <div class="guide" id="g-android" role="tabpanel" aria-labelledby="t-android">
-    <ol><li>Abra o app no <b>Chrome</b>: <a href="{{APP}}?utm_source=lp&pos=install" data-cta="install">abrir o Movo</a>.</li><li>Toque no menu <b>⋮</b> (canto superior direito).</li><li>Toque em <b>Instalar app</b> (ou <b>Adicionar à tela inicial</b>).</li><li>Confirme. O ícone do Movo aparece na tela inicial.</li></ol>
-  </div>
-  <div class="guide" id="g-ios" role="tabpanel" aria-labelledby="t-ios">
-    <ol><li>Abra o app <b>no Safari</b>: <a href="{{APP}}?utm_source=lp&pos=install" data-cta="install">abrir o Movo</a>. Em outros navegadores o passo pode não aparecer.</li><li>Toque em <b>Compartilhar</b> (o quadrado com a seta para cima, na parte de baixo).</li><li>Role e toque em <b>Adicionar à Tela de Início</b>.</li><li>Toque em <b>Adicionar</b> (canto superior direito).</li></ol>
-    <p class="note">Depois de instalar, entre com o código do e-mail dentro do app instalado. Se o link do e-mail abrir no navegador, volte ao app e digite o código.</p>
-  </div>
-  <div class="warn" id="inapp" role="note"><b>Está no navegador do Instagram ou do WhatsApp?</b> Ele não deixa instalar. Copie o link e abra no Safari (iPhone) ou no Chrome (Android).<p style="margin-top:12px"><button class="btn ghost sm" id="copy" type="button">Copiar link do app</button> <span id="copied" class="muted" aria-live="polite"></span></p></div>
-    <div class="priv-mini"><h3>Seus dados são seus.</h3><ul>
-    <li>Exporte seus dados e exclua a conta dentro do app.</li>
-    <li>O treinador só vê o que você autorizar, e os amigos nunca veem suas cargas.</li>
-    <li>Detalhes na <a href="privacidade.html">Política de Privacidade</a> e nos <a href="termos.html">Termos de Uso</a>.</li></ul></div>
+  <div class="coach-cta"><a class="btn" href="{{APP}}?utm_source=lp-treinador&pos=treinador" data-cta="treinador">Sou treinador</a></div>
+  <p class="note">Prefere conversar antes? <a href="mailto:contato@movoapp.com.br" data-cta="email">contato@movoapp.com.br</a></p>
 </div></section>
 
 <!-- PLACEHOLDER: depoimentos fictícios. Esta seção fica OCULTA para o público e só aparece com ?depoimentos=1 (para revisão). Trocar por depoimentos reais com autorização antes de mostrar. -->
@@ -348,24 +322,36 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 </div></section>
 
 <section id="perguntas" class="chap alt" data-chapter data-nosticky aria-labelledby="h-faq"><div class="wrap">
-  <header class="chead"><p class="eyebrow"><b>05</b><span>Dúvidas</span></p>
+  <header class="chead"><p class="eyebrow"><span>Dúvidas</span></p>
   <h2 id="h-faq">Perguntas frequentes</h2></header>
   <div class="faq">
-    <details><summary>O Movo é grátis?</summary><p>Sim. Você usa o Movo sem pagar e sem cartão. As funções de IA têm limite de uso por mês.</p></details>
-    <details><summary>O que significa beta?</summary><p>Que o Movo já funciona no dia a dia, mas ainda está em construção: entram recursos novos, algumas telas mudam de lugar e pode haver falhas. O modo treinador, por exemplo, está em beta e libera o cadastro depois de uma análise. Há um botão de feedback dentro do app, e a gente lê tudo.</p></details>
-    <details><summary>Preciso instalar? Está nas lojas?</summary><p>Não precisa. Dá para usar direto no navegador. Instalar é opcional: o Movo ganha ícone na tela inicial e abre em tela cheia, sem passar pela loja. O Movo é um app web e não há versão na Play Store nem na App Store. O passo a passo está em “Instalar”.</p></details>
-    <details><summary>E meus dados? Quem vê?</summary><p>Seus treinos ficam salvos na sua conta, na nuvem, para você acessar de qualquer aparelho. Amigos de um desafio só veem o que conta pontos, nunca suas cargas ou fichas. Um treinador só vê o que você autorizar. Você pode exportar seus dados e excluir a conta pelo app. Detalhes na <a href="privacidade.html">Política de Privacidade</a>.</p></details>
-    <details><summary>Usa IA? O que vai para ela?</summary><p>Algumas funções (importar ficha, montar treino, plano de corrida e ajustar a semana) usam IA da Anthropic e enviam só o necessário para aquela função. Nada é salvo sem você revisar. A IA sugere e não substitui profissional de saúde ou de educação física.</p></details>
-    <details><summary>Sou treinador. Como entro?</summary><p>Ao entrar, escolha “Sou treinador” e preencha seu perfil. O cadastro passa por análise durante o beta. Depois, é só convidar seus alunos por link ou código. O aluno decide o que você vê.</p></details>
+    <details><summary>O Movo é grátis?</summary><p>Sim, durante o beta, e sem cartão. Beta quer dizer que o Movo já funciona no dia a dia, mas ganha novidades toda semana e algumas telas ainda mudam. Quando houver plano pago, registrar treinos continua grátis e nada do que você registrou é apagado. As funções de IA têm limite de uso por mês.</p></details>
+    <details id="instalar"><summary>Como instalo no celular?</summary><div class="ans">
+      <p>Não está nas lojas, e nem precisa: o Movo é um app web. Dá para usar direto no navegador ou adicionar à tela inicial, onde ele ganha ícone, abre em tela cheia e registra treinos mesmo sem sinal.</p>
+      <div class="tabs" role="tablist" aria-label="Sistema do celular">
+        <button role="tab" id="t-android" aria-selected="true" aria-controls="g-android">Android</button>
+        <button role="tab" id="t-ios" aria-selected="false" aria-controls="g-ios">iPhone</button>
+      </div>
+      <div class="guide" id="g-android" role="tabpanel" aria-labelledby="t-android">
+        <ol><li>Abra o app no <b>Chrome</b>: <a href="{{APP}}?utm_source=lp&pos=install" data-cta="install">abrir o Movo</a>.</li><li>Toque no menu <b>⋮</b> (canto superior direito).</li><li>Toque em <b>Instalar app</b> (ou <b>Adicionar à tela inicial</b>).</li><li>Confirme. O ícone do Movo aparece na tela inicial.</li></ol>
+      </div>
+      <div class="guide" id="g-ios" role="tabpanel" aria-labelledby="t-ios">
+        <ol><li>Abra o app <b>no Safari</b>: <a href="{{APP}}?utm_source=lp&pos=install" data-cta="install">abrir o Movo</a>. Em outros navegadores o passo pode não aparecer.</li><li>Toque em <b>Compartilhar</b> (o quadrado com a seta para cima, na parte de baixo).</li><li>Role e toque em <b>Adicionar à Tela de Início</b>.</li><li>Toque em <b>Adicionar</b> (canto superior direito).</li></ol>
+        <p class="note">Depois de instalar, entre com o código do e-mail dentro do app instalado. Se o link do e-mail abrir no navegador, volte ao app e digite o código.</p>
+      </div>
+    </div></details>
+    <details><summary>Já uso outro app. Dá para trazer meus treinos?</summary><p>Dá, e é fácil. Na hora de importar, envie o arquivo exportado do seu app atual, uma planilha, um PDF ou a foto da ficha. O Movo organiza tudo e você confere antes de salvar.</p></details>
+    <details><summary>E meus dados? Quem vê?</summary><p>Seus treinos ficam salvos na sua conta, na nuvem, para você acessar de qualquer aparelho. Amigos de um desafio só veem o que conta pontos, nunca suas cargas ou fichas. Um treinador só vê o que você autorizar. Você pode exportar seus dados e excluir a conta pelo app. Detalhes na <a href="privacidade.html">Política de Privacidade</a> e nos <a href="termos.html">Termos de Uso</a>.</p></details>
+    <details><summary>Usa IA? O que vai para ela?</summary><p>Algumas funções (importar treinos, montar o plano sob medida, plano para prova e ajustar a semana) usam IA da Anthropic e enviam só o necessário para aquela função. Nada é salvo sem você revisar. A IA sugere e não substitui profissional de saúde ou de educação física.</p></details>
+    <details><summary>Sou treinador. Como entro?</summary><p>Ao entrar, escolha “Sou treinador” e preencha seu perfil. Durante o beta, a gente confere o cadastro antes de liberar. Depois, é só convidar seus alunos por link ou código. O aluno decide o que você vê.</p></details>
   </div>
   <p class="note" style="margin-top:22px">Não achou sua dúvida? Fale pelo botão de feedback dentro do app ou por e-mail: <a href="mailto:contato@movoapp.com.br" data-cta="email">contato@movoapp.com.br</a>.</p>
 </div></section>
 
 <section class="final" data-nosticky aria-labelledby="h-final"><div class="wrap"><div class="box reveal">
   <h2 id="h-final">Monte seu treino agora.</h2>
-  <p class="lead" style="margin:12px auto 0">Leva menos de 2 minutos para começar.</p>
-  <div class="row"><a class="btn" href="{{APP}}?utm_source=lp&pos=final" data-cta="final" id="cta-final">Começar agora</a><a class="btn ghost" href="#vantagens">Ver o app em ação</a></div>
-  <p class="micro" style="margin-top:14px;font-size:14px;color:var(--muted)">Sem senha, sem cartão.</p>
+  <p class="lead" style="margin:12px auto 0">Grátis durante o beta. Sem senha e sem cartão.</p>
+  <div class="row"><a class="btn" href="{{APP}}?utm_source=lp&pos=final" data-cta="final" id="cta-final">Começar grátis</a></div>
 </div></div></section>
 
 </main>
@@ -410,15 +396,6 @@ var links=[].slice.call(nav.querySelectorAll('a'));
 if('IntersectionObserver' in window){var cio=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;track('chapter',e.target.id,true);
  links.forEach(function(a){var on=a.getAttribute('href')==='#'+e.target.id;a.setAttribute('aria-current',on?'true':'false');if(on)nav.querySelector('ul').scrollTo({left:Math.max(0,a.offsetLeft-20),behavior:reduce?'auto':'smooth'})})})},{rootMargin:'-45% 0px -50% 0px'});
  d.querySelectorAll('[data-chapter]').forEach(function(el){cio.observe(el)})}
-/* vídeos dentro de cada seção: um único <video> reaproveitado; toque para tocar */
-var panels=[].slice.call(d.querySelectorAll('.vp')),gv=d.createElement('video'),cur=null;
-gv.playsInline=true;gv.muted=true;gv.preload='none';gv.controls=true;gv.setAttribute('playsinline','');gv.setAttribute('muted','');gv.setAttribute('aria-label','Vídeo de demonstração');
-function stopV(){if(!cur)return;gv.pause();if(gv.parentNode)gv.parentNode.removeChild(gv);cur.querySelector('.play').hidden=false;cur=null}
-function playV(p){stopV();cur=p;gv.poster=p.dataset.poster;gv.src=p.dataset.src;p.querySelector('.phone').appendChild(gv);p.querySelector('.play').hidden=true;var r=gv.play();if(r&&r.catch)r.catch(function(){});track('video_play',p.dataset.t)}
-gv.addEventListener('ended',stopV);
-panels.forEach(function(p){p.querySelector('.play').addEventListener('click',function(){playV(p)})});
-if('IntersectionObserver' in window){var vio=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting&&e.target===cur)stopV()})},{threshold:0});panels.forEach(function(p){vio.observe(p)})}
-d.addEventListener('visibilitychange',function(){if(d.hidden&&cur)gv.pause()});
 /* instalar: aba conforme o sistema + aviso de navegador interno */
 var ua=navigator.userAgent||'',ios=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 var inapp=/FBAN|FBAV|Instagram|WhatsApp|Line\//i.test(ua)||(ios&&/CriOS|FxiOS/i.test(ua));
