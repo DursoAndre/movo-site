@@ -257,7 +257,7 @@ textarea.fi{resize:vertical;min-height:70px}
   var TABS = [
     { id: "pend", t: "Pendências", g: "op" }, { id: "contas", t: "Contas", g: "op" }, { id: "relatos", t: "Mensagens", g: "op" }, { id: "suporte", t: "Suporte", g: "op" },
     { id: "treinadores", t: "Treinadores", g: "op" }, { id: "catalogo", t: "Catálogo", g: "op" }, { id: "planos", t: "Planos", g: "op" }, { id: "ia", t: "IA", g: "op" },
-    { id: "desafios", t: "Desafios", g: "op" }, { id: "recados", t: "Recados", g: "op" }, { id: "integracoes", t: "Integrações", g: "op" }, { id: "saude", t: "Saúde", g: "op" }, { id: "registro", t: "Registro", g: "op" },
+    { id: "desafios", t: "Desafios", g: "op" }, { id: "recados", t: "Recados", g: "op" }, { id: "integracoes", t: "Integrações", g: "op" }, { id: "midia", t: "Fotos e vídeos", g: "op" }, { id: "saude", t: "Saúde", g: "op" }, { id: "registro", t: "Registro", g: "op" },
     { id: "geral", t: "Visão geral", g: "met" }, { id: "ret", t: "Retenção", g: "met" }, { id: "funil", t: "Funil", g: "met" }, { id: "ativ", t: "Ativação", g: "met" },
     { id: "uso", t: "Uso", g: "met" }, { id: "conv", t: "Convites", g: "met" }, { id: "dom", t: "Domínio", g: "met" }
   ];
@@ -554,6 +554,7 @@ textarea.fi{resize:vertical;min-height:70px}
     desafio: function () { return sb.rpc("admin_m_desafio", { p_id: params.desafio }); },
     recados: function () { return sb.rpc("admin_m_recados"); },
     integracoes: function () { return sb.rpc("admin_m_integracoes"); },
+    midia: function () { return sb.rpc("admin_m_midia"); },
     saude: function () { return juntar(["s", "versoes", "logins"], [sb.rpc("admin_saude"), sb.rpc("admin_versoes", { p_dias: 7 }), sb.rpc("admin_login_stats", { dias: 7 })]); },
     registro: function () { return sb.rpc("admin_m_registro", { p_dias: params.registro }); },
     conta: function () { return sb.rpc("admin_m_conta", { p_user: params.conta }); }
@@ -729,6 +730,32 @@ textarea.fi{resize:vertical;min-height:70px}
       }).join("") : vazio("Nenhum recado ainda.");
       return h;
     },
+    midia: function (d) {
+      var LIM = 1024 * 1024 * 1024, tot = +d.total_bytes || 0, f = d.flags || {};
+      var mb = function (b) { b = +b || 0; return b >= 1024 * 1024 * 1024 ? (b / 1073741824).toFixed(2).replace(".", ",") + " GB" : (b / 1048576).toFixed(b < 10485760 ? 1 : 0).replace(".", ",") + " MB"; };
+      var NOMES = { "medidas|": "Fotos de medidas", "videos|sessao": "Vídeos dos alunos", "videos|biblioteca": "Vídeos dos treinadores", "avatars|": "Fotos de perfil", "relatos|": "Prints das mensagens", "checkin|": "Fotos no check-in" };
+      var usado = tot / LIM, h = "<h2>Armazenamento</h2>";
+      h += '<div class="grid">' + stat(mb(tot), "usados de 1 GB grátis", usado >= 0.7 ? "warn" : "hi", Math.round(usado * 100) + "% do plano grátis") + stat(mb((d.buckets || []).reduce(function (t, x) { return t + (+x.bytes_7d || 0); }, 0)), "novos nos últimos 7 dias") + "</div>";
+      if (usado >= 0.7) h += '<div class="err" style="margin-top:10px">Passou de 70% do 1 GB grátis do Supabase. Ao chegar em 1 GB, o Supabase cobra o excedente (plano pago) ou recusa novos arquivos. Dá para desligar abaixo o que mais ocupa.</div>';
+      h += '<div class="card" style="margin-top:10px">' + ((d.buckets || []).length ? d.buckets.map(function (b) {
+        return '<div class="row"><div class="t">' + esc(NOMES[b.bucket + "|" + (b.pasta || "")] || (b.bucket + (b.pasta ? "/" + b.pasta : ""))) + '<div class="s">' + pl(+b.arquivos, "arquivo", "arquivos") + (+b.bytes_7d ? " · +" + esc(mb(b.bytes_7d)) + " em 7 dias" : "") + '</div></div><div class="v">' + esc(mb(b.bytes)) + "</div></div>";
+      }).join("") : '<div class="note">Nenhum arquivo ainda.</div>') + "</div>";
+      var REC = [
+        ["fotos_medidas", "Fotos em Minhas medidas", "Frente, lado e costas, até ~700 KB cada."],
+        ["video_aluno", "Vídeo do aluno no comentário do treino", "Até 30 s, só quando o aluno tem treinador. Apagado em 90 dias."],
+        ["video_treinador", "Vídeos do treinador", "Biblioteca de até 20 vídeos de até 60 s por treinador. Não expira."],
+        ["foto_checkin", "Foto no check-in do desafio", "Ainda não está no app (fase 5)."]
+      ];
+      h += "<h2>Ligar e desligar</h2>" + REC.map(function (r) {
+        var on = f[r[0]] === true;
+        return '<div class="card"><div class="t"><b>' + esc(r[1]) + '</b><span class="pill' + (on ? " ok" : "") + '">' + (on ? "ligado" : "desligado") + '</span></div><div class="note" style="margin:2px 0 6px">' + esc(r[2]) + '</div><div class="tools">' +
+          btn(on ? "Desligar" : "Ligar", "midia-set", { r: r[0], v: on ? "0" : "1", n: r[1] }, on ? "" : "pri") + "</div></div>";
+      }).join("");
+      h += '<div class="note">Desligar esconde o botão no app e o servidor recusa arquivos novos. O que já foi enviado continua aparecendo. O app passa a obedecer na próxima vez que a pessoa abrir.</div>';
+      var top = d.top || [];
+      if (top.length) h += "<h2>Quem mais ocupa (medidas e vídeos)</h2><div class=\"card\">" + top.map(function (u) { return '<div class="row"><div class="t">' + esc(u.email || "conta apagada") + '<div class="s">' + pl(+u.arquivos, "arquivo", "arquivos") + '</div></div><div class="v">' + esc(mb(u.bytes)) + "</div></div>"; }).join("") + "</div>";
+      return h;
+    },
     integracoes: function (d) {
       var st = d.strava || [], lim = d.strava_limite || 10, n = st.length;
       var h = "<h2>Strava</h2>" + '<div class="grid">' + stat(n + " de " + lim, "atletas conectados", n >= lim ? "warn" : n >= lim - 2 ? "warn" : "hi") + stat(lim - n, "vagas livres") + "</div>";
@@ -865,6 +892,11 @@ textarea.fi{resize:vertical;min-height:70px}
       var x = prompt("Teto diário em US$ (0 = sem teto):", b.getAttribute("data-t")); if (x == null) return;
       var n = Number(String(x).replace(",", ".")); if (!isFinite(n) || n < 0) return alert("Valor inválido");
       return rpcOk("admin_ai_definir", { p_ativa: b.getAttribute("data-a") === "1", p_teto: n }, "Teto salvo").then(function (ok) { if (ok) recarregar(); });
+    },
+    "midia-set": function (b) {
+      var v = b.getAttribute("data-v") === "1", n = b.getAttribute("data-n");
+      if (!v && !confirm("Desligar \"" + n + "\" para todos? Ninguém consegue enviar novos até você ligar de novo.")) return;
+      return rpcOk("admin_midia_set", { p_recurso: b.getAttribute("data-r"), p_on: v }, v ? "Ligado" : "Desligado").then(function (ok) { if (ok) recarregar(); });
     },
     "feat-todos": function (b) {
       var v = b.getAttribute("data-v") === "1"; if (v && !confirm("Liberar o ajuste da semana pra todos os usuários (sem Strava)?")) return;
