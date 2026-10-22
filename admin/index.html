@@ -68,6 +68,24 @@ h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)
 .row .v{font-variant-numeric:tabular-nums;font-weight:700;text-align:right}
 .row .v small{color:var(--mut);font-weight:500;margin-left:5px}
 .row .v.warn{color:var(--warn)}
+.v.bad{color:var(--bad)}
+.v.ok{color:var(--ac)}
+.v.mut{color:var(--mut);font-weight:500}
+.row.lim{align-items:start}
+.lim .v{font-weight:500;color:var(--mut)}
+.lim .v b{color:var(--fg);font-weight:700}
+.lim .v.warn b,.lim .v.warn small{color:var(--warn)}
+.lim .v.bad b,.lim .v.bad small{color:var(--bad)}
+.lim .v.pub{font-weight:700}
+.lim .v.pub.mut{font-weight:500}
+.row.lim .b{background:var(--line);margin-top:6px}
+.row.lim .b i{background:#5b6270}
+.row.lim .b i.warn{background:var(--warn)}
+.row.lim .b i.bad{background:var(--bad)}
+.ext{color:var(--new);text-decoration:none}
+.lim .v.ok{color:var(--ac)}
+.lim .v.warn{color:var(--warn)}
+.lim .v.bad{color:var(--bad)}
 .row .b{grid-column:1/-1;height:5px;background:var(--card2);border-radius:3px;overflow:hidden}
 .row .b i{display:block;height:100%;background:var(--ac);border-radius:3px}
 .row .s{grid-column:1/-1;color:var(--mut);font-size:12.5px}
@@ -459,6 +477,21 @@ textarea.fi{resize:vertical;min-height:70px}
   // ---------- aba Contas: lista com rolagem, ordem por cadastro/último acesso e busca ----------
   function nrm(t) { return String(t == null ? "" : t).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); }
   function dd(iso) { try { return new Date(iso).toLocaleDateString("pt-BR", { timeZone: TZ, day: "2-digit", month: "2-digit", year: "2-digit" }); } catch (e) { return "—"; } }
+  function num(n) { return (+n || 0).toLocaleString("pt-BR"); }
+  // Limites gratuitos medidos: banco e arquivos (Supabase), pessoas no mês, e-mails (Resend /usage; sem ele, só os registrados pelo app), Strava.
+  function limitesLista(l, re) {
+    var mb = function (v) { return v >= 1000 ? (v / 1024).toFixed(1).replace(".", ",") + " GB" : Math.round(v) + " MB"; };
+    var dia = re && re.dia, mes = re && re.mes, parcial = "Contagem parcial: sem os de login (Resend não respondeu)", out = [
+      { rot: "Banco de dados", sub: "Supabase", uso: +l.banco_mb || 0, max: 500, u: mb(+l.banco_mb || 0), de: "500 MB" },
+      { rot: "Fotos e vídeos", sub: "Supabase · arquivos enviados", uso: +l.arquivos_mb || 0, max: 1024, u: mb(+l.arquivos_mb || 0), de: "1 GB" },
+      { rot: "Pessoas ativas no mês", sub: "Supabase · contadas pelo app", uso: +l.ativos_mes || 0, max: 50000, u: num(l.ativos_mes), de: "50.000" }];
+    if (dia && dia.limite) out.push({ rot: "E-mails nas últimas 24 h", sub: "Resend · inclui os de login", uso: +dia.usado || 0, max: +dia.limite, u: num(dia.usado), de: num(dia.limite) });
+    else out.push({ rot: "E-mails nas últimas 24 h", sub: parcial, uso: +l.emails_24h_app || 0, max: 100, u: num(l.emails_24h_app), de: "100" });
+    if (mes && mes.limite) out.push({ rot: "E-mails no mês", sub: "Resend · inclui os de login", uso: +mes.usado || 0, max: +mes.limite, u: num(mes.usado), de: num(mes.limite) });
+    else out.push({ rot: "E-mails no mês", sub: parcial, uso: +l.emails_mes_app || 0, max: 3000, u: num(l.emails_mes_app), de: "3.000" });
+    out.push({ rot: "Atletas no Strava", sub: "Strava · contas conectadas (aumento é pedido ao Strava)", uso: +l.strava || 0, max: +l.strava_limite || 10, u: num(l.strava), de: num(l.strava_limite || 10) });
+    return out;
+  }
   function relIso(iso) {
     if (!iso) return "nunca";
     var min = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
@@ -555,7 +588,16 @@ textarea.fi{resize:vertical;min-height:70px}
     recados: function () { return sb.rpc("admin_m_recados"); },
     integracoes: function () { return sb.rpc("admin_m_integracoes"); },
     midia: function () { return sb.rpc("admin_m_midia"); },
-    saude: function () { return juntar(["s", "versoes", "logins"], [sb.rpc("admin_saude"), sb.rpc("admin_versoes", { p_dias: 7 }), sb.rpc("admin_login_stats", { dias: 7 })]); },
+    saude: function () {
+      // Uso do Resend (edge function admin-limites) e último deploy no GitHub (API pública) podem falhar sem derrubar a aba.
+      var re = sb.functions.invoke("admin-limites").then(function (r) { return { data: (r.data && r.data.ok) ? r.data.resend : null }; }, function () { return { data: null }; });
+      var gh = function (repo) {
+        return fetch("https://api.github.com/repos/DursoAndre/" + repo + "/actions/runs?per_page=1&branch=main").then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (j) { return { data: (j && j.workflow_runs && j.workflow_runs[0]) || null }; }, function () { return { data: null }; });
+      };
+      return juntar(["s", "versoes", "logins", "lim", "resend", "ghApp", "ghSite"], [sb.rpc("admin_saude"), sb.rpc("admin_versoes", { p_dias: 7 }), sb.rpc("admin_login_stats", { dias: 7 }),
+        sb.rpc("admin_limites"), re, gh("movo-app"), gh("movo-site")]);
+    },
     registro: function () { return sb.rpc("admin_m_registro", { p_dias: params.registro }); },
     conta: function () { return sb.rpc("admin_m_conta", { p_user: params.conta }); }
   };
@@ -774,19 +816,39 @@ textarea.fi{resize:vertical;min-height:70px}
       return h;
     },
     saude: function (d) {
-      var s = d.s || {}, e24 = +s.erros_24h || 0, eAnt = +s.erros_24h_antes || 0, iaF = +s.ia_falhas_24h || 0, iaT = +s.ia_total_24h || 0, db = +s.banco_mb || 0;
-      var alerta = +s.erros_30min >= 10 || (+s.ia_falhas_1h >= 3 && +s.ia_falhas_1h / Math.max(1, +s.ia_total_1h) >= 0.5) || db >= 400;
-      var aviso = !alerta && (e24 > Math.max(10, eAnt * 2) || db >= 300);
+      var s = d.s || {}, e24 = +s.erros_24h || 0, eAnt = +s.erros_24h_antes || 0, iaF = +s.ia_falhas_24h || 0, iaT = +s.ia_total_24h || 0, NB = " ";
+      var lims = limitesLista(d.lim || {}, d.resend), pior = lims.reduce(function (m, x) { return Math.max(m, x.uso / x.max); }, 0);
+      var pubs = [["App", "do app", d.ghApp], ["Site e painel", "do site e painel", d.ghSite]];
+      var falhas = pubs.filter(function (p) { return p[2] && p[2].status === "completed" && p[2].conclusion !== "success"; });
+      var alerta = +s.erros_30min >= 10 || (+s.ia_falhas_1h >= 3 && +s.ia_falhas_1h / Math.max(1, +s.ia_total_1h) >= 0.5) || pior >= 0.9;
+      var aviso = !alerta && (e24 > Math.max(10, eAnt * 2) || pior >= 0.7 || falhas.length > 0);
       var h = '<div class="card"><div class="verdict ' + (alerta || aviso ? "warn" : "ok") + '">' + (alerta ? "Atenção: algo fora do normal" : aviso ? "Vale ficar de olho" : "Tudo normal") + "</div>";
-      h += '<div class="grid g3" style="margin-top:8px">' + stat(e24, "erros em 24 h", "", eAnt ? "antes: " + eAnt : "") + stat(iaF + "/" + iaT, "IA com falha 24 h") + stat(db.toFixed(0), "MB de 500 no banco", db >= 300 ? "warn" : "") + "</div>";
+      h += '<div class="grid g3" style="margin-top:8px">' + stat(e24, "erros (24" + NB + "h)", "", eAnt ? "dia anterior: " + eAnt : "") +
+        (iaT ? stat(iaF + " de " + iaT, "falhas da IA (24" + NB + "h)", iaF ? "warn" : "") : stat("—", "IA sem uso em 24" + NB + "h")) + stat(+s.ativos_24h || 0, "abriram o app (24" + NB + "h)") + "</div>";
+      var porque = lims.filter(function (x) { return x.uso / x.max >= 0.7; }).map(function (x) { return x.rot + " em " + Math.round(x.uso / x.max * 100) + "% do limite"; })
+        .concat(falhas.map(function (p) { return "Publicação " + p[1] + " falhou"; }));
+      if (porque.length) h += '<div class="note"><b>' + esc(porque.join(" · ")) + "</b></div>";
       if ((s.erros_top || []).length) h += '<div class="note">Mais comuns (24 h): ' + s.erros_top.map(function (t) { return esc(t.context) + " (" + t.n + "×)"; }).join(" · ") + "</div>";
-      h += '<div class="note">' + (+s.ativos_24h || 0) + " pessoas abriram o app em 24 h. Você recebe e-mail se houver pico de erros, a IA falhar muito, o gasto da IA chegar a 70% do teto ou o banco passar de 400 MB.</div></div>";
+      h += '<div class="note">Você recebe e-mail se houver pico de erros, a IA falhar muito, o gasto da IA chegar a 70% do teto ou o banco passar de 400 MB. Os outros limites só aparecem aqui.</div></div>';
+      h += "<h2>Limites do plano grátis</h2><div class=\"card\">" + lims.map(function (x) {
+        var f = x.uso / x.max, cls = f >= 0.9 ? "bad" : f >= 0.7 ? "warn" : "", pc = f > 0 && f < 0.01 ? "<1%" : Math.round(f * 100) + "%";
+        return '<div class="row lim"><div class="t">' + esc(x.rot) + '<div class="s">' + esc(x.sub) + '</div></div><div class="v ' + cls + '"><b>' + esc(x.u) + "</b> de " + esc(x.de) + "<small>" + esc(pc) + "</small></div>" +
+          '<div class="b"><i class="' + cls + '" style="width:' + Math.min(100, Math.max(f > 0 ? 2 : 0, f * 100)).toFixed(1) + '%"></i></div></div>';
+      }).join("") + '<div class="row lim"><div class="t">Notificações push no mês<div class="s">Envio gratuito</div></div><div class="v"><b>' + num((d.lim || {}).push_mes) + "</b><small>sem limite</small></div></div></div>";
+      h += '<div class="note">Amarelo a partir de 70%, vermelho a partir de 90%. Não medidos aqui: download de arquivos (5 GB/mês) e chamadas de funções (500 mil/mês). Veja no ' +
+        '<a class="ext" href="https://supabase.com/dashboard/project/wgdhjkebfvcmgokxscvb/usage" target="_blank" rel="noopener">uso do Supabase</a>.</div>';
+      h += "<h2>Publicação</h2><div class=\"card\">" + pubs.map(function (p) {
+        var r = p[2], rodando = r && r.status !== "completed", ok = r && !rodando && r.conclusion === "success";
+        var txt = !r ? "GitHub não respondeu" : rodando ? "publicando…" : ok ? "publicado" : "última falhou";
+        var sub = r ? esc(relIso(r.updated_at || r.created_at)) + ' · <a class="ext" href="' + esc(r.html_url) + '" target="_blank" rel="noopener">ver no GitHub</a>' : "tente atualizar a aba";
+        return '<div class="row lim"><div class="t">' + p[0] + '<div class="s">' + sub + '</div></div><div class="v pub ' + (!r ? "mut" : rodando ? "warn" : ok ? "ok" : "bad") + '">' + txt + "</div></div>";
+      }).join("") + "</div>";
       var v = d.versoes || [], tot = v.reduce(function (t, x) { return t + x.pessoas; }, 0);
       h += "<h2>Versão em uso · quem abriu em 7 dias (" + tot + ")</h2><div class=\"card\">" + (v.length ? v.map(function (x) { return '<div class="row"><div class="t">' + esc(x.versao) + '</div><div class="v">' + x.pessoas + "</div></div>"; }).join("") : '<div class="note">Sem aberturas.</div>') + "</div>";
       var lg = d.logins || [];
       h += "<h2>Logins por conta · 7 dias</h2><div class=\"card\">" + (lg.length ? lg.map(function (u) {
         var semSair = +u.logins - +u.logouts;
-        return '<div class="row"><div class="t">' + esc(u.email) + '</div><div class="v' + (semSair >= 3 ? " warn" : "") + '">' + u.logins + "<small>" + u.logouts + " saídas</small></div></div>";
+        return '<div class="row"><div class="t">' + esc(u.email) + '</div><div class="v' + (semSair >= 3 ? " warn" : "") + '">' + u.logins + "<small>" + u.logouts + (+u.logouts === 1 ? " saída" : " saídas") + "</small></div></div>";
       }).join("") : '<div class="note">Nenhum login.</div>') + '</div><div class="note">Em amarelo: 3 ou mais logins sem tocar em "Sair", sinal de que a sessão está caindo sozinha.</div>';
       return h;
     },
