@@ -874,17 +874,17 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
         ["fotos_medidas", "Fotos de medidas", "Em Minhas medidas: frente, lado e costas.", "medidas", ""],
         ["video_aluno", "Vídeos dos alunos", "No comentário do treino, até 30 s, só com treinador. Apagados em 90 dias.", "videos", "sessao"],
         ["video_treinador", "Vídeos dos treinadores", "Biblioteca de até 20 vídeos de até 60 s por treinador. Não expiram.", "videos", "biblioteca"],
-        ["foto_checkin", "Fotos no check-in", "", "checkin", ""]
+        ["foto_checkin", "Selfies do treino", "No fim do treino. Aparecem na linha do tempo dos desafios se a pessoa deixar. Ficam enquanto a conta existir.", "selfies", ""]
       ];
       h += "<h2>Fotos e vídeos</h2>" + '<div class="note" style="margin-bottom:8px">Desligar só bloqueia envios novos. O que já foi enviado continua aparecendo. Vale a partir da próxima vez que a pessoa abrir o app.</div>';
       h += '<div class="card">' + REC.map(function (r) {
-        var on = f[r[0]] === true, b = achar(r[3], r[4]), breve = r[0] === "foto_checkin";
+        var on = f[r[0]] === true, b = achar(r[3], r[4]), breve = false;
         var linha = breve ? "Entra no app na fase 5. O botão de ligar aparece quando estiver pronto." : r[2] + " " + pl(+b.arquivos, "arquivo", "arquivos") + (+b.bytes_7d ? " · +" + mb(b.bytes_7d) + " na semana" : "") + ".";
         return '<div class="row"><div class="t">' + esc(r[1]) + ' <span class="pill' + (on ? " ok" : "") + '">' + (breve ? "em breve" : on ? "ligado" : "desligado") + '</span><div class="s">' + esc(linha) + "</div>" +
           (breve ? "" : '<div class="tools" style="margin-top:6px">' + btn(on ? "Desligar" : "Ligar", "midia-set", { r: r[0], v: on ? "0" : "1", n: r[1] }) + "</div>") +
           '</div><div class="v">' + (breve ? "" : esc(mb(b.bytes))) + "</div></div>";
       }).join("") + "</div>";
-      var outros = bs.filter(function (x) { return x.bucket !== "medidas" && x.bucket !== "videos" && x.bucket !== "checkin"; });
+      var outros = bs.filter(function (x) { return x.bucket !== "medidas" && x.bucket !== "videos" && x.bucket !== "selfies"; });
       var NOMES = { avatars: "Fotos de perfil", relatos: "Prints das mensagens" };
       if (outros.length) h += "<h2>Outros arquivos (sempre ligados)</h2><div class=\"card\">" + outros.map(function (b) { return '<div class="row"><div class="t">' + esc(NOMES[b.bucket] || b.bucket) + '<div class="s">' + pl(+b.arquivos, "arquivo", "arquivos") + '</div></div><div class="v">' + esc(mb(b.bytes)) + "</div></div>"; }).join("") + "</div>";
       var top = d.top || [];
