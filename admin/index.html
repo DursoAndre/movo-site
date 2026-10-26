@@ -100,6 +100,7 @@ td.low{color:var(--mut)}
 .cs button[aria-pressed=true]{background:var(--card2);color:var(--fg);font-weight:700}
 .cq{width:100%;min-height:44px;margin:4px 0 8px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit}
 .cl{max-height:56vh;overflow-y:auto;padding:0 14px;overscroll-behavior:contain}
+.co-tt{margin:14px 0 12px}.co-tt b{font-size:22px;font-weight:700}.co-tt .s{color:var(--mut);font-size:13px;margin-top:2px}
 .ct{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:10px 0;border-top:1px solid var(--line);align-items:center}
 .ct:first-child{border-top:0}
 .ct .t{min-width:0;overflow-wrap:anywhere}
@@ -317,7 +318,7 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
     { d: "mais", t: "Mais", tabs: ["mais"], ic: '<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>' }
   ];
   var MAIS = [["Sistema", ["saude", "registro", "dom"]], ["Conteúdo", ["catalogo", "desafios", "recados", "suporte"]], ["Configurações", ["planos", "ia", "midia", "integracoes"]]];
-  var DETALHE = { conta: "contas", desafio: "desafios" }, ANTIGA = { funil: "ret", ativ: "ret" };
+  var DETALHE = { conta: "contas", desafio: "desafios", treinador: "treinadores" }, ANTIGA = { funil: "ret", ativ: "ret" };
   function abaDe(id) { return TABS.filter(function (t) { return t.id === (DETALHE[id] || id); })[0]; }
   function destDe(id) { var t = DETALHE[id] || id; return DEST.filter(function (x) { return x.tabs.indexOf(t) >= 0; })[0] || DEST[4]; }
   var cache = {};
@@ -674,18 +675,18 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
         sb.rpc("admin_limites"), re, gh("movo-app"), gh("movo-site")]);
     },
     registro: function () { return sb.rpc("admin_m_registro", { p_dias: params.registro }); },
-    conta: function () { return sb.rpc("admin_m_conta", { p_user: params.conta }); }
+    conta: function () { return sb.rpc("admin_m_conta", { p_user: params.conta }); },
+    treinador: function () { return sb.rpc("admin_coach_detalhe", { p_user: params.treinador }); }
   };
 
   function coachCard(c, assin) {
-    var st = c.status || (c.liberado ? "ativo" : "suspenso"), pl = planoDoTreinador(assin, c.email), max = ALUNOS_MAX[pl] || 3;
-    var h = '<div class="card"' + (st === "em_analise" ? ' style="border-left:3px solid var(--warn)"' : "") + '><div class="t"><b>' + esc(c.nome_exibicao || c.email) + "</b>" +
-      '<span class="pill' + (st === "ativo" ? " ok" : st === "em_analise" ? " warn" : "") + '">' + (st === "em_analise" ? "em análise" : st) + "</span></div>";
-    h += '<div class="note" style="margin:2px 0 6px">' + esc(c.email) + " · " + c.alunos + "/" + max + " alunos · " + esc(planoNome("treinador", pl)) + (c.cref ? " · CREF " + esc(c.cref) : "") + (c.pedido_em ? " · pedido em " + dia(c.pedido_em) : "") + "</div>";
-    if (c.bio) h += '<div style="white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px">' + esc(c.bio) + "</div>";
-    if (st === "suspenso" && c.motivo) h += '<div class="note">Motivo: ' + esc(c.motivo) + "</div>";
-    h += '<div class="tools">' + (st !== "ativo" ? btn(st === "em_analise" ? "Aprovar" : "Reativar", "coach", { u: c.user_id, s: "ativo" }, "pri") : "") +
-      (st !== "suspenso" ? btn(st === "em_analise" ? "Recusar" : "Suspender", "coach", { u: c.user_id, s: "suspenso" }) : "") + "</div></div>";
+    var st = c.status || (c.liberado ? "ativo" : "suspenso"), plano = planoDoTreinador(assin, c.email), max = ALUNOS_MAX[plano] || 3;
+    // Desde a v231 o treinador entra liberado: "em análise" só aparece em cadastro antigo. Tocar abre o detalhe (26/10).
+    var n = +c.alunos || 0, nome = (c.nome_exibicao || "").trim(), desde = c.pedido_em ? relIso(c.pedido_em).replace(/^há /, "") : "";
+    var h = '<div class="ct co-item" role="button" tabindex="0" data-act="ver-treinador" data-id="' + esc(c.user_id) + '"><div class="t"><b>' + esc(nome && nome !== "Treinador" ? nome : c.email) + "</b>" +
+      (st !== "ativo" ? '<span class="pill' + (st === "em_analise" ? " warn" : "") + '">' + (st === "em_analise" ? "em análise" : st) + "</span>" : "") +
+      '<div class="s">' + (n ? n + " de " + max + " alunos · " + esc(planoNome("treinador", plano)) : "Sem aluno" + (desde ? " · treinador há " + esc(desde) : "")) + "</div></div>" +
+      '<div class="v">›</div></div>';
     return h;
   }
 
@@ -745,19 +746,19 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
       var at = cs.filter(function (c) { return stDe(c) === "ativo"; }), alunos = at.reduce(function (t, c) { return t + (+c.alunos || 0); }, 0);
       var pagos = assin.filter(function (a) { return a.linha === "treinador" && a.plano !== "gratis"; }).length;
       var cheios = at.filter(function (c) { return (+c.alunos || 0) >= (ALUNOS_MAX[planoDoTreinador(assin, c.email)] || 3); }).length;
-      var h = '<div class="grid g3">' + stat(at.length, "ativos") + stat(alunos, "alunos vinculados") + stat(cheios, "no limite do plano", cheios ? "warn" : "") + "</div>";
+      var h = '<div class="grid g3">' + stat(at.length, at.length === 1 ? "treinador" : "treinadores") + stat(alunos, "alunos vinculados") + stat(cheios, "no limite do plano", cheios ? "warn" : "") + "</div>";
       h += '<div class="note">' + pagos + " com plano pago ou cortesia · " + (at.length ? (alunos / at.length).toFixed(1).replace(".", ",") : "0") + " alunos por treinador.</div>";
       h += "<h2>Treinadores</h2>";
-      h += cs.length ? cs.slice().sort(function (a, b) { return (b.status === "em_analise") - (a.status === "em_analise"); }).map(function (c) { return coachCard(c, assin); }).join("") : vazio("Ninguém cadastrado ainda.");
+      h += cs.length ? '<div class="card">' + cs.slice().sort(function (a, b) { return (b.status === "em_analise") - (a.status === "em_analise") || (!(+b.alunos) - !(+a.alunos)) || String(a.pedido_em || "").localeCompare(String(b.pedido_em || "")); }).map(function (c) { return coachCard(c, assin); }).join("") + "</div>" : vazio("Ninguém cadastrado ainda.");
       var inc = d.coInc || [];
       if (inc.length) {
         h += "<h2>Marcaram \u201cSou treinador\u201d e não terminaram</h2><div class=\"card\">" + inc.map(function (u) {
           return '<div class="row"><div class="t">' + esc(u.email) + '<div class="s">conta criada ' + dia(u.criado_em) + (u.ultimo_acesso ? " · último acesso " + dia(u.ultimo_acesso) : "") + '</div></div><div class="v">' + btn("Liberar", "co-preencher", { email: u.email }) + "</div></div>";
         }).join("") + '</div><div class="note">Eles escolheram ser treinador ao entrar, mas fecharam o cadastro. \u201cLiberar\u201d preenche o e-mail abaixo; falta só o nome.</div>';
       }
-      h += "<h2>Liberar direto pelo e-mail</h2><div class=\"card\"><input id=\"co-email\" type=\"email\" inputmode=\"email\" autocapitalize=\"none\" placeholder=\"E-mail da conta no Movo\">" +
-        '<input id="co-nome" type="text" placeholder="Nome que os alunos vão ver">' + btn("Liberar treinador", "coach-liberar", {}, "pri") +
-        '<div class="note">Aprovar libera os convites; suspender congela os vínculos e avisa os alunos.</div></div>';
+      h += "<h2>Cadastrar treinador pelo e-mail</h2><div class=\"card\"><input id=\"co-email\" type=\"email\" inputmode=\"email\" autocapitalize=\"none\" placeholder=\"E-mail da conta no Movo\">" +
+        '<input id="co-nome" type="text" placeholder="Nome que os alunos vão ver">' + btn("Cadastrar treinador", "coach-liberar", {}, "pri") +
+        '<div class="note">Quem se cadastra pelo app já entra liberado. Use isto só para quem pediu ajuda.</div></div>';
       return h;
     },
     catalogo: function (d) {
@@ -955,6 +956,40 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
       }).join("") + "</div>" : vazio("Nada registrado no período.");
       return h;
     },
+    treinador: function (d) {
+      var volta = '<div class="tools">' + btn("← Treinadores", "ir", { tab: "treinadores" }) + "</div>";
+      if (!d) return volta + '<div class="err">Treinador não encontrado.</div>';
+      var als = d.alunos || [], ativos = als.filter(function (a) { return a.status === "ativo" || a.status === "pausado" || a.status === "congelado"; });
+      var antigos = als.filter(function (a) { return ativos.indexOf(a) < 0; });
+      var ST = { ativo: "ativo", pausado: "pausado", congelado: "congelado", pendente: "aguardando aceite", encerrado: "encerrado", recusado: "recusou" };
+      var nm = (d.nome || "").trim(), h = volta + '<div class="co-tt"><b>' + esc(nm && nm !== "Treinador" ? nm : d.email) + "</b>" + (d.status !== "ativo" ? ' <span class="pill' + (d.status === "em_analise" ? " warn" : "") + '">' + esc(d.status === "em_analise" ? "em análise" : d.status) + "</span>" : "") +
+        (nm && nm !== "Treinador" ? '<div class="s">' + esc(d.email) + "</div>" : "") + "</div>";
+      h += '<div class="grid g3">' + stat(ativos.length, ativos.length === 1 ? "aluno ativo" : "alunos ativos") + stat(+d.envios || 0, +d.envios === 1 ? "treino enviado" : "treinos enviados") + stat(+d.modelos || 0, +d.modelos === 1 ? "modelo salvo" : "modelos salvos") + "</div>";
+      h += "<h2>Alunos</h2>";
+      var linha = function (a) {
+        var sub = [a.ultimo_treino ? "treinou " + dia(a.ultimo_treino).slice(0, 5) : "ainda não treinou",
+          +a.envios ? pl(+a.envios, "treino recebido", "treinos recebidos") : "nenhum treino recebido",
+          (a.status === "ativo" ? "desde " : "de ") + dia(a.desde).slice(0, 5) + (a.fim ? " a " + dia(a.fim).slice(0, 5) : "")];
+        return '<div class="ct" role="button" tabindex="0" data-act="ver-conta" data-id="' + esc(a.user_id) + '"><div class="t">' + esc(a.nome) +
+          (a.status !== "ativo" ? ' <span class="pill">' + esc(ST[a.status] || a.status) + "</span>" : "") + '<div class="s">' + esc(sub.join(" · ")) + "</div></div>" +
+          '<div class="v">›</div></div>';
+      };
+      if (ativos.length) h += '<div class="card">' + ativos.map(linha).join("") + "</div>";
+      else h += vazio("Sem alunos · " + (+d.convites_abertos ? pl(+d.convites_abertos, "convite esperando aceite", "convites esperando aceite") : "nenhum convite criado"));
+      if (antigos.length) h += "<h2>Vínculos encerrados</h2><div class=\"card\">" + antigos.map(linha).join("") + "</div>";
+      var lem = (d.lembretes || []).map(function (l) { return (l.dia === 1 ? "1º dia" : "3º dia") + ": " + dm(l.em); });
+      h += "<h2>Conta</h2><div class=\"card\">" +
+        '<div class="row"><div class="t">Treinador desde</div><div class="v"><small>' + esc(dia(d.criado_em)) + "</small></div></div>" +
+        '<div class="row"><div class="t">Último login</div><div class="v"><small>' + esc(relIso(d.ultimo_login)) + "</small></div></div>" +
+        (d.cref ? '<div class="row"><div class="t">CREF</div><div class="v"><small>' + esc(d.cref) + "</small></div></div>" : "") +
+        (+d.turmas ? '<div class="row"><div class="t">Turmas</div><div class="v"><small>' + esc(d.turmas) + "</small></div></div>" : "") +
+        (!ativos.length || lem.length ? '<div class="row"><div class="t">Lembrete do 1º aluno</div><div class="v"><small>' + (lem.length ? esc(lem.join(" · ")) : "nenhum ainda (sai às 10h)") + "</small></div></div>" : "") +
+        (d.bio ? '<div class="row"><div class="t">Especialidade<div class="s" style="white-space:pre-wrap;overflow-wrap:anywhere">' + esc(d.bio) + "</div></div></div>" : "") + "</div>";
+      h += '<div class="tools">' + btn("Ver a conta", "ver-conta", { id: d.user_id }) +
+        (d.status === "suspenso" ? btn("Reativar", "coach", { u: d.user_id, s: "ativo" }, "pri") : d.status === "em_analise" ? btn("Liberar", "coach", { u: d.user_id, s: "ativo" }, "pri") : "") + "</div>";
+      if (d.status !== "suspenso") h += '<div class="tools" style="margin-top:18px">' + btn("Suspender treinador", "coach", { u: d.user_id, s: "suspenso" }, "danger") + '</div><div class="note">Congela os vínculos e avisa os alunos.</div>';
+      return h;
+    },
     conta: function (d) {
       if (!d) return '<div class="tools">' + btn("← Contas", "ir", { tab: "contas" }) + '</div><div class="err">Conta não encontrada (pode ter sido apagada).</div>';
       var u = d.uso || {}, ab = d.ultima_abertura || {}, og = d.origem || {};
@@ -1012,10 +1047,11 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
     ir: function (b) { open(b.getAttribute("data-tab")); },
     "ver-desafio": function (b) { params.desafio = b.getAttribute("data-id"); delete cache.desafio; open("desafio"); },
     "ver-conta": function (b) { params.conta = b.getAttribute("data-id"); delete cache.conta; open("conta"); },
+    "ver-treinador": function (b) { params.treinador = b.getAttribute("data-id"); delete cache.treinador; open("treinador"); },
     coach: function (b) {
       var s = b.getAttribute("data-s"), motivo = null;
       if (s === "suspenso") { motivo = prompt("Motivo (opcional, o aluno não vê). Suspender congela os vínculos e avisa os alunos.", ""); if (motivo === null) return; }
-      return rpcOk("admin_coach_decide", { p_user: b.getAttribute("data-u"), p_status: s, p_motivo: motivo || null }, s === "ativo" ? "Treinador aprovado" : "Treinador suspenso").then(function (ok) { if (ok) recarregar(["treinadores", "pend"]); });
+      return rpcOk("admin_coach_decide", { p_user: b.getAttribute("data-u"), p_status: s, p_motivo: motivo || null }, s === "ativo" ? "Treinador liberado" : "Treinador suspenso").then(function (ok) { if (ok) { delete cache.treinador; recarregar(["treinadores", "pend"].concat(atual === "treinador" ? ["treinador"] : [])); } });
     },
     "co-preencher": function (b) { $("co-email").value = b.getAttribute("data-email") || ""; $("co-nome").focus(); },
     "coach-liberar": function () {
