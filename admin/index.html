@@ -614,6 +614,8 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
     return '<button class="ib' + (cls ? " " + cls : "") + '" type="button" data-act="' + act + '"' + a + ">" + esc(txt) + "</button>";
   }
   function vazio(t) { return '<div class="card"><div class="note">' + esc(t) + "</div></div>"; }
+  // Chamada opcional: se a função ainda não existe no banco, segue com lista vazia (não derruba a aba).
+  function opc(p) { return p.then(function (r) { return r && r.error ? { data: [] } : r; }, function () { return { data: [] }; }); }
   function juntar(chaves, promessas) {
     return Promise.all(promessas).then(function (r) {
       var er = r.filter(function (x) { return x && x.error; })[0];
@@ -647,15 +649,15 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
   VIEW.ret = function (d) { return VIEW.funil(d.funil) + VIEW.ativ(d.ativ) + VIEW.ret1(d.ret); };
   var OPS_CALL = {
     pend: function () {
-      return juntar(["p", "coaches", "rev", "s", "lim", "ghApp", "ghSite", "geral"], [sb.rpc("admin_m_pendencias"), sb.rpc("admin_coach_list"), sb.rpc("admin_revisao_lista"),
-        sb.rpc("admin_saude"), sb.rpc("admin_limites"), ghRun("movo-app"), ghRun("movo-site"), sb.rpc("admin_m_geral")]);
+      return juntar(["p", "coaches", "rev", "s", "lim", "ghApp", "ghSite", "geral", "coInc"], [sb.rpc("admin_m_pendencias"), sb.rpc("admin_coach_list"), sb.rpc("admin_revisao_lista"),
+        sb.rpc("admin_saude"), sb.rpc("admin_limites"), ghRun("movo-app"), ghRun("movo-site"), sb.rpc("admin_m_geral"), opc(sb.rpc("admin_m_treinador_incompleto"))]);
     },
     mais: function () { return Promise.resolve({ data: {} }); },
     ret: function () {
       return juntar(["funil", "ativ", "ret"], [sb.rpc("admin_m_funil"), call("ativ"), sb.rpc("admin_m_retencao")]);
     },
     suporte: function () { return juntar(["provas", "gaps"], [sb.rpc("admin_shared_races"), sb.rpc("admin_exercise_gaps", { dias: 90 })]); },
-    treinadores: function () { return juntar(["coaches", "assin"], [sb.rpc("admin_coach_list"), sb.rpc("admin_plan_list")]); },
+    treinadores: function () { return juntar(["coaches", "assin", "coInc"], [sb.rpc("admin_coach_list"), sb.rpc("admin_plan_list"), opc(sb.rpc("admin_m_treinador_incompleto"))]); },
     catalogo: function () { return juntar(["rev", "cat"], [sb.rpc("admin_revisao_lista"), sb.rpc("catalogo_completo")]); },
     planos: function () { return juntar(["bill", "assin"], [sb.rpc("admin_billing_get"), sb.rpc("admin_plan_list")]); },
     ia: function () { return juntar(["ctl", "custo", "uso", "feat", "todos"], [sb.rpc("admin_ai_controle"), sb.rpc("admin_ai_cost"), sb.rpc("admin_plan_usage"), sb.rpc("admin_feature_list", { p_feature: "ajuste_semana" }), sb.rpc("admin_feature_todos", { p_feature: "ajuste_semana" })]); },
@@ -706,9 +708,11 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
       var h = "<h2>Precisa de você</h2><div class=\"card\">";
       if (msgs) h += acao(pl(msgs, "mensagem não lida", "mensagens não lidas") + (p.relatos ? '<div class="s">' + pl(p.relatos, "problema", "problemas") + "</div>" : ""), "relatos");
       if (an.length) h += acao(pl(an.length, "treinador em análise", "treinadores em análise"), "treinadores");
+      var inc = d.coInc || [];
+      if (inc.length) h += acao(pl(inc.length, "pessoa marcou", "pessoas marcaram") + " \u201cSou treinador\u201d e não terminou o cadastro", "treinadores");
       if (rev.length) h += acao(pl(rev.length, "nome novo de exercício", "nomes novos de exercício") + " para decidir", "catalogo");
       if (p.contestacoes) h += acao(pl(p.contestacoes, "acerto contestado", "acertos contestados") + " em desafio", "desafios");
-      if (!msgs && !an.length && !rev.length && !p.contestacoes) h += '<div class="note">Nada esperando você. Bom treino.</div>';
+      if (!msgs && !an.length && !inc.length && !rev.length && !p.contestacoes) h += '<div class="note">Nada esperando você. Bom treino.</div>';
       h += "</div>";
       var vd = vereditoSaude(d);
       h += "<h2>Sistema</h2>" + '<div class="card"><div class="row ct" data-act="ir" data-tab="saude"><div class="t"><div class="verdict ' + vd.cls + '" style="margin:0">' + vd.titulo + "</div>" +
@@ -745,6 +749,12 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
       h += '<div class="note">' + pagos + " com plano pago ou cortesia · " + (at.length ? (alunos / at.length).toFixed(1).replace(".", ",") : "0") + " alunos por treinador.</div>";
       h += "<h2>Treinadores</h2>";
       h += cs.length ? cs.slice().sort(function (a, b) { return (b.status === "em_analise") - (a.status === "em_analise"); }).map(function (c) { return coachCard(c, assin); }).join("") : vazio("Ninguém cadastrado ainda.");
+      var inc = d.coInc || [];
+      if (inc.length) {
+        h += "<h2>Marcaram \u201cSou treinador\u201d e não terminaram</h2><div class=\"card\">" + inc.map(function (u) {
+          return '<div class="row"><div class="t">' + esc(u.email) + '<div class="s">conta criada ' + dia(u.criado_em) + (u.ultimo_acesso ? " · último acesso " + dia(u.ultimo_acesso) : "") + '</div></div><div class="v">' + btn("Liberar", "co-preencher", { email: u.email }) + "</div></div>";
+        }).join("") + '</div><div class="note">Eles escolheram ser treinador ao entrar, mas fecharam o cadastro. \u201cLiberar\u201d preenche o e-mail abaixo; falta só o nome.</div>';
+      }
       h += "<h2>Liberar direto pelo e-mail</h2><div class=\"card\"><input id=\"co-email\" type=\"email\" inputmode=\"email\" autocapitalize=\"none\" placeholder=\"E-mail da conta no Movo\">" +
         '<input id="co-nome" type="text" placeholder="Nome que os alunos vão ver">' + btn("Liberar treinador", "coach-liberar", {}, "pri") +
         '<div class="note">Aprovar libera os convites; suspender congela os vínculos e avisa os alunos.</div></div>';
@@ -1007,6 +1017,7 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
       if (s === "suspenso") { motivo = prompt("Motivo (opcional, o aluno não vê). Suspender congela os vínculos e avisa os alunos.", ""); if (motivo === null) return; }
       return rpcOk("admin_coach_decide", { p_user: b.getAttribute("data-u"), p_status: s, p_motivo: motivo || null }, s === "ativo" ? "Treinador aprovado" : "Treinador suspenso").then(function (ok) { if (ok) recarregar(["treinadores", "pend"]); });
     },
+    "co-preencher": function (b) { $("co-email").value = b.getAttribute("data-email") || ""; $("co-nome").focus(); },
     "coach-liberar": function () {
       var em = $("co-email").value.trim(); if (!em) return aviso("Digite o e-mail");
       return sb.rpc("admin_set_coach", { p_email: em, p_nome: $("co-nome").value.trim(), p_liberado: true }).then(function (r) {

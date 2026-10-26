@@ -65,6 +65,7 @@ header.top{display:flex;align-items:center;justify-content:space-between;height:
 .hero .cta{display:flex;flex-direction:column;gap:10px;margin-top:26px;align-items:stretch}
 .hero .cta .btn{width:100%}
 .hero .micro{margin-top:14px;font-size:14px;color:var(--muted)}
+.hero .hero-coach{margin-top:6px;font-size:15px}
 .phone{width:min(66vw,290px);margin-inline:auto;border:8px solid var(--line);border-radius:38px;overflow:hidden;background:#000;box-shadow:0 24px 60px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.06);aspect-ratio:720/1558}
 .phone img,.phone video{width:100%;height:100%;object-fit:cover}
 .band{background:var(--surface);border-block:1px solid var(--line)}
@@ -254,9 +255,9 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
     <p class="lead">Musculação, corrida, HYROX e o seu esporte na mesma semana. Use sua ficha, siga um plano pronto ou receba do seu treinador.</p>
     <div class="cta">
       <a class="btn" href="{{APP}}?utm_source=lp&pos=hero" data-cta="hero">Começar grátis</a>
-      <a class="link" href="#app">Ver o app</a>
     </div>
-    <p class="micro">Entre com um código no e-mail. Sem senha e sem cartão.</p>
+    <p class="micro">Entre com um código no e-mail. Sem senha e sem cartão. Conecta com o Strava.</p>
+    <p class="hero-coach"><a class="link" href="{{APP}}?utm_source=lp-treinador&pos=hero&sou=treinador" data-cta="treinador-hero">Sou treinador e quero usar com meus alunos</a></p>
     <div class="warn" id="inapp" role="note"><b>Está no navegador do Instagram ou do WhatsApp?</b> Ele não deixa instalar. Copie o link e abra no Safari (iPhone) ou no Chrome (Android).<p style="margin-top:12px"><button class="btn ghost sm" id="copy" type="button">Copiar link do app</button> <span id="copied" class="muted" aria-live="polite"></span></p></div>
   </div>
   <div class="phone-wrap"><div class="phone">{{pic plano "Aba Treinos do Movo com um plano híbrido de 8 semanas: fases, semana leve e a semana atual com treinos de força e corridas." eager}}</div></div>
@@ -304,7 +305,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
       <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/></svg><div><b>Anamnese, avaliação e seus vídeos</b><span>Questionário de saúde, medidas e vídeos seus em cada exercício. Funciona também no computador.</span></div></li>
     </ul>
   </div>
-  <div class="coach-cta"><a class="btn" href="{{APP}}?utm_source=lp-treinador&pos=treinador" data-cta="treinador">Sou treinador</a></div>
+  <div class="coach-cta"><a class="btn" href="{{APP}}?utm_source=lp-treinador&pos=treinador&sou=treinador" data-cta="treinador">Sou treinador</a></div>
   <p class="note">Prefere conversar antes? <a href="mailto:contato@movoapp.com.br" data-cta="email">contato@movoapp.com.br</a></p>
 </div></section>
 
@@ -341,6 +342,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
       </div>
     </div></details>
     <details><summary>Já uso outro app. Dá para trazer meus treinos?</summary><p>Dá, e é fácil. Na hora de importar, envie o arquivo exportado do seu app atual, uma planilha, um PDF ou a foto da ficha. O Movo organiza tudo e você confere antes de salvar.</p></details>
+    <details><summary>Funciona com meu relógio?</summary><p>Sim, pelo Strava. Conecte o Strava no Movo e as atividades do seu relógio entram sozinhas, sem digitar nada.</p></details>
     <details><summary>E meus dados? Quem vê?</summary><p>Seus treinos ficam salvos na sua conta, na nuvem, para você acessar de qualquer aparelho. Amigos de um desafio só veem o que conta pontos, nunca suas cargas ou fichas. Um treinador só vê o que você autorizar. Você pode exportar seus dados e excluir a conta pelo app. Detalhes na <a href="privacidade.html">Política de Privacidade</a> e nos <a href="termos.html">Termos de Uso</a>.</p></details>
     <details><summary>Usa IA? O que vai para ela?</summary><p>Algumas funções (importar treinos, montar o plano sob medida, plano para prova e ajustar a semana) usam IA da Anthropic e enviam só o necessário para aquela função. Nada é salvo sem você revisar. A IA sugere e não substitui profissional de saúde ou de educação física.</p></details>
     <details><summary>Sou treinador. Como entro?</summary><p>Ao entrar, escolha “Sou treinador” e preencha seu perfil. Durante o beta, a gente confere o cadastro antes de liberar. Depois, é só convidar seus alunos por link ou código. O aluno decide o que você vê.</p></details>
