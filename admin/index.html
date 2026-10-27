@@ -646,12 +646,17 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
     return fetch("https://api.github.com/repos/DursoAndre/" + repo + "/actions/runs?per_page=1&branch=main").then(function (r) { return r.ok ? r.json() : null; })
       .then(function (j) { return { data: (j && j.workflow_runs && j.workflow_runs[0]) || null }; }, function () { return { data: null }; });
   }
+  // O app é publicado pelo repositório público movo-app-site (o movo-app vira privado e a API pública não o lê mais).
+  // Enquanto o movo-app-site não tiver publicação, cai no movo-app.
+  function ghRunApp() {
+    return ghRun("movo-app-site").then(function (r) { return r.data ? r : ghRun("movo-app"); });
+  }
   // Números › Retenção junta o funil, a ativação e a volta ao app, na ordem: cadastro → 1º treino → voltou.
   VIEW.ret = function (d) { return VIEW.funil(d.funil) + VIEW.ativ(d.ativ) + VIEW.ret1(d.ret); };
   var OPS_CALL = {
     pend: function () {
       return juntar(["p", "coaches", "rev", "s", "lim", "ghApp", "ghSite", "geral", "coInc"], [sb.rpc("admin_m_pendencias"), sb.rpc("admin_coach_list"), sb.rpc("admin_revisao_lista"),
-        sb.rpc("admin_saude"), sb.rpc("admin_limites"), ghRun("movo-app"), ghRun("movo-site"), sb.rpc("admin_m_geral"), opc(sb.rpc("admin_m_treinador_incompleto"))]);
+        sb.rpc("admin_saude"), sb.rpc("admin_limites"), ghRunApp(), ghRun("movo-site"), sb.rpc("admin_m_geral"), opc(sb.rpc("admin_m_treinador_incompleto"))]);
     },
     mais: function () { return Promise.resolve({ data: {} }); },
     ret: function () {
@@ -672,7 +677,7 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
       var re = sb.functions.invoke("admin-limites").then(function (r) { return { data: (r.data && r.data.ok) ? r.data.resend : null }; }, function () { return { data: null }; });
       var gh = ghRun;
       return juntar(["s", "versoes", "logins", "lim", "resend", "ghApp", "ghSite"], [sb.rpc("admin_saude"), sb.rpc("admin_versoes", { p_dias: 7 }), sb.rpc("admin_login_stats", { dias: 7 }),
-        sb.rpc("admin_limites"), re, gh("movo-app"), gh("movo-site")]);
+        sb.rpc("admin_limites"), re, ghRunApp(), gh("movo-site")]);
     },
     registro: function () { return sb.rpc("admin_m_registro", { p_dias: params.registro }); },
     conta: function () { return sb.rpc("admin_m_conta", { p_user: params.conta }); },
