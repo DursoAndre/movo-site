@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Movo: workout app for the gym, running and sports</title>
+<meta name="description" content="Strength training, running, HYROX and sports in the same week. Use your own routine, follow a ready-made plan or get one from your coach. Free during the beta, no app store needed.">
+<link rel="canonical" href="https://movoapp.com.br/en/">
+<link rel="alternate" hreflang="pt-BR" href="https://movoapp.com.br/">
+<link rel="alternate" hreflang="en" href="https://movoapp.com.br/en/">
+<meta name="theme-color" content="#14161A">
+<meta name="color-scheme" content="dark">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_CA">
+<meta property="og:site_name" content="Movo">
+<meta property="og:title" content="Movo: all your training in one place">
+<meta property="og:description" content="Strength, running and sports in the same week, with a ready-made plan or one from your coach. Free during the beta.">
+<meta property="og:url" content="https://movoapp.com.br/en/">
+<meta property="og:image" content="https://movoapp.com.br/media/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Movo: all your training in one place, with the app's Today screen">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Movo","applicationCategory":"HealthApplication","operatingSystem":"Android, iOS (web app)","inLanguage":"en","url":"https://movoapp.com.br/en/","image":"https://movoapp.com.br/media/og.jpg","description":"Workout app that brings strength training, running and sports together in the same week, with multi-week plans, challenges and a coach mode.","offers":{"@type":"Offer","price":"0","priceCurrency":"CAD"}}</script>
+<style>
+:root{--bg:#14161A;--surface:#1D2024;--surface2:#24282E;--line:#2A2E34;--line2:#737A82;--text:#F2F4F5;--muted:#A9AFB5;--lime:#C6F135;--r:14px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.6 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+img,video{max-width:100%;height:auto;display:block}
+a{color:inherit}
+h1,h2,h3{font-family:Oswald,"Arial Narrow","Roboto Condensed",Impact,sans-serif;font-weight:700;letter-spacing:.01em;margin:0;line-height:1.08}
+h1{font-size:clamp(36px,9.4vw,64px)}
+h2{font-size:clamp(28px,6.6vw,44px)}
+h3{font-size:20px}
+p{margin:0}
+:focus-visible{outline:3px solid var(--text);outline-offset:3px;border-radius:6px}
+.skip{position:absolute;left:12px;top:-60px;background:var(--lime);color:#14161A;padding:10px 14px;border-radius:8px;font-weight:600;z-index:1000}
+.skip:focus{top:12px}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:20px}
+section{padding-block:40px}
+h1 .hl{display:block}
+h1{text-wrap:balance}
+h2{text-wrap:balance}
+.eyebrow{font:500 13px/1 ui-monospace,"Roboto Mono",Menlo,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--lime);margin-bottom:14px}
+.lead{color:var(--muted);font-size:17px;max-width:60ch}
+.muted{color:var(--muted)}
+.hl{color:var(--lime)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 26px;border-radius:999px;background:var(--lime);color:#14161A;font:600 17px Inter,system-ui,sans-serif;text-decoration:none;border:0;cursor:pointer;transition:transform .15s,filter .15s}
+.btn:hover{filter:brightness(.94)}
+.btn:active{transform:translateY(1px)}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line2)}
+.btn.sm{min-height:44px;padding:0 18px;font-size:15px}
+.link{display:inline-flex;align-items:center;min-height:44px;color:var(--text);font-weight:500;text-decoration:underline;text-underline-offset:4px}
+header.top{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font:700 22px Oswald,sans-serif;letter-spacing:.02em}
+.top nav{display:none}
+.hero{padding-top:20px;padding-bottom:48px}
+.hero .grid{display:grid;gap:36px}
+.hero p.lead{margin-top:18px}
+.hero .cta{display:flex;flex-direction:column;gap:10px;margin-top:26px;align-items:stretch}
+.hero .cta .btn{width:100%}
+.hero .micro{margin-top:14px;font-size:14px;color:var(--muted)}
+.hero .hero-coach{margin-top:6px;font-size:15px}
+.phone{width:min(66vw,290px);margin-inline:auto;border:8px solid var(--line);border-radius:38px;overflow:hidden;background:#000;box-shadow:0 24px 60px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.06);aspect-ratio:720/1558}
+.phone img,.phone video{width:100%;height:100%;object-fit:cover}
+.band{background:var(--surface);border-block:1px solid var(--line)}
+.problem ul{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:10px}
+.problem li{background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.problem .fix{margin-top:22px;font:700 clamp(22px,5vw,30px) Oswald,sans-serif;color:var(--lime)}
+.steps{list-style:none;margin:28px 0 0;padding:0;display:grid;gap:14px}
+.steps li{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.steps .n{font:500 13px ui-monospace,Menlo,monospace;color:var(--lime)}
+.steps h3{margin:6px 0 6px}
+.steps p{color:var(--muted);font-size:15px}
+.feat h2{margin-bottom:12px}
+.feat ul{margin:16px 0 0;padding:0;list-style:none;display:grid;gap:8px;color:var(--muted)}
+.feat li{display:flex;gap:10px}
+.feat li::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:var(--lime);margin-top:.6em}
+.note{margin-top:14px;font-size:14px;color:var(--muted)}
+.tag{display:inline-block;font:500 12px ui-monospace,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line2);border-radius:999px;padding:4px 10px;color:var(--muted);margin-bottom:12px}
+.guide ol{margin:0;padding-left:22px;display:grid;gap:10px;max-width:56ch}
+.guide[hidden]{display:none}
+.warn{display:none;margin-top:18px;padding:14px 16px;border:1px solid var(--lime);border-radius:var(--r);max-width:56ch}
+.warn.on{display:block}
+.quotes{display:grid;gap:14px;margin-top:26px}
+.quotes figure{margin:0;background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:20px;position:relative}
+.quotes blockquote{margin:0 0 12px;font-size:16px}
+.quotes figcaption{font-size:14px;color:var(--muted)}
+.quotes .ph{position:absolute;top:10px;right:12px;font:500 10px ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#14161A;background:#F5B73B;border-radius:999px;padding:3px 8px}
+.faq{max-width:760px}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;min-height:56px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:600;font-size:17px;padding-block:8px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";flex:none;width:10px;height:10px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(-135deg)}
+.faq details p{color:var(--muted);padding:0 0 18px;max-width:60ch;font-size:15px}
+.final{text-align:center}
+.final .box{background:var(--surface);border:1px solid rgba(198,241,53,.35);border-radius:22px;padding:44px 22px}
+.final .row{display:flex;flex-direction:column;gap:10px;max-width:360px;margin:26px auto 0}
+footer{padding:36px 0 calc(100px + env(safe-area-inset-bottom));border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer .links{display:flex;flex-wrap:wrap;gap:4px 22px;margin-top:12px}
+footer a{display:inline-flex;align-items:center;min-height:44px}
+.js .reveal{opacity:0;transform:translateY(12px);transition:opacity .4s cubic-bezier(.2,.7,.2,1),transform .4s cubic-bezier(.2,.7,.2,1)}
+.js .reveal.in{opacity:1;transform:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (min-width:700px){.wrap{padding-inline:32px}.steps{grid-template-columns:repeat(3,1fr)}.quotes{grid-template-columns:repeat(2,1fr)}.hero .cta{flex-direction:row;align-items:center}.hero .cta .btn{width:auto;min-width:220px}.final .row{flex-direction:row;max-width:none;justify-content:center}.final .row .btn{min-width:220px}}
+@media (min-width:1000px){.wrap{padding-inline:48px}section{padding-block:72px}.top nav{display:flex;gap:26px}.top nav a{font-weight:500;font-size:14px;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}header.top{height:72px}.hero .grid{grid-template-columns:1.1fr .9fr;align-items:center;gap:60px}.hero{min-height:min(760px,calc(100svh - 72px));display:flex;align-items:center}.phone{width:300px}.hero .phone{width:320px}.quotes{grid-template-columns:repeat(3,1fr)}footer{padding-bottom:36px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.js .reveal{opacity:1;transform:none}}
+
+.tabs{display:flex;gap:8px;margin:22px 0 18px}
+.tabs button{min-height:44px;padding:0 20px;border-radius:999px;border:1px solid var(--line2);background:transparent;color:var(--text);font:600 15px Inter,sans-serif;cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--lime);color:#14161A;border-color:var(--lime)}
+.priv-mini{margin:34px 0 0;padding:20px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.priv-mini h3{margin-bottom:10px}
+.priv-mini ul{margin:0;padding:0;list-style:none;display:grid;gap:8px;color:var(--muted);font-size:15px}
+.priv-mini li{padding-left:22px;position:relative}
+.priv-mini li::before{content:"";position:absolute;left:3px;top:.6em;width:8px;height:8px;border-radius:2px;background:var(--lime)}
+/* capítulos */
+.chap{padding-block:44px;position:relative;scroll-margin-top:56px}
+.chap.alt{background:var(--surface);border-block:1px solid var(--line)}
+.chap::before{content:"";position:absolute;left:20px;top:-1px;width:44px;height:3px;background:var(--lime);border-radius:0 0 3px 3px}
+.chead{margin-bottom:28px}
+.chead .lead{margin-top:12px}
+.chead .eyebrow{display:flex;align-items:center;gap:10px;color:#C9CED3;margin-bottom:16px}
+.chead .eyebrow b{font-weight:500;color:#14161A;background:var(--lime);border-radius:6px;padding:5px 8px}
+.chead .eyebrow::after{content:"";flex:1;height:1px;background:var(--line2);opacity:.6}
+.chead .eyebrow .tag{margin:0;order:3;font-style:normal}
+[data-chapter]{scroll-margin-top:56px}
+.chap .sub-p{margin:0 0 22px;font-size:15px;color:var(--muted)}
+/* chip-nav */
+.cnav{position:fixed;top:0;left:0;right:0;z-index:60;height:52px;background:rgba(20,22,26,.92);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);transform:translateY(-101%);transition:transform .25s cubic-bezier(.2,.7,.2,1)}
+.cnav.on{transform:none}
+.cnav ul{display:flex;gap:6px;overflow-x:auto;list-style:none;margin:0;padding:4px 20px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.cnav ul::-webkit-scrollbar{display:none}
+.cnav a{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:999px;font:500 14px Inter,sans-serif;text-decoration:none;color:var(--muted);white-space:nowrap}
+.cnav a[aria-current=true]{color:var(--text);background:var(--surface2);box-shadow:inset 0 -2px 0 var(--lime)}
+.prog{position:absolute;left:0;bottom:-1px;height:2px;width:calc(var(--p,0)*100%);background:var(--lime)}
+/* CTA break */
+.cta-break{margin-top:44px;padding-top:26px;border-top:1px dashed var(--line2);display:grid;gap:14px;text-align:center}
+.cta-break p.t{font:700 24px/1.2 Oswald,sans-serif}
+.cta-break p.t .muted{display:block;font:400 15px/1.5 Inter,sans-serif;margin-top:6px}
+.cta-break .micro{font-size:14px;color:var(--muted)}
+/* galeria de vídeos */
+.vtabs{display:flex;gap:8px;overflow-x:auto;margin:0 -20px 22px;padding:0 20px;scrollbar-width:none}
+.vtabs::-webkit-scrollbar,.vstage::-webkit-scrollbar,.duo::-webkit-scrollbar{display:none}
+.vtabs button{flex:none;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line2);background:transparent;color:var(--text);font:600 15px Inter,sans-serif;cursor:pointer}
+.vtabs button[aria-selected=true]{background:var(--lime);color:#14161A;border-color:var(--lime)}
+.vstage{display:grid;grid-auto-flow:column;grid-auto-columns:78%;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;margin:0 -20px;padding:0 20px;scroll-padding-inline:20px;scrollbar-width:none}
+.vp{margin:0;scroll-snap-align:center;text-align:center}
+.vp .phone{position:relative;width:min(64vw,250px);aspect-ratio:540/1168;transition:opacity .25s,transform .25s}
+.vp:not(.on) .phone{opacity:.55;transform:scale(.94)}
+.vp .phone>img,.vp .phone>video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.vp figcaption{margin-top:16px}
+.vp figcaption b{display:block;font:700 22px/1.1 Oswald,sans-serif}
+.vp figcaption span{display:block;margin:6px auto 0;color:var(--muted);font-size:15px;max-width:32ch}
+.vp figcaption em{display:inline-block;margin-top:8px;font:500 13px ui-monospace,Menlo,monospace;color:var(--muted);font-style:normal}
+.vp .play{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:linear-gradient(transparent 50%,rgba(0,0,0,.55));border:0;cursor:pointer;width:100%}
+.js .vp .play{display:flex}
+.vp .play span{display:flex;width:72px;height:72px;border-radius:50%;background:var(--lime);align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.vp .play[hidden]{display:none!important}
+.vp .nojs{display:block;margin-top:6px}.js .vp .nojs{display:none}
+.vdesc{max-width:560px;margin:18px auto 0;color:var(--muted);font-size:14px}
+.vdesc summary{cursor:pointer;min-height:44px;display:flex;align-items:center;justify-content:center}
+/* vantagens */
+.demos{list-style:none;margin:0;padding:0;display:grid;gap:26px}
+.demos .vp{display:grid;grid-template-columns:128px 1fr;gap:18px;align-items:center;text-align:left}
+.demos .vp .phone{width:128px;border-width:5px;border-radius:22px}
+.demos .vp .play span{width:44px;height:44px}
+.demos .vp .play svg{width:20px;height:20px}
+.demos .vp figcaption{margin-top:0}
+.demos .vp figcaption b{font-size:21px}
+.demos .vp figcaption span{margin:6px 0 0;max-width:34ch}
+.coach .vp .phone{width:min(66vw,250px);margin-inline:auto}
+@media (min-width:700px){.demos{grid-template-columns:1fr 1fr;gap:34px 40px}}
+
+.adv{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.adv li{display:flex;flex-direction:column;gap:10px;min-height:168px;padding:16px 14px 18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.adv svg{width:28px;height:28px;flex:none;fill:none;stroke:var(--lime);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.adv h3{font-size:21px;line-height:1.1}
+.adv p{margin-top:auto;font-size:14px;line-height:1.45;color:var(--muted)}
+.adv .main{grid-column:1/-1;min-height:0;flex-direction:row;flex-wrap:wrap;align-items:center;gap:6px 14px;background:var(--lime);border-color:var(--lime);color:#14161A}
+.adv .main svg{stroke:#14161A}
+.adv .main h3{font-size:26px}
+.adv .main p{flex-basis:100%;margin:0;color:#2B3305}
+/* recursos */
+.feat{display:grid;gap:30px;align-items:center;padding-block:44px;border-top:1px solid var(--line)}
+.feat:first-of-type{border-top:0;padding-top:0}
+.feat .sub{font:500 13px ui-monospace,Menlo,monospace;letter-spacing:.08em;color:var(--muted);margin-bottom:10px}
+.feat h2{margin-bottom:12px}
+.feat ul{margin:16px 0 0;padding:0;list-style:none;display:grid;gap:8px;color:var(--muted)}
+.feat li{display:flex;gap:10px}
+.feat li::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:var(--lime);margin-top:.6em}
+.feat .vlink{margin-top:6px}
+.feat .phone{width:min(60vw,250px)}
+.duo{display:grid;grid-auto-flow:column;grid-auto-columns:62%;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding-inline:20px;margin-inline:-20px;scrollbar-width:none}
+.duo .phone{width:100%;scroll-snap-align:center;border-width:6px;border-radius:28px}
+/* treinadores */
+.coach{background:radial-gradient(120% 55% at 50% 0,rgba(198,241,53,.10),transparent 62%),var(--surface);border-block:1px solid var(--line);border-top:2px solid var(--lime)}
+.coach::before{display:none}
+.coach h2 .hl{display:block}
+.coach .tag{color:var(--text)}
+.coach-grid{display:grid;gap:28px}
+.phone.lime{border-color:rgba(198,241,53,.45);box-shadow:0 24px 60px rgba(0,0,0,.5),0 0 0 1px rgba(198,241,53,.2),0 0 60px rgba(198,241,53,.10)}
+.vlink{text-align:center;margin-top:8px}
+.cb{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.cb li{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;background:rgba(20,22,26,.55);border:1px solid var(--line);border-radius:var(--r)}
+.cb svg{flex:none;width:26px;height:26px;fill:none;stroke:var(--lime);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.cb b{display:block;font-weight:600}.cb span{color:var(--muted);font-size:15px}
+.coach-cta{display:flex;flex-direction:column;gap:10px;margin-top:28px}
+/* barra fixa */
+.sticky{position:fixed;left:0;right:0;bottom:0;z-index:50;pointer-events:none;padding:36px 20px calc(14px + env(safe-area-inset-bottom));background:linear-gradient(to top,var(--bg) 0,rgba(20,22,26,.96) 40%,rgba(20,22,26,0) 100%);opacity:0;transform:translateY(16px);transition:opacity .2s,transform .25s}
+.sticky.on{opacity:1;transform:none}
+.sticky .btn{pointer-events:auto;width:100%;min-height:50px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.guide a{display:inline-flex;align-items:center;min-height:44px;padding-inline:2px}
+.header-ghost{}
+@media (max-width:999px){header.top .btn.sm{background:transparent;color:var(--text);border:1px solid var(--line2)}}
+@media (min-width:700px){.chap::before{left:32px}.adv{grid-template-columns:repeat(4,1fr)}.adv .main{grid-column:span 2}.cta-break{grid-template-columns:1fr auto;align-items:center;text-align:left}.cta-break .btn{min-width:240px}.cta-break .micro{grid-column:1/-1}.duo{grid-auto-flow:row;grid-template-columns:repeat(2,1fr);overflow:visible;margin:0;padding:0;justify-content:center}.coach-cta{flex-direction:row}.coach-cta .btn{min-width:220px}}
+@media (min-width:1000px){.chap{padding-block:72px}.chap::before{left:48px}.cnav{display:none}.top nav{gap:22px}.feat{grid-template-columns:1fr 1fr;gap:80px}.feat.rev .media{order:-1}.vtabs{display:none}.vstage{grid-auto-flow:row;grid-template-columns:repeat(5,1fr);overflow:visible;margin:0;padding:0}.vp:not(.on) .phone{opacity:1;transform:none}.vp .phone{width:min(100%,200px)}.coach-grid{grid-template-columns:.8fr 1.2fr;align-items:center;gap:80px}.sticky{display:none}}
+@media (max-height:420px){.sticky{display:none}}
+/* O app: 3 motivos com print (celular: print à esquerda; computador: 3 colunas) */
+.motivos{list-style:none;margin:0;padding:0;display:grid;gap:26px}
+.motivos figure{margin:0;display:grid;grid-template-columns:132px 1fr;gap:18px;align-items:center}
+.motivos .phone{width:132px;border-width:5px;border-radius:22px;margin:0}
+.motivos figcaption{min-width:0}
+.motivos figcaption b{display:block;font:700 21px/1.15 Oswald,sans-serif}
+.motivos figcaption span{display:block;margin-top:6px;color:var(--muted);font-size:15px;max-width:36ch}
+.faq .ans{padding:0 0 18px}.faq .ans>p{padding-bottom:0}.faq .tabs{margin:16px 0 14px}.faq .guide ol{color:var(--muted);font-size:15px}
+@media (min-width:1000px){.motivos{grid-template-columns:repeat(3,1fr);gap:40px}.motivos figure{grid-template-columns:1fr;text-align:center;gap:22px}.motivos .phone{width:220px;border-width:7px;border-radius:32px;margin-inline:auto}.motivos figcaption span{margin-inline:auto}}
+.coach-grid{grid-template-columns:1fr!important}@media(min-width:760px){.coach-grid .cb{display:grid;grid-template-columns:1fr 1fr;gap:12px}}
+</style>
+</head>
+<body>
+<a class="skip" href="#conteudo">Skip to content</a>
+<nav class="cnav" id="cnav" aria-label="Chapters"><ul>
+  <li><a href="#como-funciona">How it works</a></li><li><a href="#app">The app</a></li><li><a href="#treinadores">Coaches</a></li><li><a href="#perguntas">FAQ</a></li>
+</ul><i class="prog" id="prog"></i></nav>
+<div class="wrap">
+<header class="top">
+  <a class="logo" href="./" aria-label="Movo, home"><svg width="30" height="30" viewBox="0 0 240 240" fill="none" aria-hidden="true"><rect x="36" y="126" width="44" height="74" rx="14" fill="#C6F135"/><rect x="98" y="84" width="44" height="116" rx="14" fill="#C6F135"/><rect x="160" y="40" width="44" height="160" rx="14" fill="#C6F135"/></svg>movo</a>
+  <nav aria-label="Sections"><a href="#como-funciona">How it works</a><a href="#app">The app</a><a href="#treinadores">Coaches</a><a href="#perguntas">FAQ</a></nav>
+  <a class="btn sm" href="https://app.movoapp.com.br/?lang=en&utm_source=lp-en&pos=nav" data-cta="nav">Start free</a>
+</header>
+</div>
+<main id="conteudo" tabindex="-1">
+
+<section class="hero" aria-labelledby="h1">
+<div class="wrap"><div class="grid">
+  <div>
+    <p class="eyebrow">Free during the beta</p>
+    <h1 id="h1">All your training <span class="hl">in one place.</span></h1>
+    <p class="lead">Strength training, running, HYROX and your sport in the same week. Use your own routine, follow a ready-made plan or get one from your coach.</p>
+    <div class="cta">
+      <a class="btn" href="https://app.movoapp.com.br/?lang=en&utm_source=lp-en&pos=hero" data-cta="hero">Start free</a>
+    </div>
+    <p class="micro">Sign in with a code sent to your email. No password, no credit card. Works with Strava.</p>
+    <p class="hero-coach"><a class="link" href="https://app.movoapp.com.br/?lang=en&utm_source=lp-en-treinador&pos=hero&sou=treinador" data-cta="treinador-hero">I'm a coach and want to use it with my clients</a></p>
+    <div class="warn" id="inapp" role="note"><b>Viewing this inside Instagram, Facebook or TikTok?</b> Their browser can't install apps. Copy the link and open it in Safari (iPhone) or Chrome (Android).<p style="margin-top:12px"><button class="btn ghost sm" id="copy" type="button">Copy app link</button> <span id="copied" class="muted" aria-live="polite"></span></p></div>
+  </div>
+  <div class="phone-wrap"><div class="phone"><picture><source type="image/avif" srcset="../media/shot-plano-en-360.avif 360w, ../media/shot-plano-en-720.avif 720w" sizes="(min-width:1000px) 320px, 62vw"><source type="image/webp" srcset="../media/shot-plano-en-360.webp 360w, ../media/shot-plano-en-720.webp 720w" sizes="(min-width:1000px) 320px, 62vw"><img src="../media/shot-plano-en-720.webp" width="720" height="1558" alt="Movo Workouts tab with an 8-week hybrid plan: phases, a deload week and the current week with strength workouts and runs." fetchpriority="high"></picture></div></div>
+</div></div>
+</section>
+
+<section id="como-funciona" class="chap" data-chapter aria-labelledby="h-como"><div class="wrap">
+  <header class="chead"><p class="eyebrow"><span>How it works</span></p>
+  <h2 id="h-como">Your training is all over the place. Bring it together in three steps.</h2>
+  <p class="lead">Your routine in a PDF in a group chat, your runs in another app, your hockey games only in your head. Movo puts it all in one place.</p></header>
+  <ol class="steps">
+    <li class="reveal"><span class="n">01</span><h3>Sign in with email</h3><p>You get a code, type it in and you're done. No password.</p></li>
+    <li class="reveal"><span class="n">02</span><h3>Bring your workouts</h3><p>Import your routine from a PDF, photo or spreadsheet, and move your workouts over from another app in seconds. Or build one from the exercise catalog.</p></li>
+    <li class="reveal"><span class="n">03</span><h3>Train and log it</h3><p>Log weights, sets and rest in a few taps. Hockey, CrossFit or anything else you do: log it with one tap.</p></li>
+  </ol>
+</div></section>
+
+<section id="app" class="chap" data-chapter aria-labelledby="h-app"><div class="wrap">
+  <header class="chead"><p class="eyebrow"><span>The app</span></p>
+  <h2 id="h-app">Fewer spreadsheets. More training.</h2></header>
+  <ul class="motivos">
+    <li><figure><div class="phone"><picture><source type="image/avif" srcset="../media/shot-treino-en-360.avif 360w, ../media/shot-treino-en-720.avif 720w" sizes="(min-width:1000px) 320px, 62vw"><source type="image/webp" srcset="../media/shot-treino-en-360.webp 360w, ../media/shot-treino-en-720.webp 720w" sizes="(min-width:1000px) 320px, 62vw"><img src="../media/shot-treino-en-720.webp" width="720" height="1558" alt="Leg workout in progress in Movo, with sets, weights, reps and the rest timer counting down." loading="lazy" decoding="async"></picture></div>
+      <figcaption><b>Your routine, your way</b><span>Log weights, sets and rest in a few taps, with last time's weight right beside it. PRs show up automatically. In kg or lb.</span></figcaption></figure></li>
+    <li><figure><div class="phone"><picture><source type="image/avif" srcset="../media/shot-origens-en-360.avif 360w, ../media/shot-origens-en-720.avif 720w" sizes="(min-width:1000px) 320px, 62vw"><source type="image/webp" srcset="../media/shot-origens-en-360.webp 360w, ../media/shot-origens-en-720.webp 720w" sizes="(min-width:1000px) 320px, 62vw"><img src="../media/shot-origens-en-720.webp" width="720" height="1558" alt="What do you want to train screen, with the options Strength, Running, Hybrid and Tailored with AI." loading="lazy" decoding="async"></picture></div>
+      <figcaption><b>A ready-made multi-week plan</b><span>Strength, running or hybrid, with lighter weeks to recover. Signed up for a race? The AI builds your plan up to race day.</span></figcaption></figure></li>
+    <li><figure><div class="phone"><picture><source type="image/avif" srcset="../media/shot-desafio-en-360.avif 360w, ../media/shot-desafio-en-720.avif 720w" sizes="(min-width:1000px) 320px, 62vw"><source type="image/webp" srcset="../media/shot-desafio-en-360.webp 360w, ../media/shot-desafio-en-720.webp 720w" sizes="(min-width:1000px) 320px, 62vw"><img src="../media/shot-desafio-en-720.webp" width="720" height="1558" alt="Creating a challenge in Movo: weekly goal, coffee on the line, simple points or who runs the most." loading="lazy" decoding="async"></picture></div>
+      <figcaption><b>Train together</b><span>Challenges with a weekly leaderboard and a shareable card for Instagram Stories. Have a coach? They plan your week through Movo.</span></figcaption></figure></li>
+  </ul>
+  <aside class="cta-break" data-nosticky aria-label="Get started">
+    <p class="t">Ready to bring it all together? <span class="muted">It takes less than 2 minutes.</span></p>
+    <a class="btn" href="https://app.movoapp.com.br/?lang=en&utm_source=lp-en&pos=vantagens" data-cta="vantagens">Start free</a>
+  </aside>
+</div></section>
+
+<section id="treinadores" class="chap coach" data-chapter data-nosticky aria-labelledby="h-coach"><div class="wrap">
+  <header class="chead"><p class="eyebrow"><span>For coaches</span></p>
+  <h2 id="h-coach">Plan your clients' weeks. <span class="hl">See who trained.</span></h2>
+  <p class="lead">Strength and running in the same app, for you and your client. Clients approve every change and choose what you can see.</p></header>
+  <div class="coach-grid">
+    <ul class="cb">
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l16-8-6 16-2-7z"/></svg><div><b>Send the week or a plan</b><span>One week or several, with phases. Import the routines you already have from a photo, PDF or spreadsheet.</span></div></li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/></svg><div><b>See who trained</b><span>The “For today” list shows who trained, who reported pain and who needs attention.</span></div></li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="9" r="3.5"/><circle cx="17" cy="10" r="2.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M15 20c0-2.5 1.2-4.5 3-5.3 1.8.8 3 2.8 3 5.3"/></svg><div><b>Groups</b><span>Plan the week once and send it to the whole group.</span></div></li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/></svg><div><b>Intake, assessments and your videos</b><span>Health intake form, body measurements and your own videos on each exercise. Works on desktop too.</span></div></li>
+    </ul>
+  </div>
+  <div class="coach-cta"><a class="btn" href="https://app.movoapp.com.br/?lang=en&utm_source=lp-en-treinador&pos=treinador&sou=treinador" data-cta="treinador">I'm a coach</a></div>
+  <p class="note">Prefer to talk first? <a href="mailto:contato@movoapp.com.br" data-cta="email">contato@movoapp.com.br</a></p>
+</div></section>
+
+<!-- PLACEHOLDER: depoimentos fictícios. Esta seção fica OCULTA para o público e só aparece com ?depoimentos=1 (para revisão). Trocar por depoimentos reais com autorização antes de mostrar. -->
+<section id="depoimentos" class="band" hidden aria-labelledby="h-dep"><div class="wrap">
+  <h2 id="h-dep">People using it.</h2>
+  <div class="quotes">
+    <figure><span class="ph">Exemplo</span><blockquote>“Minha ficha vivia numa foto perdida no WhatsApp. Agora ela está no celular, com a carga da semana passada ao lado.”</blockquote><figcaption>Rafael M. · aluno de academia</figcaption></figure>
+    <figure><span class="ph">Exemplo</span><blockquote>“Marquei uma prova de 10 km e o app mostra quantos dias faltam toda vez que abro.”</blockquote><figcaption>Camila T. · corredora</figcaption></figure>
+    <figure><span class="ph">Exemplo</span><blockquote>“Treino academia três vezes e jogo vôlei duas. Ver tudo na mesma semana mudou como eu organizo os dias.”</blockquote><figcaption>Bruno S. · vôlei e musculação</figcaption></figure>
+    <figure><span class="ph">Exemplo</span><blockquote>“Importei a ficha de uma aluna a partir da foto, ajustei duas linhas e enviei. Ela aceitou e eu vi quando treinou.”</blockquote><figcaption>Larissa P. · personal trainer</figcaption></figure>
+    <figure><span class="ph">Exemplo</span><blockquote>“Fizemos um desafio de quatro semanas no grupo. O placar acabou com a discussão de quem faltou.”</blockquote><figcaption>Diego A. · treina com amigos</figcaption></figure>
+    <figure><span class="ph">Exemplo</span><blockquote>“Gosto de marcar o CrossFit como ‘fui’ e anotar o esforço depois.”</blockquote><figcaption>Fernanda R. · CrossFit e corrida</figcaption></figure>
+  </div>
+</div></section>
+
+<section id="perguntas" class="chap alt" data-chapter data-nosticky aria-labelledby="h-faq"><div class="wrap">
+  <header class="chead"><p class="eyebrow"><span>FAQ</span></p>
+  <h2 id="h-faq">Frequently asked questions</h2></header>
+  <div class="faq">
+    <details><summary>Is Movo free?</summary><p>Yes, during the beta, and no credit card needed. Beta means Movo already works for everyday training, but it gets new features every week and some screens still change. When there is a paid plan, logging workouts stays free and nothing you logged is deleted. AI features have a monthly usage limit.</p></details>
+    <details id="instalar"><summary>How do I install it on my phone?</summary><div class="ans">
+      <p>It's not in the app stores, and it doesn't need to be: Movo is a web app. You can use it right in the browser or add it to your home screen, where it gets an icon, opens full screen and logs workouts even offline.</p>
+      <div class="tabs" role="tablist" aria-label="Phone type">
+        <button role="tab" id="t-android" aria-selected="true" aria-controls="g-android">Android</button>
+        <button role="tab" id="t-ios" aria-selected="false" aria-controls="g-ios">iPhone</button>
+      </div>
+      <div class="guide" id="g-android" role="tabpanel" aria-labelledby="t-android">
+        <ol><li>Open the app in <b>Chrome</b>: <a href="https://app.movoapp.com.br/?lang=en&utm_source=lp-en&pos=install" data-cta="install">open Movo</a>.</li><li>Tap the <b>⋮</b> menu (top right corner).</li><li>Tap <b>Install app</b> (or <b>Add to Home screen</b>).</li><li>Confirm. The Movo icon shows up on your home screen.</li></ol>
+      </div>
+      <div class="guide" id="g-ios" role="tabpanel" aria-labelledby="t-ios">
+        <ol><li>Open the app <b>in Safari</b>: <a href="https://app.movoapp.com.br/?lang=en&utm_source=lp-en&pos=install" data-cta="install">open Movo</a>. In other browsers this step may not show up.</li><li>Tap <b>Share</b> (the square with an up arrow, at the bottom).</li><li>Scroll and tap <b>Add to Home Screen</b>.</li><li>Tap <b>Add</b> (top right corner).</li></ol>
+        <p class="note">After installing, sign in with the email code inside the installed app. If the email link opens in your browser, go back to the app and type the code.</p>
+      </div>
+    </div></details>
+    <details><summary>I already use another app. Can I bring my workouts?</summary><p>Yes, and it's easy. When importing, send the file exported from your current app, a spreadsheet, a PDF or a photo of your routine. Movo organizes everything and you check it before saving.</p></details>
+    <details><summary>Does it work with my watch?</summary><p>Yes, through Strava. Connect Strava in Movo and the activities from your watch come in on their own, with nothing to type.</p></details>
+    <details><summary>What about my data? Who sees it?</summary><p>Your workouts are saved to your account in the cloud, so you can access them from any device. Friends in a challenge only see what counts for points, never your weights or routines. A coach only sees what you allow. You can export your data and delete your account in the app. Details in the <a href="privacy.html">Privacy Policy</a> and the <a href="terms.html">Terms of Use</a>.</p></details>
+    <details><summary>Does it use AI? What gets sent to it?</summary><p>Some features (importing workouts, building a custom plan, race plans and adjusting your week) use AI from Anthropic and send only what that feature needs. Nothing is saved until you review it. The AI makes suggestions and doesn't replace a health or fitness professional.</p></details>
+    <details><summary>I'm a coach. How do I get started?</summary><p>When you sign in, choose “I'm a coach” and fill in your profile. Then invite your clients by link or code. Each client decides what you see.</p></details>
+  </div>
+  <p class="note" style="margin-top:22px">Didn't find your question? Use the feedback button inside the app or email us: <a href="mailto:contato@movoapp.com.br" data-cta="email">contato@movoapp.com.br</a>.</p>
+</div></section>
+
+<section class="final" data-nosticky aria-labelledby="h-final"><div class="wrap"><div class="box reveal">
+  <h2 id="h-final">Get all your training in one place.</h2>
+  <p class="lead" style="margin:12px auto 0">Free during the beta. No password, no credit card.</p>
+  <div class="row"><a class="btn" href="https://app.movoapp.com.br/?lang=en&utm_source=lp-en&pos=final" data-cta="final" id="cta-final">Start free</a></div>
+</div></div></section>
+
+</main>
+<footer data-nosticky><div class="wrap">
+  <div class="logo" style="font-size:20px"><svg width="26" height="26" viewBox="0 0 240 240" fill="none" aria-hidden="true"><rect x="36" y="126" width="44" height="74" rx="14" fill="#C6F135"/><rect x="98" y="84" width="44" height="116" rx="14" fill="#C6F135"/><rect x="160" y="40" width="44" height="160" rx="14" fill="#C6F135"/></svg>movo <span class="muted" style="font:400 14px Inter,sans-serif">· beta</span></div>
+  <div class="links"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="../" hreflang="pt-BR" lang="pt-BR">Português</a><a href="mailto:contato@movoapp.com.br" data-cta="email">contato@movoapp.com.br</a></div>
+  <p style="margin-top:14px">Movo doesn't replace a health or fitness professional.</p>
+  <p style="margin-top:6px">© Movo. All rights reserved.</p>
+</div></footer>
+<div class="sticky" id="sticky"><a class="btn" href="https://app.movoapp.com.br/?lang=en&utm_source=lp-en&pos=sticky" data-cta="sticky">Start free</a></div>
+<script>
+(function(){
+var d=document,de=d.documentElement;de.classList.add('js');
+var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* contagem anônima (sem cookie, sem ID, sem IP): só contadores diários agregados; respeita Não Rastrear */
+var SB='https://wgdhjkebfvcmgokxscvb.supabase.co/rest/v1/rpc/lp_event',KEY='sb_publishable_W0cKrWrtCwCp1XjNl1JFqQ_myok_WPk';
+var q=new URLSearchParams(location.search),src=(q.get('utm_source')||q.get('ref')||'').toLowerCase().replace(/[^a-z]/g,'').slice(0,20)||'direto';
+var canTrack=/(^|\.)movoapp\.com\.br$/.test(location.hostname)&&navigator.doNotTrack!=='1'&&!navigator.globalPrivacyControl&&!navigator.webdriver;
+var sent={};
+function track(name,pos,once){if(!canTrack)return;var k=name+'|'+(pos||'');if(once&&sent[k])return;sent[k]=1;
+ try{fetch(SB,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json',apikey:KEY},body:JSON.stringify({p_name:name,p_pos:pos||'',p_src:src})}).catch(function(){})}catch(e){}}
+track('view','',true);
+d.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('[data-cta]');if(!a)return;var c=a.getAttribute('data-cta');if(c==='email')track('click_email','');else track('cta_open_app',c)});
+/* revelar ao rolar */
+if('IntersectionObserver' in window&&!reduce){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12,rootMargin:'0px 0px 8% 0px'});d.querySelectorAll('.reveal').forEach(function(el){io.observe(el)})}else{d.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in')})}
+/* barra fixa: aparece depois do hero e some em CTAs, treinadores, FAQ, card final e rodapé */
+var heroCta=d.querySelector('[data-cta=hero]'),st=d.getElementById('sticky'),heroOut=false,ns=[];
+function upd(){st.classList.toggle('on',heroOut&&ns.length===0)}
+if('IntersectionObserver' in window){
+ new IntersectionObserver(function(es){heroOut=!es[0].isIntersecting&&es[0].boundingClientRect.top<0;upd()}).observe(heroCta);
+ var nio=new IntersectionObserver(function(es){es.forEach(function(e){var i=ns.indexOf(e.target);if(e.isIntersecting&&i<0)ns.push(e.target);if(!e.isIntersecting&&i>=0)ns.splice(i,1)});upd()},{rootMargin:'0px 0px -10% 0px'});
+ d.querySelectorAll('[data-nosticky]').forEach(function(el){nio.observe(el)});
+}else{st.classList.add('on')}
+/* chip-nav: aparece depois do hero, esconde ao descer, volta ao subir; destaca o capítulo atual */
+var nav=d.getElementById('cnav'),prog=d.getElementById('prog'),heroEl=d.querySelector('.hero'),ly=window.scrollY;
+function navTick(){var y=window.scrollY,dy=y-ly,past=y>heroEl.offsetHeight*.8;
+ if(Math.abs(dy)>6){nav.classList.toggle('on',past&&dy<0);ly=y}
+ if(!past)nav.classList.remove('on');
+ prog.style.setProperty('--p',Math.min(1,y/Math.max(1,de.scrollHeight-innerHeight)).toFixed(3))}
+addEventListener('scroll',function(){requestAnimationFrame(navTick)},{passive:true});
+var links=[].slice.call(nav.querySelectorAll('a'));
+if('IntersectionObserver' in window){var cio=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;track('chapter',e.target.id,true);
+ links.forEach(function(a){var on=a.getAttribute('href')==='#'+e.target.id;a.setAttribute('aria-current',on?'true':'false');if(on)nav.querySelector('ul').scrollTo({left:Math.max(0,a.offsetLeft-20),behavior:reduce?'auto':'smooth'})})})},{rootMargin:'-45% 0px -50% 0px'});
+ d.querySelectorAll('[data-chapter]').forEach(function(el){cio.observe(el)})}
+/* instalar: aba conforme o sistema + aviso de navegador interno */
+var ua=navigator.userAgent||'',ios=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+var inapp=/FBAN|FBAV|Instagram|WhatsApp|Line\//i.test(ua)||(ios&&/CriOS|FxiOS/i.test(ua));
+var tA=d.getElementById('t-android'),tI=d.getElementById('t-ios'),gA=d.getElementById('g-android'),gI=d.getElementById('g-ios');
+function tab(w){var a=w==='android';tA.setAttribute('aria-selected',a);tI.setAttribute('aria-selected',!a);gA.hidden=!a;gI.hidden=a}
+tA.addEventListener('click',function(){tab('android')});tI.addEventListener('click',function(){tab('ios')});
+tab(ios?'ios':'android');
+if(inapp)d.getElementById('inapp').classList.add('on');
+var cp=d.getElementById('copy');
+cp.addEventListener('click',function(){var u='https://app.movoapp.com.br/?lang=en';var ok=function(){d.getElementById('copied').textContent='Link copied.'};if(navigator.clipboard){navigator.clipboard.writeText(u).then(ok,function(){d.getElementById('copied').textContent=u})}else{d.getElementById('copied').textContent=u}});
+/* depoimentos de exemplo só aparecem em revisão (?depoimentos=1) */
+if(/[?&]depoimentos=1/.test(location.search)){var s=d.getElementById('depoimentos');if(s)s.hidden=false}
+})();
+</script>
+</body>
+</html>
