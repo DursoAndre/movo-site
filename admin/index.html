@@ -68,6 +68,8 @@ h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)
 .v.ok{color:var(--ac)}
 .v.mut{color:var(--mut);font-weight:500}
 .row.lim{align-items:start}
+.row.lim.sub{padding:7px 0 7px 12px;border-top-style:dashed}
+.row.lim.sub .t{font-size:14px}
 .lim .v{font-weight:500;color:var(--mut)}
 .lim .v b{color:var(--fg);font-weight:700}
 .lim .v.warn b,.lim .v.warn small{color:var(--warn)}
@@ -546,14 +548,14 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
   function vereditoSaude(d) {
     var s = d.s || {}, e24 = +s.erros_24h || 0, eAnt = +s.erros_24h_antes || 0;
     var lims = limitesLista(d.lim || {}, d.resend), pior = lims.reduce(function (m, x) { return Math.max(m, x.uso / x.max); }, 0);
-    var pubs = [["App", "do app", d.ghApp], ["Site e painel", "do site e painel", d.ghSite]];
-    var falhas = pubs.filter(function (p) { return p[2] && p[2].status === "completed" && p[2].conclusion !== "success"; });
+    var pub = d.pub || {}, app = appSync(pub), pubs = [["Site e painel", "do site e painel", pub.site]];
+    var falhas = pubs.filter(function (p) { return falhou(p[2]); });
     var alerta = +s.erros_30min >= 10 || (+s.ia_falhas_1h >= 3 && +s.ia_falhas_1h / Math.max(1, +s.ia_total_1h) >= 0.5) || pior >= 0.9;
-    var aviso = !alerta && (e24 > Math.max(10, eAnt * 2) || pior >= 0.7 || falhas.length > 0);
+    var aviso = !alerta && (e24 > Math.max(10, eAnt * 2) || pior >= 0.7 || falhas.length > 0 || !!app.porque);
     var porque = lims.filter(function (x) { return x.uso / x.max >= 0.7; }).map(function (x) { return x.rot + " em " + Math.round(x.uso / x.max * 100) + "% do limite"; })
-      .concat(falhas.map(function (p) { return "Publicação " + p[1] + " falhou"; }));
+      .concat(app.porque ? [app.porque] : []).concat(falhas.map(function (p) { return "Publicação " + p[1] + " falhou"; }));
     if (alerta && +s.erros_30min >= 10) porque.unshift(s.erros_30min + " erros em 30 min");
-    return { cls: alerta || aviso ? "warn" : "ok", titulo: alerta ? "Atenção: algo fora do normal" : aviso ? "Vale ficar de olho" : "Tudo normal", porque: porque, lims: lims, pubs: pubs };
+    return { cls: alerta || aviso ? "warn" : "ok", titulo: alerta ? "Atenção: algo fora do normal" : aviso ? "Vale ficar de olho" : "Tudo normal", porque: porque, lims: lims, pubs: pubs, app: app };
   }
   function relIso(iso) {
     if (!iso) return "nunca";
@@ -651,12 +653,43 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
   function ghRunApp() {
     return ghRun("movo-app-site").then(function (r) { return r.data ? r : ghRun("movo-app"); });
   }
+  // Publicação pela edge function admin-publicacao: compara a versão do app no repositório privado (código), no público
+  // (app montado) e no ar, e traz o deploy do site. Se a função falhar, volta para a API pública do GitHub no navegador.
+  function publicacao() {
+    return sb.functions.invoke("admin-publicacao").then(function (r) { return r.data && r.data.ok ? r.data : null; }, function () { return null; })
+      .then(function (p) {
+        if (p) return { data: p };
+        return Promise.all([ghRunApp(), ghRun("movo-site")]).then(function (x) { return { data: { reserva: true, codigo: { erro: "funcao" }, publico: { run: x[0].data }, no_ar: {}, site: x[1].data } }; });
+      });
+  }
+  function rodando(r) { return !!r && r.status !== "completed"; }
+  function falhou(r) { return !!r && r.status === "completed" && r.conclusion !== "success"; }
+  // Mesma versão nos três lugares? Devolve o resumo (cls/txt/sub) e o motivo para o veredito da Saúde.
+  function appSync(pub) {
+    pub = pub || {};
+    var c = pub.codigo || {}, p = pub.publico || {}, n = pub.no_ar || {}, cv = c.versao, pv = p.versao;
+    var nv = n.versao || (n.app_js && n.app_js === p.app_js ? pv : null), recente = p.quando && Date.now() - new Date(p.quando).getTime() < 15 * 60000;
+    if (pub.reserva) {
+      var r = p.run;
+      return { cls: !r ? "mut" : rodando(r) ? "warn" : falhou(r) ? "bad" : "ok", txt: !r ? "GitHub não respondeu" : rodando(r) ? "publicando…" : falhou(r) ? "última falhou" : "publicado",
+        sub: "Sem a conferência das versões agora. Tente atualizar a aba.", porque: falhou(r) ? "Publicação do app falhou" : "" };
+    }
+    if (rodando(c.run) || (c.run && !c.run_do_ultimo && !falhou(c.run) && c.quando && Date.now() - new Date(c.quando).getTime() < 30 * 60000)) return { cls: "warn", txt: "publicando " + (cv || "") + "…", sub: "O código mudou e o app está sendo montado e enviado." };
+    if (falhou(c.run)) return { cls: "bad", txt: "publicação falhou", sub: "O app no ar continua na " + (nv || pv || "versão anterior") + ". Veja o erro no GitHub; se falar em SITE_TOKEN, o token venceu e precisa ser renovado.", porque: "Publicação do app falhou" };
+    if (rodando(p.run)) return { cls: "warn", txt: "publicando " + (pv || "") + "…", sub: "O GitHub Pages está colocando o app no ar." };
+    if (cv && pv && cv !== pv) return { cls: "bad", txt: "versões diferentes", sub: "O público está na " + pv + " e o código na " + cv + ".", porque: "App público atrás do código" };
+    if (n.app_js && p.app_js && n.app_js !== p.app_js) return recente ? { cls: "warn", txt: "entrando no ar…", sub: "O GitHub Pages leva até 10 min para trocar o app." }
+      : { cls: "bad", txt: "no ar está outra", sub: "O endereço do app ainda entrega uma montagem diferente da que está no público.", porque: "App no ar diferente do público" };
+    if (n.erro && !n.app_js) return { cls: "warn", txt: (pv || "?") + " no público", sub: "Não consegui abrir app.movoapp.com.br para conferir o que está no ar.", porque: "App no ar não respondeu" };
+    if (c.erro) return { cls: "ok", txt: (pv || "?") + " no ar", sub: c.erro === "sem_chave" ? "Falta a chave de leitura do GitHub para conferir o repositório privado." : "Não consegui ler o repositório privado agora." };
+    return { cls: "ok", txt: "tudo na " + cv, sub: "Privado, público e o que está no ar batem." };
+  }
   // Números › Retenção junta o funil, a ativação e a volta ao app, na ordem: cadastro → 1º treino → voltou.
   VIEW.ret = function (d) { return VIEW.funil(d.funil) + VIEW.ativ(d.ativ) + VIEW.ret1(d.ret); };
   var OPS_CALL = {
     pend: function () {
-      return juntar(["p", "coaches", "rev", "s", "lim", "ghApp", "ghSite", "geral", "coInc"], [sb.rpc("admin_m_pendencias"), sb.rpc("admin_coach_list"), sb.rpc("admin_revisao_lista"),
-        sb.rpc("admin_saude"), sb.rpc("admin_limites"), ghRunApp(), ghRun("movo-site"), sb.rpc("admin_m_geral"), opc(sb.rpc("admin_m_treinador_incompleto"))]);
+      return juntar(["p", "coaches", "rev", "s", "lim", "pub", "geral", "coInc"], [sb.rpc("admin_m_pendencias"), sb.rpc("admin_coach_list"), sb.rpc("admin_revisao_lista"),
+        sb.rpc("admin_saude"), sb.rpc("admin_limites"), publicacao(), sb.rpc("admin_m_geral"), opc(sb.rpc("admin_m_treinador_incompleto"))]);
     },
     mais: function () { return Promise.resolve({ data: {} }); },
     ret: function () {
@@ -673,11 +706,10 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
     integracoes: function () { return sb.rpc("admin_m_integracoes"); },
     midia: function () { return sb.rpc("admin_m_midia"); },
     saude: function () {
-      // Uso do Resend (edge function admin-limites) e último deploy no GitHub (API pública) podem falhar sem derrubar a aba.
+      // Uso do Resend (edge function admin-limites) e publicação (edge function admin-publicacao) podem falhar sem derrubar a aba.
       var re = sb.functions.invoke("admin-limites").then(function (r) { return { data: (r.data && r.data.ok) ? r.data.resend : null }; }, function () { return { data: null }; });
-      var gh = ghRun;
-      return juntar(["s", "versoes", "logins", "lim", "resend", "ghApp", "ghSite"], [sb.rpc("admin_saude"), sb.rpc("admin_versoes", { p_dias: 7 }), sb.rpc("admin_login_stats", { dias: 7 }),
-        sb.rpc("admin_limites"), re, ghRunApp(), gh("movo-site")]);
+      return juntar(["s", "versoes", "logins", "lim", "resend", "pub"], [sb.rpc("admin_saude"), sb.rpc("admin_versoes", { p_dias: 7 }), sb.rpc("admin_login_stats", { dias: 7 }),
+        sb.rpc("admin_limites"), re, publicacao()]);
     },
     registro: function () { return sb.rpc("admin_m_registro", { p_dias: params.registro }); },
     conta: function () { return sb.rpc("admin_m_conta", { p_user: params.conta }); },
@@ -938,12 +970,27 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
       }).join("") + '<div class="row lim"><div class="t">Notificações push no mês<div class="s">Envio gratuito</div></div><div class="v"><b>' + num((d.lim || {}).push_mes) + "</b><small>sem limite</small></div></div></div>";
       h += '<div class="note">Amarelo a partir de 70%, vermelho a partir de 90%. Não medidos aqui: download de arquivos (5 GB/mês) e chamadas de funções (500 mil/mês). Veja no ' +
         '<a class="ext" href="https://supabase.com/dashboard/project/wgdhjkebfvcmgokxscvb/usage" target="_blank" rel="noopener">uso do Supabase</a>.</div>';
-      h += "<h2>Publicação</h2><div class=\"card\">" + pubs.map(function (p) {
+      var pub = d.pub || {}, app = vd.app, c = pub.codigo || {}, pp = pub.publico || {}, na = pub.no_ar || {};
+      var vNoAr = na.versao || (na.app_js && na.app_js === pp.app_js ? pp.versao : null);
+      var lado = function (rot, onde, ver, quando, url, cls) {
+        return '<div class="row lim sub"><div class="t">' + rot + '<div class="s">' + onde + (quando ? " · " + esc(relIso(quando)) : "") + (url ? ' · <a class="ext" href="' + esc(url) + '" target="_blank" rel="noopener">ver no GitHub</a>' : "") +
+          '</div></div><div class="v pub ' + (ver ? cls : "mut") + '">' + esc(ver || "—") + "</div></div>";
+      };
+      var cor = function (v) { return app.cls === "ok" || !c.versao || v === c.versao ? "" : "bad"; };
+      h += "<h2>Publicação</h2><div class=\"card\">";
+      h += '<div class="row lim"><div class="t">App<div class="s">' + esc(app.sub) + '</div></div><div class="v pub ' + app.cls + '">' + esc(app.txt) + "</div></div>";
+      if (!pub.reserva) {
+        h += lado("Repositório privado", "movo-app · código", c.versao, c.quando, c.run ? c.run.html_url : c.html_url, cor(c.versao));
+        h += lado("Repositório público", "movo-app-site · app montado", pp.versao, pp.quando, pp.html_url, cor(pp.versao));
+        h += lado("No ar", "app.movoapp.com.br", vNoAr, null, null, cor(vNoAr));
+      }
+      h += pubs.map(function (p) {
         var r = p[2], rodando = r && r.status !== "completed", ok = r && !rodando && r.conclusion === "success";
         var txt = !r ? "GitHub não respondeu" : rodando ? "publicando…" : ok ? "publicado" : "última falhou";
         var sub = r ? esc(relIso(r.updated_at || r.created_at)) + ' · <a class="ext" href="' + esc(r.html_url) + '" target="_blank" rel="noopener">ver no GitHub</a>' : "tente atualizar a aba";
         return '<div class="row lim"><div class="t">' + p[0] + '<div class="s">' + sub + '</div></div><div class="v pub ' + (!r ? "mut" : rodando ? "warn" : ok ? "ok" : "bad") + '">' + txt + "</div></div>";
       }).join("") + "</div>";
+      if (c.erro === "sem_chave") h += '<div class="note">Para conferir o repositório privado, crie um token do GitHub só de leitura no movo-app e guarde no Supabase como <b>GITHUB_LEITURA</b> (passo a passo na documentação, seção 8).</div>';
       var v = d.versoes || [], tot = v.reduce(function (t, x) { return t + x.pessoas; }, 0);
       h += "<h2>Versão em uso · quem abriu em 7 dias (" + tot + ")</h2><div class=\"card\">" + (v.length ? v.map(function (x) { return '<div class="row"><div class="t">' + esc(x.versao) + '</div><div class="v">' + x.pessoas + "</div></div>"; }).join("") : '<div class="note">Sem aberturas.</div>') + "</div>";
       var lg = d.logins || [];
