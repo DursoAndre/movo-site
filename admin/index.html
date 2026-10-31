@@ -135,6 +135,9 @@ input:focus{outline:2px solid var(--ac);outline-offset:0}
 .card input,.card select,.card textarea,.fi{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--fg);border-radius:10px;padding:10px 12px;font:inherit;font-size:16px;margin:0 0 8px;min-height:44px}
 textarea.fi{resize:vertical;min-height:70px}
 .ct[data-act]{cursor:pointer}
+button.stat{display:block;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer}
+button.stat:active{background:var(--card2)}
+.stat .go{color:var(--ac);font-size:12.5px;font-weight:600;margin-top:6px}
 .ct[data-act]:active{background:var(--card2)}
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:600;z-index:20;max-width:calc(100% - 32px)}
 /* navegação: barra inferior (celular) / lateral (computador) */
@@ -320,7 +323,7 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
     { d: "mais", t: "Mais", tabs: ["mais"], ic: '<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>' }
   ];
   var MAIS = [["Sistema", ["saude", "registro", "dom"]], ["Conteúdo", ["catalogo", "desafios", "recados", "suporte"]], ["Configurações", ["planos", "ia", "midia", "integracoes"]]];
-  var DETALHE = { conta: "contas", desafio: "desafios", treinador: "treinadores" }, ANTIGA = { funil: "ret", ativ: "ret" };
+  var DETALHE = { conta: "contas", desafio: "desafios", treinador: "treinadores", erros: "saude" }, ANTIGA = { funil: "ret", ativ: "ret" };
   function abaDe(id) { return TABS.filter(function (t) { return t.id === (DETALHE[id] || id); })[0]; }
   function destDe(id) { var t = DETALHE[id] || id; return DEST.filter(function (x) { return x.tabs.indexOf(t) >= 0; })[0] || DEST[4]; }
   var cache = {};
@@ -712,6 +715,8 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
         sb.rpc("admin_limites"), re, publicacao()]);
     },
     registro: function () { return sb.rpc("admin_m_registro", { p_dias: params.registro }); },
+    // Erros das últimas 24 h, um por linha (admin_client_errors devolve os mais recentes; o filtro de 24 h é feito aqui).
+    erros: function () { return sb.rpc("admin_client_errors", { limit_n: 500 }); },
     conta: function () { return sb.rpc("admin_m_conta", { p_user: params.conta }); },
     treinador: function () { return sb.rpc("admin_coach_detalhe", { p_user: params.treinador }); }
   };
@@ -958,7 +963,9 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
       var s = d.s || {}, e24 = +s.erros_24h || 0, eAnt = +s.erros_24h_antes || 0, iaF = +s.ia_falhas_24h || 0, iaT = +s.ia_total_24h || 0, NB = "\u00a0";
       var vd = vereditoSaude(d), lims = vd.lims, pubs = vd.pubs, porque = vd.porque;
       var h = '<div class="card"><div class="verdict ' + vd.cls + '">' + vd.titulo + "</div>";
-      h += '<div class="grid g3" style="margin-top:8px">' + stat(e24, "erros (24" + NB + "h)", "", eAnt ? "dia anterior: " + eAnt : "") +
+      var stErros = stat(e24, "erros (24" + NB + "h)", "", eAnt ? "dia anterior: " + eAnt : "").replace('<div class="stat', '<button type="button" data-act="ir" data-tab="erros" aria-label="Ver os erros das últimas 24 horas" class="stat');
+      stErros = stErros.slice(0, -6) + '<div class="go">' + (e24 ? "Ver erros ›" : "Ver ›") + "</div></button>";
+      h += '<div class="grid g3" style="margin-top:8px">' + stErros +
         (iaT ? stat(iaF + " de " + iaT, "falhas da IA (24" + NB + "h)", iaF ? "warn" : "") : stat("—", "IA sem uso em 24" + NB + "h")) + stat(+s.ativos_24h || 0, "abriram o app (24" + NB + "h)") + "</div>";
       if (porque.length) h += '<div class="note"><b>' + esc(porque.join(" · ")) + "</b></div>";
       if ((s.erros_top || []).length) h += '<div class="note">Mais comuns (24 h): ' + s.erros_top.map(function (t) { return esc(t.context) + " (" + t.n + "×)"; }).join(" · ") + "</div>";
@@ -998,6 +1005,23 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
         var semSair = +u.logins - +u.logouts;
         return '<div class="row"><div class="t">' + esc(u.email) + '</div><div class="v' + (semSair >= 3 ? " warn" : "") + '">' + u.logins + "<small>" + u.logouts + (+u.logouts === 1 ? " saída" : " saídas") + "</small></div></div>";
       }).join("") : '<div class="note">Nenhum login.</div>') + '</div><div class="note">Em amarelo: 3 ou mais logins sem tocar em "Sair", sinal de que a sessão está caindo sozinha.</div>';
+      return h;
+    },
+    erros: function (d) {
+      var desde = Date.now() - 864e5, NB = "\u00a0";
+      var er = (d || []).filter(function (e) { return new Date(e.created_at).getTime() >= desde; });
+      var pessoas = {}; er.forEach(function (e) { pessoas[e.email || "?"] = 1; });
+      var rede = function (m) { return /load failed|failed to fetch|networkerror|network request failed|fetch failed/i.test(m || ""); };
+      var h = "<h2>Erros nas últimas 24" + NB + "h</h2>";
+      if (!er.length) return h + vazio("Nenhum erro nas últimas 24 h.");
+      h += '<div class="note" style="margin-top:0">' + pl(er.length, "erro", "erros") + " · " + pl(Object.keys(pessoas).length, "pessoa", "pessoas") + "</div>";
+      h += '<div class="card">' + er.map(function (e) {
+        return '<div class="row"><div class="t"><b>' + esc(e.context) + "</b>" + (rede(e.message) ? '<span class="pill">conexão</span>' : "") +
+          (e.message ? '<div style="overflow-wrap:anywhere;margin-top:2px">' + esc(e.message) + "</div>" : "") +
+          '<div class="s">' + esc(dt(e.created_at)) + " · " + esc(relIso(e.created_at)) + " · " + esc(e.email || "sem conta") + "</div></div></div>";
+      }).join("") + "</div>";
+      if (er.some(function (e) { return rede(e.message); })) h += '<div class="note"><b>conexão</b>: o app não conseguiu falar com o servidor (internet fraca ou app fechado no meio). Em geral não é defeito do Movo.</div>';
+      h += '<div class="note">O nome em negrito é a parte do app onde falhou. Erros mais antigos e as revisões do Claude ficam em Mensagens.</div><div class="tools">' + btn("Abrir Mensagens", "ir", { tab: "relatos" }) + "</div>";
       return h;
     },
     registro: function (d) {
@@ -1399,8 +1423,9 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
       return '<button type="button" data-d="' + x.d + '" aria-label="' + x.t + (n ? ", " + n + (n > 1 ? " pendentes" : " pendente") : "") + '"' + (x === dst ? ' aria-current="page"' : "") + '><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">' + x.ic + "</svg>" +
         (n ? '<i class="bd">' + n + "</i>" : "") + "</span>" + x.t + "</button>";
     }).join("");
-    $("tt").textContent = emMais ? aba.t : dst.t;
+    $("tt").textContent = atual === "erros" ? "Erros" : emMais ? aba.t : dst.t;
     $("voltar-mais").hidden = !emMais;
+    $("voltar-mais").setAttribute("aria-label", atual === "erros" ? "Voltar para Saúde" : "Voltar para Mais");
     var subs = dst.tabs.length > 1;
     $("subs").hidden = !subs;
     $("subs").innerHTML = subs ? dst.tabs.map(function (id) {
@@ -1419,7 +1444,7 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
         open(x.tabs.indexOf(ultimo) >= 0 ? ultimo : x.tabs[0]);
         try { window.scrollTo(0, 0); } catch (er) {}
       });
-      $("voltar-mais").addEventListener("click", function () { open("mais"); });
+      $("voltar-mais").addEventListener("click", function () { open(atual === "erros" ? "saude" : "mais"); });
     }
     carregarPendencias();
     var h = (location.hash || "").slice(1), ini = lsGet("movo-admin-tab");
