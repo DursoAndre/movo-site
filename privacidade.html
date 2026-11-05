@@ -27,7 +27,7 @@
 <main>
 <a class="back" href="./">← Voltar ao Movo</a>
 <h1>Política de Privacidade do Movo</h1>
-<p class="mut">Última atualização: 13 de outubro de 2026 · Versão 1.1</p>
+<p class="mut">Última atualização: 5 de novembro de 2026 · Versão 1.2</p>
 
 <div class="box">
 <strong>Resumo em linguagem simples.</strong> O Movo guarda os treinos, atividades e medidas que você registra para montar a sua evolução. Isso inclui informações de saúde e condicionamento físico, que a lei trata como dados sensíveis. Não vendemos seus dados e não usamos para publicidade. Você pode baixar uma cópia ou excluir sua conta a qualquer momento em <em>Configurações → Seus dados</em>.
@@ -46,6 +46,9 @@
   <li><strong>Modo treinador (somente se você usar):</strong> o vínculo entre treinador e aluno, as permissões que o aluno liberar (treinos, cargas, corridas, esforço e dor, e telefone, cada uma ligada ou desligada pelo aluno), as semanas de treino e os comentários trocados. Para quem é treinador: cadastro profissional, agenda de compromissos e horário de atendimento, e os alunos que o treinador anotar na agenda (nome e, se o treinador quiser, telefone e e-mail), pacotes de aulas e presenças. O treinador só deve informar contato de quem concordou em ser contatado.</li>
   <li><strong>Interações sociais:</strong> amizades, desafios e check-ins em desafios, relatórios que você decidir compartilhar (com o e-mail de quem recebe).</li>
   <li><strong>Feedback:</strong> mensagens que você enviar pelo app.</li>
+  <li><strong>Medidas e avaliação (sensíveis, opcionais):</strong> peso, medidas do corpo, dobras cutâneas, metas de saúde, questionário de saúde (anamnese) e avaliação física feita pelo seu treinador.</li>
+  <li><strong>Fotos e vídeos (opcionais):</strong> foto de perfil, selfie do fim do treino, fotos de progresso nas medidas, vídeos de execução de exercício que você enviar ao seu treinador e, para treinadores, vídeos dos exercícios. Vídeos são guardados sem som.</li>
+  <li><strong>Arquivos para importar (opcionais):</strong> PDF, foto ou planilha da sua ficha ou de treinos de outro app, usados só para ler o treino.</li>
 </ul>
 <p><strong>Dados vindos de serviços que você conectar:</strong></p>
 <ul>
@@ -56,10 +59,11 @@
   <li>Registro de abertura do app (para saber quantas pessoas usam).</li>
   <li>Erros técnicos do app (mensagem do erro e versão), para corrigir falhas.</li>
   <li>Registro de uso dos recursos de IA (tipo e data), para controle de limites e custos.</li>
+  <li>Inscrição de notificações (se você permitir): o endereço técnico do aparelho para enviar notificações. É apagada quando você desliga as notificações.</li>
   <li>Endereço IP e dados do navegador, tratados pelos provedores de infraestrutura no funcionamento normal da conexão.</li>
 </ul>
 <p>O app também guarda uma cópia dos seus dados <strong>no próprio aparelho</strong> (armazenamento local do navegador), para funcionar sem internet.</p>
-<p>Não coletamos localização por GPS, contatos, fotos nem acessamos o microfone ou a câmera.</p>
+<p>Não coletamos localização por GPS nem contatos. A câmera e a galeria só são usadas quando você escolhe tirar ou enviar uma foto ou vídeo.</p>
 
 <h2>3. Para que usamos e em que base legal</h2>
 <table>
@@ -78,7 +82,7 @@
 <h2>4. Com quem compartilhamos</h2>
 <p>Não vendemos nem alugamos seus dados. Usamos prestadores que processam dados em nosso nome (operadores):</p>
 <ul>
-  <li><strong>Supabase</strong> — banco de dados, login e funções de servidor. Servidores nos Estados Unidos (região us-west-2, Oregon).</li>
+  <li><strong>Supabase</strong> — banco de dados, login, funções de servidor e arquivos (fotos e vídeos). Servidores nos Estados Unidos (região us-west-2, Oregon).</li>
   <li><strong>Anthropic</strong> — inteligência artificial (modelos Claude) que gera treinos, planos e ajustes. Estados Unidos.</li>
   <li><strong>Resend</strong> — envio de e-mail (por exemplo, aviso interno de um feedback recebido). Estados Unidos.</li>
   <li><strong>GitHub Pages</strong> — hospedagem dos arquivos do app. Estados Unidos.</li>
@@ -101,7 +105,8 @@
 <h2>7. Por quanto tempo guardamos</h2>
 <ul>
   <li><strong>Dados da conta e de treino:</strong> enquanto a conta existir.</li>
-  <li><strong>Ao excluir a conta:</strong> apagamos seus dados do banco de dados em seguida, incluindo treinos, atividades, check-ins, amizades, feedbacks e a conexão com o Strava. Cópias de segurança do provedor podem manter os dados por até cerca de 30 dias até serem sobrescritas.</li>
+  <li><strong>Fotos e selfies:</strong> enquanto a conta existir, e você pode apagar cada uma no app. <strong>Vídeos enviados ao treinador:</strong> apagados em 90 dias.</li>
+  <li><strong>Ao excluir a conta:</strong> apagamos seus dados do banco de dados em seguida, incluindo treinos, atividades, medidas, fotos, vídeos, check-ins, amizades, feedbacks e a conexão com o Strava. Cópias de segurança do provedor podem manter os dados por até cerca de 30 dias até serem sobrescritas.</li>
   <li><strong>Registros de erro e de abertura do app:</strong> mantidos por tempo limitado e removidos junto com a conta quando associados a você.</li>
   <li>Podemos manter o mínimo necessário por prazo legal, se a lei exigir.</li>
 </ul>
@@ -111,7 +116,7 @@
 <p>Pela LGPD você pode, a qualquer momento: confirmar que tratamos seus dados; acessar; corrigir; anonimizar, bloquear ou eliminar dados desnecessários; pedir portabilidade; saber com quem compartilhamos; revogar o consentimento; e se opor a um tratamento.</p>
 <ul>
   <li><strong>Baixar seus dados:</strong> <em>Configurações → Seus dados → Baixar meus dados</em>.</li>
-  <li><strong>Excluir a conta e os dados:</strong> <em>Configurações → Seus dados → Excluir minha conta</em>.</li>
+  <li id="excluir-conta"><strong>Excluir a conta e os dados:</strong> no app, em <em>Configurações → Seus dados → Excluir minha conta</em>. Sem o app, envie um e-mail para <a href="mailto:contato@movoapp.com.br">contato@movoapp.com.br</a>, a partir do e-mail da sua conta, com o assunto “Excluir minha conta”. Excluímos a conta e todos os dados em até 15 dias e avisamos por e-mail.</li>
   <li><strong>Outros pedidos:</strong> escreva para <a href="mailto:contato@movoapp.com.br">contato@movoapp.com.br</a>. Respondemos em até 15 dias.</li>
 </ul>
 <p>Se achar que seus direitos não foram atendidos, você pode reclamar à Autoridade Nacional de Proteção de Dados (ANPD) — <a href="https://www.gov.br/anpd">gov.br/anpd</a>.</p>
