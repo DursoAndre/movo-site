@@ -327,7 +327,7 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
   function abaDe(id) { return TABS.filter(function (t) { return t.id === (DETALHE[id] || id); })[0]; }
   function destDe(id) { var t = DETALHE[id] || id; return DEST.filter(function (x) { return x.tabs.indexOf(t) >= 0; })[0] || DEST[4]; }
   var cache = {};
-  var MSG_TIPOS = [["problema", "🐞 Problema"], ["ideia", "💡 Ideia"], ["elogio", "👍 Elogio"], ["outro", "💬 Outro"]];
+  var MSG_TIPOS = [["problema", "🐞 Problema"], ["ideia", "💡 Ideia"], ["elogio", "👍 Elogio"], ["denuncia", "🚩 Denúncia"], ["outro", "💬 Outro"]];
   var params = { relTipo: "", erTodos: false, uso: 30, conv: 30, dom: 14, relatos: 30, registro: 30, base: "abriram", ui: false, cOrd: "cadastro", cDir: "desc", cQ: "" };
   var atual = null, reqSeq = 0;
 
