@@ -58,7 +58,7 @@ h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)
 .legend{display:flex;gap:14px;font-size:12.5px;color:var(--mut);margin-top:8px;flex-wrap:wrap}
 .legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;background:var(--ac);margin-right:5px;vertical-align:-1px}
 .legend .b::before{background:#5b6270}.legend .o::before{background:var(--new)}.legend .a::before{background:var(--warn)}
-.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:9px 0;border-top:1px solid var(--line);align-items:center}
+.row{display:grid;grid-template-columns:minmax(7em,1fr) auto;gap:2px 10px;padding:9px 0;border-top:1px solid var(--line);align-items:center}
 .row:first-child{border-top:0}
 .row .t{min-width:0;overflow-wrap:anywhere}
 .row .v{font-variant-numeric:tabular-nums;font-weight:700;text-align:right}
@@ -328,14 +328,15 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
   function destDe(id) { var t = DETALHE[id] || id; return DEST.filter(function (x) { return x.tabs.indexOf(t) >= 0; })[0] || DEST[4]; }
   var cache = {};
   var MSG_TIPOS = [["problema", "🐞 Problema"], ["ideia", "💡 Ideia"], ["elogio", "👍 Elogio"], ["denuncia", "🚩 Denúncia"], ["outro", "💬 Outro"]];
-  var params = { relTipo: "", erTodos: false, uso: 30, conv: 30, dom: 14, relatos: 30, registro: 30, base: "abriram", ui: false, cOrd: "cadastro", cDir: "desc", cQ: "" };
+  var params = { relTipo: "", erTodos: false, uso: 30, conv: 30, dom: 14, relatos: 30, registro: 30, base: "abriram", ui: false, cOrd: "cadastro", cDir: "desc", cQ: "", cPlat: "" };
   var atual = null, reqSeq = 0;
 
   function call(tab) {
     if (OPS_CALL[tab]) return OPS_CALL[tab]();
-    if (tab === "geral") return Promise.all([sb.rpc("admin_m_geral"), opc(sb.rpc("admin_m_aparelhos"))]).then(function (r) {
+    if (tab === "geral") return Promise.all([sb.rpc("admin_m_geral"), opc(sb.rpc("admin_m_aparelhos")), opc(sb.rpc("admin_m_plataformas"))]).then(function (r) {
       if (r[0].error) return r[0];
-      var d = r[0].data || {}; d.aparelhos = r[1] && r[1].data && r[1].data.itens ? r[1].data : null; return { data: d };
+      var d = r[0].data || {}; d.aparelhos = r[1] && r[1].data && r[1].data.itens ? r[1].data : null;
+      d.plataformas = r[2] && r[2].data && r[2].data.pessoas ? r[2].data : null; return { data: d };
     });
     if (tab === "ret") return sb.rpc("admin_m_retencao");
     if (tab === "funil") return sb.rpc("admin_m_funil");
@@ -345,7 +346,7 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
     });
     if (tab === "uso") return sb.rpc("admin_m_funcoes", { p_dias: params.uso });
     if (tab === "conv") return sb.rpc("admin_m_convites", { p_dias: params.conv });
-    if (tab === "contas") return sb.rpc("admin_m_contas");
+    if (tab === "contas") return contasComPlataforma();
     if (tab === "relatos") return sb.rpc("admin_m_relatos", { p_dias: params.relatos });
     return sb.rpc("admin_m_dominio", { p_dias: params.dom });
   }
@@ -369,6 +370,11 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
         h += '<h2>Aparelho</h2><div class="grid g3">';
         ap.itens.forEach(function (it) { h += stat(it.pessoas, NOME[it.tipo] || it.tipo, "", pct(it.pessoas, ap.total) + " · " + it.ativas_30d + " ativas em 30 dias"); });
         h += '</div><div class="note">Aparelho do último login de cada pessoa (' + ap.total + ' com sessão aberta). Quem usa dois aparelhos conta só no último.</div>';
+      }
+      var pf = d.plataformas;
+      if (pf) {
+        h += '<h2>Como abrem o Movo (30 dias)</h2><div class="grid g3">' + stat(pf.android_30d, "app Android (Play)") + stat(pf.pwa_30d, "ícone instalado (PWA)") + stat(pf.navegador_30d, "navegador") + "</div>";
+        h += '<div class="note">Conta desde a v286 (06/11/2026); antes disso só aparece no app Android quem abriu a v284 ou a v285 lá. Uma pessoa pode usar mais de um jeito. Lista em Pessoas › Contas.</div>';
       }
       return h;
     },
@@ -463,7 +469,8 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
       var h = '<div class="grid g3">' + stat(total, "contas") + stat(novas7, "novas em 7 dias") + stat(d.filter(function (u) { return u.treinou; }).length, "já treinaram") + "</div>";
       h += '<div class="tools" style="flex-wrap:wrap"><div class="cs" id="c-ord" role="group" aria-label="Ordenar">' +
         '<button type="button" data-o="cadastro">Cadastro</button><button type="button" data-o="acesso">Último acesso</button></div>' +
-        '<button class="ib" id="c-dir" type="button"></button></div>';
+        '<button class="ib" id="c-dir" type="button"></button>' +
+        (d.plat ? '<div class="cs" id="c-plat" role="group" aria-label="Como abre"><button type="button" data-p="">Todas</button><button type="button" data-p="android">App Android</button><button type="button" data-p="web">Navegador ou PWA</button></div>' : "") + "</div>";
       h += '<input class="cq" id="c-q" type="search" placeholder="Buscar por nome ou e-mail" aria-label="Buscar conta" autocomplete="off" value="' + esc(params.cQ) + '">';
       h += '<div class="card cl" id="c-lista" role="list"></div><div class="note" id="c-info"></div>';
       return h;
@@ -586,22 +593,51 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
       return (ka - kb) * sinal;
     });
   }
+  // Como a pessoa abre o Movo (admin_m_plataformas, v286): app Android da Play, ícone instalado (PWA) ou navegador.
+  // "App Android" = abriu pelo app da Play nos últimos 30 dias. Sem a função no banco, a lista segue sem essa informação.
+  function platAndroid(p) { return !!(p && p.android_em && Date.now() - new Date(p.android_em).getTime() < 30 * 86400000); }
+  function platTexto(p) {
+    if (!p) return "sem registro (só a partir da v286)";
+    var out = [];
+    if (p.android_em) out.push("App Android" + (p.android_versao ? " " + p.android_versao : "") + " · " + relIso(p.android_em));
+    if (p.pwa_em) out.push("Ícone instalado (PWA) · " + relIso(p.pwa_em));
+    if (p.navegador_em) out.push("Navegador · " + relIso(p.navegador_em));
+    return out.join("<br>");
+  }
+  function contasComPlataforma() {
+    return Promise.all([sb.rpc("admin_m_contas"), opc(sb.rpc("admin_m_plataformas"))]).then(function (r) {
+      if (r[0].error || !Array.isArray(r[0].data)) return r[0];
+      var pf = r[1] && r[1].data && r[1].data.pessoas, m = {};
+      if (!pf) return r[0];
+      pf.forEach(function (p) { m[p.user_id] = p; });
+      r[0].data.forEach(function (u) { u.plat = m[u.id] || null; });
+      r[0].data.plat = true;
+      return r[0];
+    });
+  }
   function ligarContas(d) {
     function desenhar() {
-      var l = contasOrdenar(d, params.cOrd, params.cDir, params.cQ);
+      var l = contasOrdenar(d, params.cOrd, params.cDir, params.cQ).filter(function (u) {
+        if (!params.cPlat || !d.plat) return true;
+        var android = platAndroid(u.plat);
+        return params.cPlat === "android" ? android : !android && !!u.plat;
+      });
       Array.prototype.forEach.call($("c-ord").children, function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-o") === params.cOrd)); });
+      if ($("c-plat")) Array.prototype.forEach.call($("c-plat").children, function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-p") === params.cPlat)); });
       $("c-dir").textContent = params.cDir === "desc" ? "↓ recentes primeiro" : "↑ antigos primeiro";
       $("c-lista").innerHTML = l.length ? l.map(function (u) {
         var ult = u.ultimo_acesso || u.ultimo_login, porAcesso = params.cOrd === "acesso";
-        return '<div class="ct" role="listitem" data-act="ver-conta" data-id="' + esc(u.id) + '"><div class="t">' + esc(u.nome || u.email) + (u.teste ? '<span class="pill">você/teste</span>' : "") + (u.treinou ? '<span class="pill ok">treinou</span>' : "") +
+        return '<div class="ct" role="listitem" data-act="ver-conta" data-id="' + esc(u.id) + '"><div class="t">' + esc(u.nome || u.email) + (u.teste ? '<span class="pill">você/teste</span>' : "") + (u.treinou ? '<span class="pill ok">treinou</span>' : "") + (platAndroid(u.plat) ? '<span class="pill">App Android</span>' : "") +
           (u.nome ? '<div class="s">' + esc(u.email) + (u.origem ? " · " + esc(u.origem) : "") + "</div>" : (u.origem ? '<div class="s">' + esc(u.origem) + "</div>" : "")) + "</div>" +
           '<div class="v">' + (porAcesso ? esc(relIso(ult)) : esc(dd(u.cadastro))) + "<small>" + (porAcesso ? "cadastro " + esc(dd(u.cadastro)) : "acesso " + esc(relIso(ult))) + "</small></div></div>";
       }).join("") : '<div class="note">' + (d.length ? "Ninguém com esse nome ou e-mail." : "Nenhuma conta ainda.") + "</div>";
-      $("c-info").textContent = (l.length === d.length ? l.length + " contas" : l.length + " de " + d.length + " contas") + " · toque numa conta para abrir a ficha";
+      $("c-info").textContent = (l.length === d.length ? l.length + " contas" : l.length + " de " + d.length + " contas") +
+        (params.cPlat === "android" ? " abriram pelo app Android em 30 dias" : params.cPlat === "web" ? " sem o app Android em 30 dias (com registro desde a v286)" : "") + " · toque numa conta para abrir a ficha";
     }
     $("c-ord").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; params.cOrd = b.getAttribute("data-o"); desenhar(); });
     $("c-dir").addEventListener("click", function () { params.cDir = params.cDir === "desc" ? "asc" : "desc"; desenhar(); });
     $("c-q").addEventListener("input", function () { params.cQ = this.value; desenhar(); });
+    if ($("c-plat")) $("c-plat").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; params.cPlat = b.getAttribute("data-p"); desenhar(); });
     desenhar();
   }
 
@@ -727,7 +763,14 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
     registro: function () { return sb.rpc("admin_m_registro", { p_dias: params.registro }); },
     // Erros das últimas 24 h, um por linha (admin_client_errors devolve os mais recentes; o filtro de 24 h é feito aqui).
     erros: function () { return sb.rpc("admin_client_errors", { limit_n: 500 }); },
-    conta: function () { return sb.rpc("admin_m_conta", { p_user: params.conta }); },
+    conta: function () {
+      return Promise.all([sb.rpc("admin_m_conta", { p_user: params.conta }), opc(sb.rpc("admin_m_plataformas"))]).then(function (r) {
+        if (r[0].error || !r[0].data) return r[0];
+        var pf = r[1] && r[1].data && r[1].data.pessoas;
+        if (pf) r[0].data.plat = pf.filter(function (p) { return p.user_id === params.conta; })[0] || false;
+        return r[0];
+      });
+    },
     treinador: function () { return sb.rpc("admin_coach_detalhe", { p_user: params.treinador }); }
   };
 
@@ -1083,6 +1126,7 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
       h += '<div class="card"><div class="row"><div class="t">E-mail</div><div class="v"><small>' + esc(d.email) + "</small></div></div>" +
         '<div class="row"><div class="t">Cadastro</div><div class="v"><small>' + esc(dt(d.cadastro)) + (og.convite || og.src ? " · " + esc(og.convite || og.src) : "") + "</small></div></div>" +
         '<div class="row"><div class="t">Última abertura</div><div class="v"><small>' + (ab.em ? esc(relIso(ab.em)) + " · " + esc(ab.versao || "?") + " · endereço " + esc(ab.site || "?") + (ab.instalado ? " · instalado" : "") : "nunca") + "</small></div></div>" +
+        (d.plat !== undefined ? '<div class="row"><div class="t">Como abre</div><div class="v"><small>' + (d.plat ? platTexto(d.plat) : "sem registro (só a partir da v286)") + "</small></div></div>" : "") +
         '<div class="row"><div class="t">Acessos</div><div class="v"><small>' + (u.acessos_7d || 0) + " em 7 dias · " + (u.acessos_30d || 0) + " em 30</small></div></div>" +
         '<div class="row"><div class="t">Dias com treino</div><div class="v"><small>' + (u.dias_ativos_7d || 0) + " em 7 dias · " + (u.dias_ativos_30d || 0) + " em 30</small></div></div>" +
         '<div class="row"><div class="t">Configuração inicial</div><div class="v"><small>' + (u.fez_onboarding ? "feita" : "não fez") + "</small></div></div></div>";
