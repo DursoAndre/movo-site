@@ -373,7 +373,7 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
       }
       var pf = d.plataformas;
       if (pf) {
-        h += '<h2>Como abrem o Movo (30 dias)</h2><div class="grid g3">' + stat(pf.android_30d, "app Android (Play)") + stat(pf.pwa_30d, "ícone instalado (PWA)") + stat(pf.navegador_30d, "navegador") + "</div>";
+        h += '<h2>Como abrem o Movo (30 dias)</h2><div class="grid g3">' + stat(pf.android_30d, "app Android (Play)") + (pf.ios_30d != null ? stat(pf.ios_30d, "App iPhone") : "") + stat(pf.pwa_30d, "ícone instalado (PWA)") + stat(pf.navegador_30d, "navegador") + "</div>";
         h += '<div class="note">Conta desde a v286 (06/11/2026); antes disso só aparece no app Android quem abriu a v284 ou a v285 lá. Uma pessoa pode usar mais de um jeito. Lista em Pessoas › Contas.</div>';
       }
       return h;
@@ -470,7 +470,7 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
       h += '<div class="tools" style="flex-wrap:wrap"><div class="cs" id="c-ord" role="group" aria-label="Ordenar">' +
         '<button type="button" data-o="cadastro">Cadastro</button><button type="button" data-o="acesso">Último acesso</button></div>' +
         '<button class="ib" id="c-dir" type="button"></button>' +
-        (d.plat ? '<div class="cs" id="c-plat" role="group" aria-label="Como abre"><button type="button" data-p="">Todas</button><button type="button" data-p="android">App Android</button><button type="button" data-p="web">Navegador ou PWA</button></div>' : "") + "</div>";
+        (d.plat ? '<div class="cs" id="c-plat" role="group" aria-label="Como abre"><button type="button" data-p="">Todas</button><button type="button" data-p="android">App Android</button><button type="button" data-p="ios">App iPhone</button><button type="button" data-p="web">Navegador ou PWA</button></div>' : "") + "</div>";
       h += '<input class="cq" id="c-q" type="search" placeholder="Buscar por nome ou e-mail" aria-label="Buscar conta" autocomplete="off" value="' + esc(params.cQ) + '">';
       h += '<div class="card cl" id="c-lista" role="list"></div><div class="note" id="c-info"></div>';
       return h;
@@ -596,10 +596,12 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
   // Como a pessoa abre o Movo (admin_m_plataformas, v286): app Android da Play, ícone instalado (PWA) ou navegador.
   // "App Android" = abriu pelo app da Play nos últimos 30 dias. Sem a função no banco, a lista segue sem essa informação.
   function platAndroid(p) { return !!(p && p.android_em && Date.now() - new Date(p.android_em).getTime() < 30 * 86400000); }
+  function platIos(p) { return !!(p && p.ios_em && Date.now() - new Date(p.ios_em).getTime() < 30 * 86400000); }
   function platTexto(p) {
     if (!p) return "sem registro (só a partir da v286)";
     var out = [];
     if (p.android_em) out.push("App Android" + (p.android_versao ? " " + p.android_versao : "") + " · " + relIso(p.android_em));
+    if (p.ios_em) out.push("App iPhone" + " · " + relIso(p.ios_em));
     if (p.pwa_em) out.push("Ícone instalado (PWA) · " + relIso(p.pwa_em));
     if (p.navegador_em) out.push("Navegador · " + relIso(p.navegador_em));
     return out.join("<br>");
@@ -619,8 +621,8 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
     function desenhar() {
       var l = contasOrdenar(d, params.cOrd, params.cDir, params.cQ).filter(function (u) {
         if (!params.cPlat || !d.plat) return true;
-        var android = platAndroid(u.plat);
-        return params.cPlat === "android" ? android : !android && !!u.plat;
+        var android = platAndroid(u.plat), ios = platIos(u.plat);
+        return params.cPlat === "android" ? android : params.cPlat === "ios" ? ios : !android && !ios && !!u.plat;
       });
       Array.prototype.forEach.call($("c-ord").children, function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-o") === params.cOrd)); });
       if ($("c-plat")) Array.prototype.forEach.call($("c-plat").children, function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-p") === params.cPlat)); });
@@ -632,7 +634,7 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
           '<div class="v">' + (porAcesso ? esc(relIso(ult)) : esc(dd(u.cadastro))) + "<small>" + (porAcesso ? "cadastro " + esc(dd(u.cadastro)) : "acesso " + esc(relIso(ult))) + "</small></div></div>";
       }).join("") : '<div class="note">' + (d.length ? "Ninguém com esse nome ou e-mail." : "Nenhuma conta ainda.") + "</div>";
       $("c-info").textContent = (l.length === d.length ? l.length + " contas" : l.length + " de " + d.length + " contas") +
-        (params.cPlat === "android" ? " abriram pelo app Android em 30 dias" : params.cPlat === "web" ? " sem o app Android em 30 dias (com registro desde a v286)" : "") + " · toque numa conta para abrir a ficha";
+        (params.cPlat === "android" ? " abriram pelo app Android em 30 dias" : params.cPlat === "ios" ? " abriram pelo App iPhone em 30 dias" : params.cPlat === "web" ? " sem o app Android em 30 dias (com registro desde a v286)" : "") + " · toque numa conta para abrir a ficha";
     }
     $("c-ord").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; params.cOrd = b.getAttribute("data-o"); desenhar(); });
     $("c-dir").addEventListener("click", function () { params.cDir = params.cDir === "desc" ? "asc" : "desc"; desenhar(); });
