@@ -1,0 +1,12 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["__APPLE_TEAM_ID__.br.com.movoapp.app"],
+        "components": [
+          { "/": "/convite/*" }
+        ]
+      }
+    ]
+  }
+}
