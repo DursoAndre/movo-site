@@ -10,6 +10,6 @@ Site estático de https://movoapp.com.br (HTML/CSS/JS sem build).
 ## Links universais (.well-known)
 
 - `.well-known/assetlinks.json` (Android) e `.well-known/apple-app-site-association` (iPhone) fazem os links `https://movoapp.com.br/convite/...` abrirem o app. O `.nojekyll` na raiz faz o GitHub Pages servir a pasta `.well-known`.
-- **Pendente:** no `apple-app-site-association`, trocar `__APPLE_TEAM_ID__` pelo Team ID da conta Apple Developer (10 caracteres, ex.: `ABCDE12345`) quando a conta existir. O appID final fica `TEAMID.br.com.movoapp.app`. Sem isso o iPhone não abre o app pelo link.
+- Team ID da conta Apple Developer: `NJ86VHJQ47` (appID `NJ86VHJQ47.br.com.movoapp.app`), preenchido em 10/11/2026.
 - O arquivo não tem extensão; o GitHub Pages o serve como `application/octet-stream`. A Apple aceita (lê o JSON mesmo assim), mas fica registrado. Deve responder 200 direto, sem redirecionamento. Depois de publicar, conferir com `curl -sI https://movoapp.com.br/.well-known/apple-app-site-association`.
 - A Apple guarda o arquivo em cache pela CDN dela; mudanças podem levar horas para valer no aparelho.
