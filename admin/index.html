@@ -161,6 +161,39 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
 .mais .row .v{color:var(--mut);font-weight:500}
 .mais .row .v .n{display:inline-block;min-width:20px;padding:0 6px;margin-right:8px;border-radius:999px;background:var(--warn);color:#14161A;font-size:12px;font-weight:800;line-height:20px;text-align:center}
 .vd{display:flex;align-items:center;gap:10px}
+/* Apps e versões */
+.hd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:22px 0 8px}
+.hd h2{margin:0}
+.tf{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;padding:11px 0 11px 12px;border-top:1px solid var(--line);align-items:center;position:relative}
+.tf:first-child{border-top:0}
+.tf::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:2px;background:var(--line)}
+.tf.warn::before{background:var(--warn)}.tf.bad::before{background:var(--bad)}
+.tf .t{min-width:0;overflow-wrap:anywhere;font-weight:600}
+.tf .s{color:var(--mut);font-size:12.5px;font-weight:400;margin-top:2px}
+.tf .s.auto{font-style:italic;font-size:12px}
+.tf .pz{color:var(--fg);font-weight:600}
+.tf.warn .pz{color:var(--warn)}.tf.bad .pz{color:var(--bad)}
+.tf .v{display:flex;gap:6px;align-items:center}
+.tf a.ib{display:inline-flex;align-items:center;text-decoration:none;color:var(--fg)}
+.tf.done{opacity:.7}.tf.done .t{font-weight:500;text-decoration:line-through;text-decoration-color:var(--mut)}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--mut);background:var(--card2);border-radius:6px;padding:1px 6px;margin-right:7px;vertical-align:1px}
+details.feitas summary{cursor:pointer;color:var(--mut);font-size:13px;padding:6px 2px 10px;min-height:44px;display:flex;align-items:center}
+.app .ah{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding-bottom:8px}
+.app .ah b{font-size:17px}
+.app .ah .s{color:var(--mut);font-size:12.5px;margin-top:2px}
+.app .big{font-size:22px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;text-align:right}
+.app .big small{display:block;font-size:11.5px;font-weight:500;letter-spacing:0;color:var(--mut);margin-top:1px}
+.app .afz{border-top:1px solid var(--line);margin-top:6px;padding-top:8px}
+.app .afz-t{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-bottom:2px}
+.app .afz .tag{display:none}
+.app .big.bad{color:var(--bad)}.app .big.warn{color:var(--warn)}
+.app .row.lim.sub{padding-left:0}
+.app .af{border-top:1px solid var(--line);padding-top:10px;margin-top:4px;font-size:13.5px}
+.app .note{margin:8px 0}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px;grid-column:1/-1}
+.chip{background:var(--card2);border-radius:8px;padding:3px 8px;font-size:12.5px;color:var(--mut);font-variant-numeric:tabular-nums}
+.chip b{color:var(--fg)}
+.chip.ok{background:rgba(190,242,48,.14);color:var(--ac)}.chip.ok b{color:var(--ac)}
 @media (min-width:900px){
   body{padding-left:248px;padding-bottom:32px}
   .nav{top:0;right:auto;width:224px;height:auto;flex-direction:column;justify-content:flex-start;gap:2px;padding:calc(18px + env(safe-area-inset-top,0px)) 10px 16px;border-top:0;border-right:1px solid var(--line)}
@@ -313,6 +346,7 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
     { id: "recados", t: "Recados", s: "Avisos no app e por e-mail" }, { id: "suporte", t: "Provas e exercícios livres", s: "Provas da comunidade e exercícios fora do catálogo" },
     { id: "planos", t: "Planos", s: "Preços, limites e assinaturas" }, { id: "ia", t: "IA", s: "Custo, teto e recursos" }, { id: "midia", t: "Fotos e vídeos", s: "Arquivos enviados" },
     { id: "integracoes", t: "Integrações", s: "Strava e e-mails" }, { id: "saude", t: "Saúde", s: "Erros, limites do plano grátis e publicação" },
+    { id: "apps", t: "Apps e versões", s: "Site, Android, relógio, iPhone e o que fazer" },
     { id: "registro", t: "Registro", s: "O que foi mudado pelo painel" }, { id: "dom", t: "Domínio", s: "Migração para app.movoapp.com.br" }
   ];
   var DEST = [
@@ -322,7 +356,7 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
     { d: "num", t: "Números", tabs: ["geral", "ret", "uso", "conv"], ic: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>' },
     { d: "mais", t: "Mais", tabs: ["mais"], ic: '<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>' }
   ];
-  var MAIS = [["Sistema", ["saude", "registro", "dom"]], ["Conteúdo", ["catalogo", "desafios", "recados", "suporte"]], ["Configurações", ["planos", "ia", "midia", "integracoes"]]];
+  var MAIS = [["Sistema", ["apps", "saude", "registro", "dom"]], ["Conteúdo", ["catalogo", "desafios", "recados", "suporte"]], ["Configurações", ["planos", "ia", "midia", "integracoes"]]];
   var DETALHE = { conta: "contas", desafio: "desafios", treinador: "treinadores", erros: "saude" }, ANTIGA = { funil: "ret", ativ: "ret" };
   function abaDe(id) { return TABS.filter(function (t) { return t.id === (DETALHE[id] || id); })[0]; }
   function destDe(id) { var t = DETALHE[id] || id; return DEST.filter(function (x) { return x.tabs.indexOf(t) >= 0; })[0] || DEST[4]; }
@@ -739,8 +773,9 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
   VIEW.ret = function (d) { return VIEW.funil(d.funil) + VIEW.ativ(d.ativ) + VIEW.ret1(d.ret); };
   var OPS_CALL = {
     pend: function () {
-      return juntar(["p", "coaches", "rev", "s", "lim", "pub", "geral", "coInc"], [sb.rpc("admin_m_pendencias"), sb.rpc("admin_coach_list"), sb.rpc("admin_revisao_lista"),
-        sb.rpc("admin_saude"), sb.rpc("admin_limites"), publicacao(), sb.rpc("admin_m_geral"), opc(sb.rpc("admin_m_treinador_incompleto"))]);
+      return juntar(["p", "coaches", "rev", "s", "lim", "pub", "geral", "coInc", "aSql", "aLojas"], [sb.rpc("admin_m_pendencias"), sb.rpc("admin_coach_list"), sb.rpc("admin_revisao_lista"),
+        sb.rpc("admin_saude"), sb.rpc("admin_limites"), publicacao(), sb.rpc("admin_m_geral"), opc(sb.rpc("admin_m_treinador_incompleto")),
+        opc(sb.rpc("admin_apps")), appsFn(4000)]).then(function (r) { if (r.data) appsMarcar({ sql: r.data.aSql, lojas: r.data.aLojas, pub: r.data.pub }); return r; });
     },
     mais: function () { return Promise.resolve({ data: {} }); },
     ret: function () {
@@ -810,11 +845,14 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
       if (inc.length) h += acao(pl(inc.length, "pessoa marcou", "pessoas marcaram") + " \u201cSou treinador\u201d e não terminou o cadastro", "treinadores");
       if (rev.length) h += acao(pl(rev.length, "nome novo de exercício", "nomes novos de exercício") + " para decidir", "catalogo");
       if (p.contestacoes) h += acao(pl(p.contestacoes, "acerto contestado", "acertos contestados") + " em desafio", "desafios");
-      if (!msgs && !an.length && !inc.length && !rev.length && !p.contestacoes) h += '<div class="note">Nada esperando você. Bom treino.</div>';
+      var ad = d.aSql && d.aSql.site ? { sql: d.aSql, lojas: d.aLojas, pub: d.pub, parcial: !d.aLojas } : null, au = ad ? appsTarefas(ad).filter(function (t) { return t.nivel; }) : [];
+      if (au.length) h += '<div class="row ct" data-act="ir" data-tab="apps"><div class="t">' + pl(au.length, "coisa nos apps", "coisas nos apps") + " com prazo ou erro" + '<div class="s">' + esc(au[0].titulo) + '</div></div><div class="v">' + btn("Ver", "ir", { tab: "apps" }) + "</div></div>";
+      if (!msgs && !an.length && !inc.length && !rev.length && !p.contestacoes && !au.length) h += '<div class="note">Nada esperando você. Bom treino.</div>';
       h += "</div>";
       var vd = vereditoSaude(d);
       h += "<h2>Sistema</h2>" + '<div class="card"><div class="row ct" data-act="ir" data-tab="saude"><div class="t"><div class="verdict ' + vd.cls + '" style="margin:0">' + vd.titulo + "</div>" +
         (vd.porque.length ? '<div class="s">' + esc(vd.porque.join(" · ")) + "</div>" : '<div class="s">Erros, IA, limites do plano grátis e publicação</div>') + '</div><div class="v">' + btn("Saúde", "ir", { tab: "saude" }) + "</div></div></div>";
+      if (ad) h += appsResumo(ad);
       if (d.geral) {
         h += '<h2>O app</h2><div class="grid">' + stat(g.dau, "abriram o app hoje", "hi", "ontem " + g.dau_ontem) + stat(g.treinaram_7d, "treinaram em 7 dias", "hi", g.dois_dias_7d + " em 2 dias ou mais") +
           stat(g.wau, "abriram em 7 dias") + stat(g.novas_7d, "contas novas em 7 dias", "", g.novas_hoje ? g.novas_hoje + " hoje" : "") + "</div>";
@@ -1040,12 +1078,7 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
       };
       var cor = function (v) { return app.cls === "ok" || !c.versao || v === c.versao ? "" : "bad"; };
       h += "<h2>Publicação</h2><div class=\"card\">";
-      h += '<div class="row lim"><div class="t">App<div class="s">' + esc(app.sub) + '</div></div><div class="v pub ' + app.cls + '">' + esc(app.txt) + "</div></div>";
-      if (!pub.reserva) {
-        h += lado("Repositório privado", "movo-app · código", c.versao, c.quando, c.run ? c.run.html_url : c.html_url, cor(c.versao));
-        h += lado("Repositório público", "movo-app-site · app montado", pp.versao, pp.quando, pp.html_url, cor(pp.versao));
-        h += lado("No ar", "app.movoapp.com.br", vNoAr, null, null, cor(vNoAr));
-      }
+      h += '<div class="row lim ct" data-act="ir" data-tab="apps"><div class="t">Site do app<div class="s">' + esc(app.sub) + ' Android, relógio e iPhone ficam em Apps e versões.</div></div><div class="v pub ' + app.cls + '">' + esc(app.txt) + " ›</div></div>";
       h += pubs.map(function (p) {
         var r = p[2], rodando = r && r.status !== "completed", ok = r && !rodando && r.conclusion === "success";
         var txt = !r ? "GitHub não respondeu" : rodando ? "publicando…" : ok ? "publicado" : "última falhou";
@@ -1150,11 +1183,11 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
 
   // ---------- pendências: contador nas abas e no ícone do painel ----------
   var pend = {};
-  var BADGE = { pend: "total", treinadores: "treinadores", catalogo: "catalogo", relatos: "mensagens", desafios: "contestacoes" };
+  var BADGE = { apps: "apps", pend: "total", treinadores: "treinadores", catalogo: "catalogo", relatos: "mensagens", desafios: "contestacoes" };
   function carregarPendencias() {
     sb.rpc("admin_m_pendencias").then(function (r) {
       if (r.error || !r.data) return;
-      pend = r.data; pend.mensagens = (+pend.relatos || 0) + (+pend.feedback || 0); if (atual) desenharNav();
+      pend = r.data; pend.apps = appsUrg; pend.mensagens = (+pend.relatos || 0) + (+pend.feedback || 0); if (atual) desenharNav();
       try { if (navigator.setAppBadge) { if (pend.total) navigator.setAppBadge(pend.total); else navigator.clearAppBadge(); } } catch (e) {}
     });
   }
@@ -1364,6 +1397,255 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
     if (p && p.then && b.tagName === "BUTTON" && b.getAttribute("data-act") !== "cat-rodar") { b.disabled = true; p.then(function () { b.disabled = false; }, function () { b.disabled = false; }); }
   }
 
+
+  // ---------- Apps e versões (12/11/2026, pedido do Andre: "refletir o que temos de apps, Play Store, versões, e o que gerenciar") ----------
+  // Um lugar só para o site do app, o Android (Play), o relógio (Wear OS) e o iPhone (App Store): o que está em cada loja,
+  // quem usa qual pacote e uma lista do que fazer. Dados: admin_apps (SQL: versões em uso e tarefas), admin-apps (edge:
+  // Play, App Store Connect e GitHub) e admin-publicacao (site no ar). Cada fonte falha sozinha sem derrubar a tela.
+  // Benchmarks: Play Console (faixas e "Visão geral da publicação"), App Store Connect (estado da versão e builds do
+  // TestFlight com validade), Firebase (adoção por versão) e EAS (o pacote nativo separado do conteúdo que atualiza sozinho).
+  var APPS = [
+    { id: "web", nome: "Site do app", onde: "app.movoapp.com.br · atualiza sozinho também dentro dos apps" },
+    { id: "android", nome: "Android", onde: "Google Play · br.com.movoapp.app" },
+    { id: "relogio", nome: "Relógio", onde: "Wear OS · vai junto do Android na Play" },
+    { id: "ios", nome: "iPhone", onde: "App Store e TestFlight" }
+  ];
+  var APP_NOME = { web: "Site", android: "Android", relogio: "Relógio", ios: "iPhone", geral: "Geral" };
+  var FAIXA = { production: "Produção", beta: "Teste aberto", alpha: "Teste fechado", internal: "Teste interno" };
+  var FAIXA_ORDEM = ["production", "beta", "alpha", "internal"];
+  var PLAY_ST = { completed: "liberada", draft: "rascunho", inProgress: "liberando", halted: "pausada" };
+  var ASC_BETA = { READY_FOR_BETA_SUBMISSION: "pronto para a revisão beta", WAITING_FOR_BETA_REVIEW: "aguardando a revisão beta", IN_BETA_REVIEW: "em revisão beta",
+    BETA_REJECTED: "recusado na revisão beta", BETA_APPROVED: "aprovado para testar", IN_BETA_TESTING: "em teste", READY_FOR_TESTING: "pronto para testar",
+    IN_EXPORT_COMPLIANCE_REVIEW: "em revisão de exportação", MISSING_EXPORT_COMPLIANCE: "falta a conformidade de exportação", PROCESSING: "processando",
+    PROCESSING_EXCEPTION: "falhou no processamento", EXPIRED: "expirado" };
+  var ASC_LOJA = { PREPARE_FOR_SUBMISSION: "preparando o envio", READY_FOR_REVIEW: "pronta para enviar", WAITING_FOR_REVIEW: "aguardando revisão", IN_REVIEW: "em revisão",
+    REJECTED: "recusada", METADATA_REJECTED: "recusada (ficha)", DEVELOPER_REJECTED: "retirada por você", PENDING_DEVELOPER_RELEASE: "aprovada, falta você liberar",
+    ACCEPTED: "aprovada", PROCESSING_FOR_DISTRIBUTION: "indo para a loja", READY_FOR_DISTRIBUTION: "na loja", READY_FOR_SALE: "na loja", REPLACED_WITH_NEW_VERSION: "substituída" };
+  var LINKS = { play: "https://play.google.com/console", asc: "https://appstoreconnect.apple.com/apps", gh: "https://github.com/DursoAndre/movo-app/actions",
+    secrets: "https://supabase.com/dashboard/project/wgdhjkebfvcmgokxscvb/functions/secrets" };
+
+  // Lojas (edge admin-apps): guarda a última resposta por 5 min para o Início não esperar de novo.
+  var lojasCache = null, appsUrg = 0;
+  function appsFn(ms) {
+    if (lojasCache && Date.now() - lojasCache.ts < 5 * 60000) return Promise.resolve({ data: lojasCache.data });
+    var t = new Promise(function (ok) { setTimeout(function () { ok({ data: null }); }, ms || 9000); });
+    var f = sb.functions.invoke("admin-apps").then(function (r) { var j = r.data && r.data.ok ? r.data : null; if (j) lojasCache = { ts: Date.now(), data: j }; return { data: j }; }, function () { return { data: null }; });
+    return Promise.race([f, t]);
+  }
+  // Selo em Mais › Apps e versões: só o que tem prazo perto ou erro (tarefas sem prazo não acendem selo).
+  function appsMarcar(d) { if (!d || !d.sql || !d.sql.site) return; appsUrg = appsTarefas(d).filter(function (t) { return t.nivel; }).length; pend.apps = appsUrg; if (atual) desenharNav(); }
+  function appsCall() {
+    lojasCache = null;
+    return juntar(["sql", "lojas", "pub"], [opc(sb.rpc("admin_apps")), appsFn(), publicacao()]).then(function (r) { if (r.data) appsMarcar(r.data); return r; });
+  }
+  // "1.10.2" > "1.9" sem depender de texto
+  function semver(a, b) {
+    var x = String(a || "").split("."), y = String(b || "").split(".");
+    for (var i = 0; i < Math.max(x.length, y.length); i++) { var d = (+x[i] || 0) - (+y[i] || 0); if (d) return d; }
+    return 0;
+  }
+  function diasAte(iso) { if (!iso) return null; var p = hojeBR().split("-"), q = String(iso).slice(0, 10).split("-"); return Math.round((Date.UTC(q[0], q[1] - 1, q[2]) - Date.UTC(p[0], p[1] - 1, p[2])) / 86400000); }
+  function prazoTxt(iso) {
+    var n = diasAte(iso); if (n === null) return "";
+    return n < 0 ? "venceu em " + dia(iso) : n === 0 ? "hoje" : n === 1 ? "amanhã" : "até " + dm(iso) + " · " + (n < 60 ? "em " + n + " dias" : "em " + Math.round(n / 30) + " meses");
+  }
+  // Faixas da Play separadas em celular e relógio ("wear:internal" etc.), da mais aberta para a mais fechada.
+  function playFaixas(play, relogio) {
+    return ((play && play.faixas) || []).filter(function (f) { return relogio ? /^wear:/.test(f.faixa) : f.faixa.indexOf(":") < 0; })
+      .map(function (f) { var k = f.faixa.replace(/^wear:/, ""), v = (f.versoes || [])[0] || null; return { k: k, nome: FAIXA[k] || k, v: v, cod: v ? Math.max.apply(null, (v.codigos || [0]).concat(0)) : 0 }; })
+      .sort(function (a, b) { var i = FAIXA_ORDEM.indexOf(a.k), j = FAIXA_ORDEM.indexOf(b.k); return (i < 0 ? 9 : i) - (j < 0 ? 9 : j); });
+  }
+  // A Play guarda o nome como "20 (1.7.0)": fica só o 1.7.0.
+  function nomeRel(v, cod) { return v ? String(v.nome || "").replace(/^\d+\s*\((.+)\)$/, "$1") || String(cod || "") : ""; }
+  function faixaDe(lista, k) { return lista.filter(function (f) { return f.k === k; })[0] || null; }
+  function runFalhou(r) { return !!r && r.status === "completed" && r.conclusion && r.conclusion !== "success" && r.conclusion !== "skipped" && r.conclusion !== "cancelled"; }
+
+  // O que fazer: as tarefas do banco (o Andre marca feito) + as que o próprio painel percebe nos dados.
+  function appsAuto(d) {
+    var out = [], lj = d.lojas || {}, gh = lj.github || {}, play = lj.play || {}, ap = lj.apple || {}, sql = d.sql || {};
+    var add = function (app, nivel, titulo, sub, link, linkTxt) { out.push({ auto: true, app: app, nivel: nivel, titulo: titulo, detalhe: sub, link: link, linkTxt: linkTxt }); };
+    var s = appSync(d.pub || {});
+    if (s.cls === "bad") add("web", "bad", "Site do app: " + s.txt, s.sub, LINKS.gh, "Ver no GitHub");
+    if (+sql.site_atrasados > 0) add("web", "warn", pl(+sql.site_atrasados, "pessoa abriu", "pessoas abriram") + " uma versão velha do site", "O app não atualizou sozinho para elas (cache). Se repetir, peça ao Claude para investigar.", null);
+    if (!d.lojas && !d.parcial) add("geral", "warn", "Não consegui falar com as lojas agora", "Toque em atualizar. Se continuar, a função admin-apps pode não estar publicada.", null);
+    if (play.erro === "sem_chave") add("geral", "", "Ligar a Google Play ao painel (uma vez)", "Guarde no Supabase o mesmo JSON da conta de serviço movo-publicar, com o nome PLAY_SERVICE_ACCOUNT_JSON.", LINKS.secrets, "Abrir segredos");
+    if (ap.erro === "sem_chave") add("geral", "", "Ligar o App Store Connect ao painel (uma vez)", "Guarde no Supabase as chaves ASC_KEY_ID, ASC_ISSUER_ID e ASC_KEY_P8 (as mesmas do GitHub).", LINKS.secrets, "Abrir segredos");
+    if (gh.token_vence) { var tv = diasAte(gh.token_vence); if (tv !== null && tv <= 21) add("geral", tv <= 5 ? "bad" : "warn", "Renovar a chave GITHUB_LEITURA", "Ela vence " + (tv <= 0 ? "hoje" : "em " + tv + " dias") + " (" + dia(gh.token_vence) + "). Sem ela, o painel não confere o código.", "https://github.com/settings/personal-access-tokens", "Abrir tokens"); }
+    [["android", false], ["relogio", true]].forEach(function (x) {
+      if (play.erro || !play.faixas) return;
+      var fx = playFaixas(play, x[1]), cod = ((gh.codigo || {})[x[0]]) || null, nome = x[0] === "android" ? "Android" : "Relógio";
+      fx.forEach(function (f) { if (f.v && f.v.status === "draft") add(x[0], "warn", nome + ": rascunho parado no " + f.nome, nomeRel(f.v, f.cod) + " foi enviado mas não foi para revisão. No Console: Visão geral da publicação › Enviar para revisão.", LINKS.play, "Abrir a Play"); });
+      var maior = fx.reduce(function (m, f) { return Math.max(m, f.cod); }, 0), interno = faixaDe(fx, "internal"), fechado = faixaDe(fx, "alpha");
+      if (cod && cod.codigo && cod.codigo > maior) add(x[0], "", nome + " " + cod.nome + " (" + cod.codigo + ") ainda não foi para a Play", "Está no código e em nenhuma faixa da Play. Peça ao Claude para enviar ao teste interno.", null);
+      if (interno && fechado && interno.cod > fechado.cod) add(x[0], "", "Promover o " + (x[0] === "android" ? "Android" : "relógio") + " " + nomeRel(interno.v, interno.cod) + " para o teste fechado", "Está só no teste interno; o fechado ainda tem " + (fechado.v ? nomeRel(fechado.v, fechado.cod) : "nada") + ". Depois de testar, peça ao Claude para promover.", null);
+    });
+    var pk = (sql.pacotes || []).filter(function (p) { return p.app === "android"; });
+    var ref = (playFaixas(play, false).filter(function (f) { return f.k === "alpha"; })[0] || {}).v;
+    var atual = ref ? nomeRel(ref) : pk.reduce(function (m, p) { return semver(p.versao, m) > 0 ? p.versao : m; }, "");
+    var velhos = pk.filter(function (p) { return semver(p.versao, atual) < 0; });
+    if (velhos.length) add("android", "", pl(velhos.length, "pessoa ainda no app Android antigo", "pessoas ainda no app Android antigo"),
+      velhos.slice(0, 6).map(function (p) { return (p.nome || p.email) + " (" + p.versao + ")"; }).join(", ") + (velhos.length > 6 ? " e mais " + (velhos.length - 6) : "") + ". Peça para atualizar pela Play Store; o atual é o " + atual + ".", null);
+    var b = (ap.builds || [])[0];
+    if (b) {
+      var ex = diasAte(b.expira);
+      if (b.expirado) add("ios", "bad", "Build " + b.versao + " (" + b.build + ") do TestFlight expirou", "Os testadores não abrem mais o app. Mande um build novo.", LINKS.asc, "Abrir App Store Connect");
+      else if (ex !== null && ex <= 14) add("ios", ex <= 5 ? "bad" : "warn", "TestFlight expira em " + pl(ex, "dia", "dias"), "Build " + b.versao + " (" + b.build + ") vale até " + dia(b.expira) + ". Um build novo renova por 90 dias.", LINKS.asc, "Abrir App Store Connect");
+      if (b.externo === "BETA_REJECTED" || b.revisao_beta === "REJECTED") add("ios", "bad", "Revisão beta recusou o build " + b.build, "Veja o motivo no App Store Connect › TestFlight.", LINKS.asc, "Abrir App Store Connect");
+      if (b.externo === "MISSING_EXPORT_COMPLIANCE") add("ios", "warn", "Build " + b.build + ": responder a conformidade de exportação", "No App Store Connect › TestFlight, no build.", LINKS.asc, "Abrir App Store Connect");
+      if (b.externo === "READY_FOR_BETA_SUBMISSION") add("ios", "", "Enviar o build " + b.build + " para a revisão beta", "Sem isso o grupo externo (link público) não recebe o build novo.", LINKS.asc, "Abrir App Store Connect");
+    }
+    var loja = (ap.loja || [])[0];
+    if (loja && /REJECTED/.test(loja.estado) && loja.estado !== "DEVELOPER_REJECTED") add("ios", "bad", "App Store recusou a versão " + loja.versao, "Veja a mensagem da Apple na Central de resoluções.", LINKS.asc, "Abrir App Store Connect");
+    if (loja && loja.estado === "PENDING_DEVELOPER_RELEASE") add("ios", "warn", "Versão " + loja.versao + " aprovada: falta liberar na loja", "No App Store Connect, na versão, toque em Liberar esta versão.", LINKS.asc, "Abrir App Store Connect");
+    var en = gh.envios || {};
+    [["android", "Envio do Android", en.android], ["relogio", "Envio do relógio", en.wear], ["android", "Promoção de faixa", en.promover], ["ios", "Build do iPhone", en.ios]].forEach(function (x) {
+      if (runFalhou(x[2]) && Date.now() - new Date(x[2].quando).getTime() < 7 * 86400000) add(x[0], "warn", x[1] + " falhou " + relIso(x[2].quando), "Se falhou em poucos segundos, são os minutos do GitHub Actions (voltam em 01/12).", x[2].html_url, "Ver no GitHub");
+    });
+    var peso = { bad: 0, warn: 1, "": 2 };
+    return out.sort(function (a, b2) { return peso[a.nivel] - peso[b2.nivel]; });
+  }
+  function appsTarefas(d) {
+    var man = ((d.sql || {}).tarefas || []).filter(function (t) { return !t.feita_em; }).map(function (t) {
+      var n = diasAte(t.prazo); return { id: t.id, app: t.app, titulo: t.titulo, detalhe: t.detalhe, prazo: t.prazo, link: t.link, nivel: n !== null && n <= 3 ? (n < 0 ? "bad" : "warn") : "" };
+    });
+    return appsAuto(d).concat(man);
+  }
+  function tarefaLinha(t) {
+    var pz = t.prazo ? prazoTxt(t.prazo) : "";
+    var dir = t.auto ? (t.link ? '<a class="ib" href="' + esc(t.link) + '" target="_blank" rel="noopener">' + esc(t.linkTxt || "Abrir") + "</a>" : "")
+      : (t.link ? '<a class="ib ic" href="' + esc(t.link) + '" target="_blank" rel="noopener" aria-label="Abrir link">↗</a>' : "") + btn("Feito", "app-feita", { id: t.id });
+    return '<div class="tf' + (t.nivel ? " " + t.nivel : "") + '"><div class="t"><span class="tag">' + esc(APP_NOME[t.app] || t.app) + "</span>" + esc(t.titulo) +
+      (t.detalhe || pz ? '<div class="s">' + (pz ? '<b class="pz">' + esc(pz) + "</b>" + (t.detalhe ? " · " : "") : "") + esc(t.detalhe || "") + "</div>" : "") +
+      (t.auto ? '<div class="s auto">some sozinho quando resolver</div>' : "") + '</div><div class="v">' + dir + "</div></div>";
+  }
+  function tarefaForm() {
+    return '<div class="card" id="tf-nova" hidden><b>Nova tarefa</b><div class="note" style="margin:4px 0 10px">Fica nesta lista até você marcar Feito.</div>' +
+      '<select data-f="app" class="fi" aria-label="App">' + ["android", "ios", "relogio", "web", "geral"].map(function (k) { return '<option value="' + k + '">' + APP_NOME[k] + "</option>"; }).join("") + "</select>" +
+      '<input data-f="titulo" class="fi" maxlength="160" placeholder="O que fazer" aria-label="O que fazer">' +
+      '<textarea data-f="detalhe" class="fi" maxlength="600" placeholder="Detalhes (opcional)" aria-label="Detalhes"></textarea>' +
+      '<label class="note" style="display:block;margin:0 2px 4px">Prazo (opcional)</label><input data-f="prazo" class="fi" type="date" aria-label="Prazo">' +
+      '<input data-f="link" class="fi" type="url" placeholder="Link (opcional)" aria-label="Link">' +
+      '<div class="tools">' + btn("Salvar", "app-salvar", {}, "pri") + btn("Cancelar", "app-cancelar", {}) + "</div></div>";
+  }
+  // Linha de uma faixa/ambiente dentro do card do app: nome à esquerda, versão e situação à direita.
+  function linhaApp(rot, sub, ver, cls, info) {
+    return '<div class="row lim sub"><div class="t">' + rot + (sub ? '<div class="s">' + sub + "</div>" : "") + '</div><div class="v pub ' + (cls || "") + '">' + esc(ver || "—") + (info ? "<small>" + esc(info) + "</small>" : "") + "</div></div>";
+  }
+  function emUso(lista, chave, atual) {
+    if (!lista.length) return "";
+    var c = {}; lista.forEach(function (p) { var k = p[chave] || "?"; c[k] = (c[k] || 0) + 1; });
+    return Object.keys(c).sort(function (a, b) { return semver(b, a); }).map(function (k) { return '<span class="chip' + (k === atual ? " ok" : "") + '">' + esc(k) + " <b>" + c[k] + "</b></span>"; }).join("");
+  }
+  function cardApp(a, d) {
+    var lj = d.lojas || {}, gh = lj.github || {}, play = lj.play || {}, ap = lj.apple || {}, sql = d.sql || {}, p14 = sql.plataformas_14d || {}, h = "", topo = "", topoCls = "", foot = "", capt = "";
+    if (a.id === "web") {
+      var pub = d.pub || {}, s = appSync(pub), c = pub.codigo || {}, pp = pub.publico || {}, na = pub.no_ar || {};
+      var vNoAr = na.versao || (na.app_js && na.app_js === pp.app_js ? pp.versao : null);
+      topo = vNoAr || pp.versao || "?"; topoCls = s.cls === "ok" ? "" : s.cls; capt = "no ar";
+      h += '<div class="row lim sub"><div class="t">Publicação<div class="s">' + esc(s.sub) + '</div></div><div class="v pub ' + s.cls + '">' + esc(s.txt) + "</div></div>";
+      if (!pub.reserva && s.cls !== "ok") {
+        h += linhaApp("Código", "movo-app (privado)" + (c.quando ? " · " + esc(relIso(c.quando)) : ""), c.versao);
+        h += linhaApp("No ar", "app.movoapp.com.br", vNoAr);
+      }
+      if (sql.site_7d) {
+        var atr = +sql.site_atrasados || 0;
+        h += linhaApp("Atualizou sozinho?", atr ? pl(atr, "pessoa abriu", "pessoas abriram") + " uma versão já substituída nos últimos 7 dias" : "todas as " + sql.site_7d + " pessoas que abriram em 7 dias pegaram a versão do momento, no app ou no navegador",
+          atr ? "não" : "sim", atr ? "warn" : "ok", atr ? atr + " de " + sql.site_7d : "");
+      }
+      foot = '<a class="ext" href="' + LINKS.gh + '" target="_blank" rel="noopener">GitHub</a>';
+    }
+    if (a.id === "android" || a.id === "relogio") {
+      var rel = a.id === "relogio", fx = playFaixas(play, rel), cod = (gh.codigo || {})[a.id];
+      if (play.erro === "sem_chave") h += '<div class="note">A Play ainda não está ligada ao painel (veja "O que fazer").</div>';
+      else if (play.erro) h += '<div class="note">A Play não respondeu agora (' + esc(play.erro) + ").</div>";
+      var prod = faixaDe(fx, "production");
+      if (!rel && !play.erro && !(prod && prod.v)) h += linhaApp("Produção", "liberada pela Play depois do teste fechado (12 testadores, 14 dias)", "não liberada", "mut");
+      fx.forEach(function (f) {
+        if (!f.v) return;
+        var st = PLAY_ST[f.v.status] || f.v.status, cls = f.v.status === "draft" ? "warn" : f.v.status === "halted" ? "bad" : "";
+        h += linhaApp(f.nome, st + (f.v.fracao ? " para " + Math.round(f.v.fracao * 100) + "%" : ""), nomeRel(f.v, f.cod), cls, f.cod ? String(f.cod) : "");
+      });
+      if (!topo) { var top = fx.filter(function (f) { return f.v; })[0]; if (top) { topo = nomeRel(top.v, top.cod); topoCls = ""; capt = "no " + top.nome.toLowerCase(); } }
+      if (cod) h += linhaApp("No código", "o próximo pacote sai daqui", cod.nome, "mut", cod.codigo ? String(cod.codigo) : "");
+      var env = ((gh.envios || {})[rel ? "wear" : "android"]);
+      if (env) h += linhaApp("Último envio", esc(relIso(env.quando)) + ' · <a class="ext" href="' + esc(env.html_url) + '" target="_blank" rel="noopener">ver no GitHub</a>', runFalhou(env) ? "falhou" : env.status !== "completed" ? "rodando" : "ok", runFalhou(env) ? "bad" : env.status !== "completed" ? "warn" : "ok");
+      if (!rel) {
+        var pk = (sql.pacotes || []).filter(function (p) { return p.app === "android"; });
+        h += '<div class="row lim sub"><div class="t">Pacote em uso · 30 dias<div class="s">' + pl(+p14.android_app || 0, "pessoa abriu", "pessoas abriram") + " pelo app em 14 dias" + (pk.length ? "" : " · versão do pacote ainda sem registro") + "</div>" +
+          (pk.length ? '<div class="chips">' + emUso(pk, "versao", (faixaDe(fx, "alpha") || {}).v ? nomeRel(faixaDe(fx, "alpha").v) : "") + "</div>" : "") + "</div></div>";
+      } else h += '<div class="note">A versão no relógio não aparece aqui: o relógio não abre o site.</div>';
+      if (!play.erro && fx.length) h += '<div class="note">A revisão da Play não aparece por aqui: "liberada" pode ainda estar em revisão. Confira em Visão geral da publicação.</div>';
+      foot = '<a class="ext" href="' + LINKS.play + '" target="_blank" rel="noopener">Play Console</a>';
+    }
+    if (a.id === "ios") {
+      if (ap.erro === "sem_chave") h += '<div class="note">O App Store Connect ainda não está ligado ao painel (veja "O que fazer").</div>';
+      else if (ap.erro) h += '<div class="note">O App Store Connect não respondeu agora (' + esc(ap.erro) + ").</div>";
+      var loja = (ap.loja || [])[0], b = (ap.builds || [])[0];
+      if (!ap.erro) h += linhaApp("App Store", loja ? esc(ASC_LOJA[loja.estado] || loja.estado) : "nenhuma versão criada", loja ? loja.versao : "—", loja && /REJECTED/.test(loja.estado) ? "bad" : loja && /READY_FOR_(SALE|DISTRIBUTION)/.test(loja.estado) ? "ok" : "mut");
+      if (b) {
+        var ex = diasAte(b.expira), est = b.processamento && b.processamento !== "VALID" ? (ASC_BETA[b.processamento] || b.processamento) : (ASC_BETA[b.externo] || b.externo || "");
+        h += linhaApp("TestFlight", esc(est) + (ex !== null && !b.expirado ? " · vale até " + dm(b.expira) : b.expirado ? " · expirado" : ""), b.versao, b.expirado || /REJECTED|EXCEPTION/.test(b.externo || "") ? "bad" : ex !== null && ex <= 14 ? "warn" : "", "build " + b.build);
+        topo = b.versao; topoCls = ""; capt = "no TestFlight";
+      }
+      (ap.grupos || []).filter(function (g) { return !g.interno; }).forEach(function (g) {
+        h += linhaApp("Testadores · " + esc(g.nome), g.link ? '<a class="ext" href="' + esc(g.link) + '" target="_blank" rel="noopener">link público</a>' : "sem link público", g.testadores == null ? "?" : String(g.testadores), "", g.limite ? "de " + g.limite : "");
+      });
+      var pi = (sql.pacotes || []).filter(function (p) { return p.app === "ios"; });
+      h += '<div class="row lim sub"><div class="t">Pacote em uso · 30 dias<div class="s">' + pl(+p14.ios_app || 0, "pessoa abriu", "pessoas abriram") + " pelo app em 14 dias" + (pi.length ? "" : " · versão do pacote registrada a partir da v329") + "</div>" +
+        (pi.length ? '<div class="chips">' + emUso(pi.map(function (p) { return { v: p.versao + " (" + (p.build || "?") + ")" }; }), "v") + "</div>" : "") + "</div></div>";
+      h += '<div class="note">Apple Watch: vai dentro do app do iPhone só quando o build sai com o relógio ligado (hoje fica de fora).</div>';
+      var envI = (gh.envios || {}).ios;
+      if (envI) h += linhaApp("Último build", esc(relIso(envI.quando)) + ' · <a class="ext" href="' + esc(envI.html_url) + '" target="_blank" rel="noopener">ver no GitHub</a>', runFalhou(envI) ? "falhou" : envI.status !== "completed" ? "rodando" : "ok", runFalhou(envI) ? "bad" : envI.status !== "completed" ? "warn" : "ok");
+      foot = '<a class="ext" href="' + (ap.app_id ? "https://appstoreconnect.apple.com/apps/" + esc(ap.app_id) + "/testflight/ios" : LINKS.asc) + '" target="_blank" rel="noopener">App Store Connect</a>';
+    }
+    var resto = appsTarefas(d).filter(function (t) { return t.app === a.id && !tarefaAgora(t); });
+    var html = '<div class="card app" id="app-' + a.id + '"><div class="ah"><div class="t"><b>' + esc(a.nome) + "</b>" +
+      '<div class="s">' + esc(a.onde) + '</div></div><div class="big ' + topoCls + '">' + esc(topo || "—") + (capt && topo ? "<small>" + esc(capt) + "</small>" : "") + "</div></div>" + h +
+      (resto.length ? '<div class="afz"><div class="afz-t">A fazer</div>' + resto.map(tarefaLinha).join("") + "</div>" : "") + (foot ? '<div class="af">' + foot + "</div>" : "") + "</div>";
+    return { html: html, topo: topo || "—", cls: topoCls, capt: capt };
+  }
+  // "Agora" (topo da tela): erro, prazo em até 21 dias ou algo geral. O resto fica dentro do card de cada app.
+  function tarefaAgora(t) { var n = diasAte(t.prazo); return !!t.nivel || (n !== null && n <= 21) || t.app === "geral"; }
+  // Resumo para o Início: uma linha por app + quantas tarefas abertas.
+  function appsResumo(d) {
+    if (!d || !d.sql) return "";
+    var ts = appsTarefas(d);
+    var linha = function (a) {
+      var c = cardApp(a, d), n = ts.filter(function (t) { return t.app === a.id; }).length;
+      return '<div class="row ct" data-act="ir" data-tab="apps"><div class="t">' + esc(a.nome) + '<div class="s">' + (c.capt ? esc(c.capt) + " · " : "") + (n ? pl(n, "tarefa", "tarefas") : "nada pendente") + '</div></div><div class="v ' + c.cls + '">' + esc(c.topo) + "</div></div>";
+    };
+    return '<h2>Apps</h2><div class="card">' + APPS.map(linha).join("") + "</div>" + '<div class="tools">' + btn("Abrir Apps e versões", "ir", { tab: "apps" }) + "</div>";
+  }
+  OPS_CALL.apps = appsCall;
+  OPS_VIEW.apps = function (d) {
+    var todas = appsTarefas(d), ts = todas.filter(tarefaAgora), feitas = ((d.sql || {}).tarefas || []).filter(function (t) { return t.feita_em; });
+    var h = '<div class="hd"><h2>Agora</h2>' + btn("+ Tarefa", "app-nova", {}) + "</div>" + tarefaForm();
+    h += '<div class="card">' + (ts.length ? ts.map(tarefaLinha).join("") : '<div class="note">Nada urgente.</div>') +
+      (todas.length > ts.length ? '<div class="note" style="margin:10px 0 2px">Mais ' + pl(todas.length - ts.length, "tarefa sem pressa fica", "tarefas sem pressa ficam") + " no card de cada app, abaixo.</div>" : "") + "</div>";
+    if (feitas.length) h += '<details class="feitas"><summary>Feitas nos últimos 30 dias (' + feitas.length + ')</summary><div class="card">' + feitas.map(function (t) {
+      return '<div class="tf done"><div class="t"><span class="tag">' + esc(APP_NOME[t.app] || t.app) + "</span>" + esc(t.titulo) + '<div class="s">feita ' + esc(relIso(t.feita_em)) + '</div></div><div class="v">' + btn("Desfazer", "app-reabrir", { id: t.id }) + "</div></div>";
+    }).join("") + "</div></details>";
+    if (!d.sql || !d.sql.site) h += '<div class="note"><b>Falta rodar o SQL admin_apps.sql</b> para ver as tarefas salvas e os pacotes em uso.</div>';
+    h += "<h2>Apps</h2>" + APPS.map(function (a) { return cardApp(a, d).html; }).join("");
+    var lj = d.lojas || {}, est = function (x, ok) { return !d.lojas ? ["?", "mut"] : x && x.erro === "sem_chave" ? ["falta a chave", "warn"] : x && x.erro ? ["não respondeu", "bad"] : ["ligado", "ok"]; };
+    var g = est(lj.github), p = est(lj.play), a2 = est(lj.apple), gv = lj.github && lj.github.token_vence;
+    h += '<h2>De onde vêm os dados</h2><div class="card">' +
+      linhaApp("GitHub", "código, envios e site no ar" + (gv ? " · chave vence em " + dia(gv) : ""), g[0], g[1]) +
+      linhaApp("Google Play", "faixas do Android e do relógio (só leitura)", p[0], p[1]) +
+      linhaApp("App Store Connect", "TestFlight, revisão e versão da loja (só leitura)", a2[0], a2[1]) +
+      '<div class="note">As chaves ficam nos <a class="ext" href="' + LINKS.secrets + '" target="_blank" rel="noopener">segredos das funções do Supabase</a>. O painel só lê: enviar e promover versões continua com o Claude.</div></div>';
+    return h;
+  }
+  ACOES["app-nova"] = function () { var f = $("tf-nova"); f.hidden = false; f.querySelector("[data-f=titulo]").focus(); };
+  ACOES["app-cancelar"] = function () { $("tf-nova").hidden = true; };
+  ACOES["app-salvar"] = function () {
+    var o = lerCard($("tf-nova"));
+    if (!o.titulo.trim()) { aviso("Escreva o que fazer"); return; }
+    if (o.link && !/^https:\/\//.test(o.link.trim())) { aviso("O link precisa começar com https://"); return; }
+    return rpcOk("admin_apps_tarefa", { p_acao: "salvar", p_app: o.app, p_titulo: o.titulo, p_detalhe: o.detalhe, p_prazo: o.prazo || null, p_link: o.link }, "Tarefa salva").then(function (ok) { if (ok) recarregar(); });
+  };
+  ACOES["app-feita"] = function (b) { return rpcOk("admin_apps_tarefa", { p_acao: "feita", p_id: b.getAttribute("data-id") }, "Feito ✓").then(function (ok) { if (ok) recarregar(); }); };
+  ACOES["app-reabrir"] = function (b) { return rpcOk("admin_apps_tarefa", { p_acao: "reabrir", p_id: b.getAttribute("data-id") }, "Voltou para a lista").then(function (ok) { if (ok) recarregar(); }); };
 
   function metaHtml(ts) { return '<div class="meta"><span id="upd" data-ts="' + ts + '">Atualizado ' + ago(ts) + "</span></div>"; }
   function paint(id, d, ts) {
