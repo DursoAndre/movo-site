@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Movo: app de treino para academia, corrida e esportes</title>
-<meta name="description" content="Musculação, corrida, HYROX e esportes na mesma semana. Use sua ficha, siga um plano pronto ou receba do seu treinador. Grátis durante o beta, sem loja.">
+<meta name="description" content="Musculação, corrida, HYROX e esportes na mesma semana. Use sua ficha, siga um plano pronto ou receba do seu treinador. Grátis, sem senha e sem cartão. Em breve na App Store e no Google Play.">
 <link rel="canonical" href="https://movoapp.com.br/">
 <link rel="alternate" hreflang="pt-BR" href="https://movoapp.com.br/">
 <link rel="alternate" hreflang="en" href="https://movoapp.com.br/en/">
@@ -14,7 +14,7 @@
 <meta property="og:locale" content="pt_BR">
 <meta property="og:site_name" content="Movo">
 <meta property="og:title" content="Movo: todo o seu treino em um só lugar">
-<meta property="og:description" content="Musculação, corrida e esportes na mesma semana, com plano pronto ou do seu treinador. Grátis durante o beta.">
+<meta property="og:description" content="Musculação, corrida e esportes na mesma semana, com plano pronto ou do seu treinador. Grátis e sem cartão.">
 <meta property="og:url" content="https://movoapp.com.br/">
 <meta property="og:image" content="https://movoapp.com.br/media/og.jpg">
 <meta property="og:image:width" content="1200">
@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Movo","applicationCategory":"HealthApplication","operatingSystem":"Android, iOS (web app)","inLanguage":"pt-BR","url":"https://movoapp.com.br/","image":"https://movoapp.com.br/media/og.jpg","description":"App de treino que reúne musculação, corrida e esportes na mesma semana, com plano de semanas, desafios e modo treinador.","offers":{"@type":"Offer","price":"0","priceCurrency":"BRL"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Movo","applicationCategory":"HealthApplication","operatingSystem":"Android, iOS, web","inLanguage":"pt-BR","url":"https://movoapp.com.br/","image":"https://movoapp.com.br/media/og.jpg","description":"App de treino que reúne musculação, corrida e esportes na mesma semana, com plano de semanas, desafios e modo treinador.","offers":{"@type":"Offer","price":"0","priceCurrency":"BRL"}}</script>
 <style>
 :root{--bg:#14161A;--surface:#1D2024;--surface2:#24282E;--line:#2A2E34;--line2:#737A82;--text:#F2F4F5;--muted:#A9AFB5;--lime:#C6F135;--r:14px}
 *{box-sizing:border-box}
@@ -67,6 +67,7 @@ header.top{display:flex;align-items:center;justify-content:space-between;height:
 .hero .cta{display:flex;flex-direction:column;gap:10px;margin-top:26px;align-items:stretch}
 .hero .cta .btn{width:100%}
 .hero .micro{margin-top:14px;font-size:14px;color:var(--muted)}
+.hero .eyebrow{line-height:1.5;text-wrap:balance}
 .hero .hero-coach{margin-top:6px;font-size:15px}
 .phone{width:min(66vw,290px);margin-inline:auto;border:8px solid var(--line);border-radius:38px;overflow:hidden;background:#000;box-shadow:0 24px 60px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.06);aspect-ratio:720/1558}
 .phone img,.phone video{width:100%;height:100%;object-fit:cover}
@@ -252,13 +253,13 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 <section class="hero" aria-labelledby="h1">
 <div class="wrap"><div class="grid">
   <div>
-    <p class="eyebrow">Grátis durante o beta</p>
+    <p class="eyebrow">Em breve na App&nbsp;Store e no Google&nbsp;Play</p>
     <h1 id="h1">Todo o seu treino <span class="hl">em um só lugar.</span></h1>
     <p class="lead">Musculação, corrida, HYROX e o seu esporte na mesma semana. Use sua ficha, siga um plano pronto ou receba do seu treinador.</p>
     <div class="cta">
       <a class="btn" href="{{APP}}?utm_source=lp&pos=hero" data-cta="hero">Começar grátis</a>
     </div>
-    <p class="micro">Entre com um código no e-mail. Sem senha e sem cartão. Conecta com o Strava.</p>
+    <p class="micro">Já funciona no navegador do celular. Entre com um código no e-mail, sem senha e sem cartão. Conecta com o Strava.</p>
     <p class="hero-coach"><a class="link" href="{{APP}}?utm_source=lp-treinador&pos=hero&sou=treinador" data-cta="treinador-hero">Sou treinador e quero usar com meus alunos</a></p>
     <div class="warn" id="inapp" role="note"><b>Está no navegador do Instagram ou do WhatsApp?</b> Ele não deixa instalar. Copie o link e abra no Safari (iPhone) ou no Chrome (Android).<p style="margin-top:12px"><button class="btn ghost sm" id="copy" type="button">Copiar link do app</button> <span id="copied" class="muted" aria-live="polite"></span></p></div>
   </div>
@@ -328,9 +329,9 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
   <header class="chead"><p class="eyebrow"><span>Dúvidas</span></p>
   <h2 id="h-faq">Perguntas frequentes</h2></header>
   <div class="faq">
-    <details><summary>O Movo é grátis?</summary><p>Sim, durante o beta, e sem cartão. Beta quer dizer que o Movo já funciona no dia a dia, mas ganha novidades toda semana e algumas telas ainda mudam. Quando houver plano pago, registrar treinos continua grátis e nada do que você registrou é apagado. As funções de IA têm limite de uso por mês.</p></details>
+    <details><summary>O Movo é grátis?</summary><p>Sim, e sem cartão. O Movo já funciona no dia a dia e ganha novidades toda semana. Quando houver plano pago, registrar treinos continua grátis e nada do que você registrou é apagado. As funções de IA têm limite de uso por mês.</p></details>
     <details id="instalar"><summary>Como instalo no celular?</summary><div class="ans">
-      <p>Não está nas lojas, e nem precisa: o Movo é um app web. Dá para usar direto no navegador ou adicionar à tela inicial, onde ele ganha ícone, abre em tela cheia e registra treinos mesmo sem sinal.</p>
+      <p>Os apps para iPhone e Android estão chegando à App Store e ao Google Play. Até lá, use o Movo direto no navegador ou adicione à tela inicial: ele ganha ícone, abre em tela cheia e registra treinos mesmo sem sinal.</p>
       <div class="tabs" role="tablist" aria-label="Sistema do celular">
         <button role="tab" id="t-android" aria-selected="true" aria-controls="g-android">Android</button>
         <button role="tab" id="t-ios" aria-selected="false" aria-controls="g-ios">iPhone</button>
@@ -354,7 +355,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 
 <section class="final" data-nosticky aria-labelledby="h-final"><div class="wrap"><div class="box reveal">
   <h2 id="h-final">Monte seu treino agora.</h2>
-  <p class="lead" style="margin:12px auto 0">Grátis durante o beta. Sem senha e sem cartão.</p>
+  <p class="lead" style="margin:12px auto 0">Grátis, sem senha e sem cartão.</p>
   <div class="row"><a class="btn" href="{{APP}}?utm_source=lp&pos=final" data-cta="final" id="cta-final">Começar grátis</a></div>
 </div></div></section>
 
