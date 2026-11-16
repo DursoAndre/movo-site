@@ -1,5 +1,12 @@
 import re, os
 APP = "https://app.movoapp.com.br/"
+# Lojas. APPSTORE_ID = "Apple ID" do app no App Store Connect (Informações do app). Sem ele, o build para.
+APPSTORE_ID = ""
+PLAY_ID = "br.com.movoapp.app"
+if not APPSTORE_ID.isdigit():
+    raise SystemExit('build.py: preencha APPSTORE_ID (Apple ID numérico do app)')
+APPSTORE = "https://apps.apple.com/br/app/id" + APPSTORE_ID
+PLAY = "https://play.google.com/store/apps/details?id=" + PLAY_ID
 tpl = open('template.html', encoding='utf-8').read()
 def pic(m):
     name, alt, mode = m.group(1), m.group(2), m.group(3) or 'lazy'
@@ -9,7 +16,7 @@ def pic(m):
             f'<source type="image/webp" srcset="media/shot-{name}-360.webp 360w, media/shot-{name}-720.webp 720w" sizes="{sizes}">'
             f'<img src="media/shot-{name}-720.webp" width="720" height="1558" alt="{alt}" {attrs}></picture>')
 tpl = re.sub(r'\{\{pic ([a-z\-]+) "([^"]+)"(?: (eager))?\}\}', pic, tpl)
-tpl = tpl.replace('{{APP}}', APP)
+tpl = tpl.replace('{{PLAYURL}}', PLAY).replace('{{APPSTORE}}', APPSTORE).replace('{{PLAY}}', PLAY + '&amp;hl=pt_BR').replace('{{APP}}', APP)
 open('../index.html', 'w', encoding='utf-8').write(tpl)
 print('index.html', len(tpl.encode()))
 
@@ -37,7 +44,7 @@ for n in ('plano', 'treino', 'origens'):
     en_html = en_html.replace('{{pic ' + n + ' ', '{{pic ' + n + '-en ')
 en_html = en_html.replace('{{APP}}?utm_source=lp', '{{APP}}?lang=en&utm_source=lp-en').replace("var u='{{APP}}'", "var u='{{APP}}?lang=en'")
 en_html = re.sub(r'\{\{pic ([a-z\-]+) "([^"]+)"(?: (eager))?\}\}', pic, en_html)
-en_html = en_html.replace('{{APP}}', APP).replace('media/', '../media/').replace('https://movoapp.com.br/../media/', 'https://movoapp.com.br/media/')
+en_html = en_html.replace('{{PLAYURL}}', PLAY).replace('{{APPSTORE}}', APPSTORE.replace('/br/app/', '/app/')).replace('{{PLAY}}', PLAY + '&amp;hl=en').replace('{{APP}}', APP).replace('media/', '../media/').replace('https://movoapp.com.br/../media/', 'https://movoapp.com.br/media/')
 for f in ('favicon.svg', 'favicon-32.png', 'apple-touch-icon.png'):
     en_html = en_html.replace(f'href="{f}"', f'href="../{f}"')
 en_html = en_html.replace('</style>', '.coach-grid{grid-template-columns:1fr!important}@media(min-width:760px){.coach-grid .cb{display:grid;grid-template-columns:1fr 1fr;gap:12px}}\n</style>', 1)
