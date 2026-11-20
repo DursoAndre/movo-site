@@ -1,7 +1,7 @@
 import re, os
 APP = "https://app.movoapp.com.br/"
 # Lojas. APPSTORE_ID = "Apple ID" do app no App Store Connect (Informações do app). Sem ele, o build para.
-APPSTORE_ID = ""
+APPSTORE_ID = "6833195728"
 PLAY_ID = "br.com.movoapp.app"
 if not APPSTORE_ID.isdigit():
     raise SystemExit('build.py: preencha APPSTORE_ID (Apple ID numérico do app)')
