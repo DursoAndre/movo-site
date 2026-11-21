@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Movo</title>
+<link rel="icon" href="/favicon.svg">
+<meta http-equiv="refresh" content="2;url=https://movoapp.com.br/?ref=instagram">
+<style>body{margin:0;background:#14161A;color:#eef0f3;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:0 16px}main{max-width:420px;margin:0 auto;padding-top:30vh;text-align:center}a{color:#bef230}</style>
+</head>
+<body>
+<main><p>Abrindo o Movo…</p><p><a id="ir" href="https://movoapp.com.br/?ref=instagram">Toque aqui se não abrir</a></p></main>
+<script>
+// Atalho curto para a bio do Instagram (movoapp.com.br/android). Conta um clique anônimo (lp_event, sem cookie/ID) e leva para o Movo.
+// Origem: ?ref= ou ?utm_source=; sem nada, conta como instagram (atalho criado para a bio em 20/11/2026).
+(function(){
+var URL="https://movoapp.com.br/?ref=instagram";
+var q=new URLSearchParams(location.search),src=(q.get('utm_source')||q.get('ref')||'instagram').toLowerCase().replace(/[^a-z]/g,'').slice(0,20);
+var ok=/(^|\.)movoapp\.com\.br$/.test(location.hostname)&&navigator.doNotTrack!=='1'&&!navigator.globalPrivacyControl&&!navigator.webdriver;
+function ir(){location.replace(URL)}
+if(!ok)return ir();
+try{fetch('https://wgdhjkebfvcmgokxscvb.supabase.co/rest/v1/rpc/lp_event',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json',apikey:'sb_publishable_W0cKrWrtCwCp1XjNl1JFqQ_myok_WPk'},body:JSON.stringify({p_name:'cta_open_app',p_pos:'install',p_src:src})}).catch(function(){}).then(ir);setTimeout(ir,600)}catch(e){ir()}
+})();
+</script>
+</body>
+</html>
