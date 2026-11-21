@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Movo: workout app for the gym, running and sports</title>
-<meta name="description" content="Strength training, running, HYROX and sports in the same week. Use your own routine, follow a ready-made plan or get one from your coach. Free, no password, no credit card. Coming soon to the App Store and Google Play.">
+<title>Movo: workout app for strength training, running and sports</title>
+<meta name="description" content="Everything you train, in one place. Strength training, running, sports and challenges with friends. Made by people who train. Free on the App Store and the web.">
 <link rel="canonical" href="https://movoapp.com.br/en/">
 <link rel="alternate" hreflang="pt-BR" href="https://movoapp.com.br/">
 <link rel="alternate" hreflang="en" href="https://movoapp.com.br/en/">
@@ -13,13 +13,13 @@
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_CA">
 <meta property="og:site_name" content="Movo">
-<meta property="og:title" content="Movo: all your training in one place">
-<meta property="og:description" content="Strength, running and sports in the same week, with a ready-made plan or one from your coach. Free, no credit card.">
+<meta property="og:title" content="Movo: everything you train, in one place">
+<meta property="og:description" content="Strength training, running, sports and challenges with friends. Made by people who train. Get started free.">
 <meta property="og:url" content="https://movoapp.com.br/en/">
 <meta property="og:image" content="https://movoapp.com.br/media/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Movo: all your training in one place, with the app's Today screen">
+<meta property="og:image:alt" content="Movo: everything you train, in one place, with the app's Today screen">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../favicon-32.png" sizes="32x32" type="image/png">
@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Movo","applicationCategory":"HealthApplication","operatingSystem":"Android, iOS, web","inLanguage":"en","url":"https://movoapp.com.br/en/","image":"https://movoapp.com.br/media/og.jpg","description":"Workout app that brings strength training, running and sports together in the same week, with multi-week plans, challenges and a coach mode.","offers":{"@type":"Offer","price":"0","priceCurrency":"CAD"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Movo","applicationCategory":"HealthApplication","operatingSystem":"Android, iOS, web","downloadUrl":["https://apps.apple.com/app/id6833195728"],"inLanguage":"en","url":"https://movoapp.com.br/en/","image":"https://movoapp.com.br/media/og.jpg","description":"Workout app that brings strength training, running and sports together in the same week, with multi-week plans, challenges and a coach mode.","offers":{"@type":"Offer","price":"0","priceCurrency":"CAD"}}</script>
 <style>
 :root{--bg:#14161A;--surface:#1D2024;--surface2:#24282E;--line:#2A2E34;--line2:#737A82;--text:#F2F4F5;--muted:#A9AFB5;--lime:#C6F135;--r:14px}
 *{box-sizing:border-box}
@@ -66,6 +66,13 @@ header.top{display:flex;align-items:center;justify-content:space-between;height:
 .hero p.lead{margin-top:18px}
 .hero .cta{display:flex;flex-direction:column;gap:10px;margin-top:26px;align-items:stretch}
 .hero .cta .btn{width:100%}
+.stores{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
+.stores .store:only-child{grid-column:1/-1}
+.btn.store{flex-direction:column;gap:2px;min-height:56px;padding:0 12px;line-height:1.1;font-size:16px;width:100%}
+.btn.store small{font:500 11px/1 Inter,system-ui,sans-serif;letter-spacing:.04em;opacity:.75}
+.cta .btn.web,.final .btn.web{background:var(--lime);color:#14161A;border:0}
+.os-ios .st-ios,.os-and .st-and{background:var(--lime);color:#14161A;border:0}
+.os-ios .cta .btn.web,.os-and .cta .btn.web,.os-ios .final .btn.web,.os-and .final .btn.web{background:transparent;color:var(--text);border:1px solid var(--line2)}
 .hero .micro{margin-top:14px;font-size:14px;color:var(--muted)}
 .hero .eyebrow{line-height:1.5;text-wrap:balance}
 .hero .hero-coach{margin-top:6px;font-size:15px}
@@ -221,7 +228,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 .sticky .btn{pointer-events:auto;width:100%;min-height:50px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
 .guide a{display:inline-flex;align-items:center;min-height:44px;padding-inline:2px}
 .header-ghost{}
-@media (max-width:999px){header.top .btn.sm{background:transparent;color:var(--text);border:1px solid var(--line2)}}
+header.top .btn.sm{background:transparent;color:var(--text);border:1px solid var(--line2)}
 @media (min-width:700px){.chap::before{left:32px}.adv{grid-template-columns:repeat(4,1fr)}.adv .main{grid-column:span 2}.cta-break{grid-template-columns:1fr auto;align-items:center;text-align:left}.cta-break .btn{min-width:240px}.cta-break .micro{grid-column:1/-1}.duo{grid-auto-flow:row;grid-template-columns:repeat(2,1fr);overflow:visible;margin:0;padding:0;justify-content:center}.coach-cta{flex-direction:row}.coach-cta .btn{min-width:220px}}
 @media (min-width:1000px){.chap{padding-block:72px}.chap::before{left:48px}.cnav{display:none}.top nav{gap:22px}.feat{grid-template-columns:1fr 1fr;gap:80px}.feat.rev .media{order:-1}.vtabs{display:none}.vstage{grid-auto-flow:row;grid-template-columns:repeat(5,1fr);overflow:visible;margin:0;padding:0}.vp:not(.on) .phone{opacity:1;transform:none}.vp .phone{width:min(100%,200px)}.coach-grid{grid-template-columns:.8fr 1.2fr;align-items:center;gap:80px}.sticky{display:none}}
 @media (max-height:420px){.sticky{display:none}}
@@ -240,13 +247,13 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 <body>
 <a class="skip" href="#conteudo">Skip to content</a>
 <nav class="cnav" id="cnav" aria-label="Chapters"><ul>
-  <li><a href="#como-funciona">How it works</a></li><li><a href="#app">The app</a></li><li><a href="#treinadores">Coaches</a></li><li><a href="#perguntas">FAQ</a></li>
+  <li><a href="#app">The app</a></li><li><a href="#como-funciona">How it works</a></li><li><a href="#treinadores">Coaches</a></li><li><a href="#perguntas">FAQ</a></li>
 </ul><i class="prog" id="prog"></i></nav>
 <div class="wrap">
 <header class="top">
   <a class="logo" href="./" aria-label="Movo, home"><svg width="30" height="30" viewBox="0 0 240 240" fill="none" aria-hidden="true"><rect x="36" y="126" width="44" height="74" rx="14" fill="#C6F135"/><rect x="98" y="84" width="44" height="116" rx="14" fill="#C6F135"/><rect x="160" y="40" width="44" height="160" rx="14" fill="#C6F135"/></svg>movo</a>
-  <nav aria-label="Sections"><a href="#como-funciona">How it works</a><a href="#app">The app</a><a href="#treinadores">Coaches</a><a href="#perguntas">FAQ</a></nav>
-  <a class="btn sm" href="https://app.movoapp.com.br/?lang=en&utm_source=lp-en&pos=nav" data-cta="nav">Start free</a>
+  <nav aria-label="Sections"><a href="#app">The app</a><a href="#como-funciona">How it works</a><a href="#treinadores">Coaches</a><a href="#perguntas">FAQ</a></nav>
+  <a class="btn sm" href="https://app.movoapp.com.br/?lang=en&utm_source=lp-en&pos=nav" data-cta="nav">Get started free</a>
 </header>
 </div>
 <main id="conteudo" tabindex="-1">
@@ -254,19 +261,36 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 <section class="hero" aria-labelledby="h1">
 <div class="wrap"><div class="grid">
   <div>
-    <p class="eyebrow">Coming soon to the App&nbsp;Store and Google&nbsp;Play</p>
-    <h1 id="h1">All your training <span class="hl">in one place.</span></h1>
-    <p class="lead">Strength training, running, HYROX and your sport in the same week. Use your own routine, follow a ready-made plan or get one from your coach.</p>
+    <p class="eyebrow">On the App&nbsp;Store</p>
+    <h1 id="h1">Everything you train, <span class="hl">in one place.</span></h1>
+    <p class="lead">Strength training, running, sports and challenges with friends. Made by people who train.</p>
     <div class="cta">
-      <a class="btn" href="https://app.movoapp.com.br/?lang=en&utm_source=lp-en&pos=hero" data-cta="hero">Start free</a>
+      <div class="stores" role="group" aria-label="Get the app"><a class="btn ghost store st-ios" href="https://apps.apple.com/app/id6833195728" data-cta="appstore-hero"><small>Download on the</small>App Store</a></div>
+      <a class="btn web" href="https://app.movoapp.com.br/?lang=en&utm_source=lp-en&pos=hero" data-cta="hero">Use in your browser</a>
     </div>
-    <p class="micro">Works today in your phone's browser. Sign in with a code sent to your email, no password, no credit card. Connects to Strava.</p>
+    <p class="micro">Free. Sign in with a code sent to your email, no password, no credit card.</p>
     <p class="hero-coach"><a class="link" href="https://app.movoapp.com.br/?lang=en&utm_source=lp-en-treinador&pos=hero&sou=treinador" data-cta="treinador-hero">I'm a coach and want to use it with my clients</a></p>
-    <div class="warn" id="inapp" role="note"><b>Viewing this inside Instagram, Facebook or TikTok?</b> Their browser can't install apps. Copy the link and open it in Safari (iPhone) or Chrome (Android).<p style="margin-top:12px"><button class="btn ghost sm" id="copy" type="button">Copy app link</button> <span id="copied" class="muted" aria-live="polite"></span></p></div>
   </div>
   <div class="phone-wrap"><div class="phone"><picture><source type="image/avif" srcset="../media/shot-plano-en-360.avif 360w, ../media/shot-plano-en-720.avif 720w" sizes="(min-width:1000px) 320px, 62vw"><source type="image/webp" srcset="../media/shot-plano-en-360.webp 360w, ../media/shot-plano-en-720.webp 720w" sizes="(min-width:1000px) 320px, 62vw"><img src="../media/shot-plano-en-720.webp" width="720" height="1558" alt="Movo Workouts tab with an 8-week hybrid plan: phases, a deload week and the current week with strength workouts and runs." fetchpriority="high"></picture></div></div>
 </div></div>
 </section>
+
+<section id="app" class="chap" data-chapter aria-labelledby="h-app"><div class="wrap">
+  <header class="chead"><p class="eyebrow"><span>The app</span></p>
+  <h2 id="h-app">Fewer spreadsheets. More training.</h2></header>
+  <ul class="motivos">
+    <li><figure><div class="phone"><picture><source type="image/avif" srcset="../media/shot-desafio-en-360.avif 360w, ../media/shot-desafio-en-720.avif 720w" sizes="(min-width:1000px) 320px, 62vw"><source type="image/webp" srcset="../media/shot-desafio-en-360.webp 360w, ../media/shot-desafio-en-720.webp 720w" sizes="(min-width:1000px) 320px, 62vw"><img src="../media/shot-desafio-en-720.webp" width="720" height="1558" alt="Creating a challenge in Movo: weekly goal, coffee on the line, simple points or who runs the most." loading="lazy" decoding="async"></picture></div>
+      <figcaption><b>Challenges with friends</b><span>A leaderboard every week and a card for your Stories. Everyone sees who trained, no screenshots in the group chat.</span></figcaption></figure></li>
+    <li><figure><div class="phone"><picture><source type="image/avif" srcset="../media/shot-treino-en-360.avif 360w, ../media/shot-treino-en-720.avif 720w" sizes="(min-width:1000px) 320px, 62vw"><source type="image/webp" srcset="../media/shot-treino-en-360.webp 360w, ../media/shot-treino-en-720.webp 720w" sizes="(min-width:1000px) 320px, 62vw"><img src="../media/shot-treino-en-720.webp" width="720" height="1558" alt="Leg workout in progress in Movo, with sets, weights, reps and the rest timer counting down." loading="lazy" decoding="async"></picture></div>
+      <figcaption><b>Your routine, your way</b><span>Log weights, sets and rest in a few taps, with last time's weight right beside it. PRs show up automatically. In kg or lb.</span></figcaption></figure></li>
+    <li><figure><div class="phone"><picture><source type="image/avif" srcset="../media/shot-origens-en-360.avif 360w, ../media/shot-origens-en-720.avif 720w" sizes="(min-width:1000px) 320px, 62vw"><source type="image/webp" srcset="../media/shot-origens-en-360.webp 360w, ../media/shot-origens-en-720.webp 720w" sizes="(min-width:1000px) 320px, 62vw"><img src="../media/shot-origens-en-720.webp" width="720" height="1558" alt="What do you want to train screen, with the options Strength, Running, Hybrid and Tailored with AI." loading="lazy" decoding="async"></picture></div>
+      <figcaption><b>A ready-made multi-week plan</b><span>Strength, running or hybrid, with lighter weeks to recover. Signed up for a race? The AI builds your plan up to race day.</span></figcaption></figure></li>
+  </ul>
+  <aside class="cta-break" data-nosticky aria-label="Get started">
+    <p class="t">Ready to bring it all together? <span class="muted">It takes less than 2 minutes.</span></p>
+    <a class="btn" href="https://app.movoapp.com.br/?lang=en&utm_source=lp-en&pos=vantagens" data-cta="vantagens">Get started free</a>
+  </aside>
+</div></section>
 
 <section id="como-funciona" class="chap" data-chapter aria-labelledby="h-como"><div class="wrap">
   <header class="chead"><p class="eyebrow"><span>How it works</span></p>
@@ -277,23 +301,6 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
     <li class="reveal"><span class="n">02</span><h3>Bring your workouts</h3><p>Import your routine from a PDF, photo or spreadsheet, and move your workouts over from another app in seconds. Or build one from the exercise catalog.</p></li>
     <li class="reveal"><span class="n">03</span><h3>Train and log it</h3><p>Log weights, sets and rest in a few taps. Hockey, CrossFit or anything else you do: log it with one tap.</p></li>
   </ol>
-</div></section>
-
-<section id="app" class="chap" data-chapter aria-labelledby="h-app"><div class="wrap">
-  <header class="chead"><p class="eyebrow"><span>The app</span></p>
-  <h2 id="h-app">Fewer spreadsheets. More training.</h2></header>
-  <ul class="motivos">
-    <li><figure><div class="phone"><picture><source type="image/avif" srcset="../media/shot-treino-en-360.avif 360w, ../media/shot-treino-en-720.avif 720w" sizes="(min-width:1000px) 320px, 62vw"><source type="image/webp" srcset="../media/shot-treino-en-360.webp 360w, ../media/shot-treino-en-720.webp 720w" sizes="(min-width:1000px) 320px, 62vw"><img src="../media/shot-treino-en-720.webp" width="720" height="1558" alt="Leg workout in progress in Movo, with sets, weights, reps and the rest timer counting down." loading="lazy" decoding="async"></picture></div>
-      <figcaption><b>Your routine, your way</b><span>Log weights, sets and rest in a few taps, with last time's weight right beside it. PRs show up automatically. In kg or lb.</span></figcaption></figure></li>
-    <li><figure><div class="phone"><picture><source type="image/avif" srcset="../media/shot-origens-en-360.avif 360w, ../media/shot-origens-en-720.avif 720w" sizes="(min-width:1000px) 320px, 62vw"><source type="image/webp" srcset="../media/shot-origens-en-360.webp 360w, ../media/shot-origens-en-720.webp 720w" sizes="(min-width:1000px) 320px, 62vw"><img src="../media/shot-origens-en-720.webp" width="720" height="1558" alt="What do you want to train screen, with the options Strength, Running, Hybrid and Tailored with AI." loading="lazy" decoding="async"></picture></div>
-      <figcaption><b>A ready-made multi-week plan</b><span>Strength, running or hybrid, with lighter weeks to recover. Signed up for a race? The AI builds your plan up to race day.</span></figcaption></figure></li>
-    <li><figure><div class="phone"><picture><source type="image/avif" srcset="../media/shot-desafio-en-360.avif 360w, ../media/shot-desafio-en-720.avif 720w" sizes="(min-width:1000px) 320px, 62vw"><source type="image/webp" srcset="../media/shot-desafio-en-360.webp 360w, ../media/shot-desafio-en-720.webp 720w" sizes="(min-width:1000px) 320px, 62vw"><img src="../media/shot-desafio-en-720.webp" width="720" height="1558" alt="Creating a challenge in Movo: weekly goal, coffee on the line, simple points or who runs the most." loading="lazy" decoding="async"></picture></div>
-      <figcaption><b>Train together</b><span>Challenges with a weekly leaderboard and a shareable card for Instagram Stories. Have a coach? They plan your week through Movo.</span></figcaption></figure></li>
-  </ul>
-  <aside class="cta-break" data-nosticky aria-label="Get started">
-    <p class="t">Ready to bring it all together? <span class="muted">It takes less than 2 minutes.</span></p>
-    <a class="btn" href="https://app.movoapp.com.br/?lang=en&utm_source=lp-en&pos=vantagens" data-cta="vantagens">Start free</a>
-  </aside>
 </div></section>
 
 <section id="treinadores" class="chap coach" data-chapter data-nosticky aria-labelledby="h-coach"><div class="wrap">
@@ -316,9 +323,9 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 <section id="depoimentos" class="band" hidden aria-labelledby="h-dep"><div class="wrap">
   <h2 id="h-dep">People using it.</h2>
   <div class="quotes">
-    <figure><span class="ph">Exemplo</span><blockquote>“Minha ficha vivia numa foto perdida no WhatsApp. Agora ela está no celular, com a carga da semana passada ao lado.”</blockquote><figcaption>Rafael M. · aluno de academia</figcaption></figure>
+    <figure><span class="ph">Exemplo</span><blockquote>“Minha ficha vivia numa foto perdida no WhatsApp. Agora ela está no celular, com a carga da semana passada ao lado.”</blockquote><figcaption>Rafael M. · aluno de musculação</figcaption></figure>
     <figure><span class="ph">Exemplo</span><blockquote>“Marquei uma prova de 10 km e o app mostra quantos dias faltam toda vez que abro.”</blockquote><figcaption>Camila T. · corredora</figcaption></figure>
-    <figure><span class="ph">Exemplo</span><blockquote>“Treino academia três vezes e jogo vôlei duas. Ver tudo na mesma semana mudou como eu organizo os dias.”</blockquote><figcaption>Bruno S. · vôlei e musculação</figcaption></figure>
+    <figure><span class="ph">Exemplo</span><blockquote>“Treino musculação três vezes e jogo vôlei duas. Ver tudo na mesma semana mudou como eu organizo os dias.”</blockquote><figcaption>Bruno S. · vôlei e musculação</figcaption></figure>
     <figure><span class="ph">Exemplo</span><blockquote>“Importei a ficha de uma aluna a partir da foto, ajustei duas linhas e enviei. Ela aceitou e eu vi quando treinou.”</blockquote><figcaption>Larissa P. · personal trainer</figcaption></figure>
     <figure><span class="ph">Exemplo</span><blockquote>“Fizemos um desafio de quatro semanas no grupo. O placar acabou com a discussão de quem faltou.”</blockquote><figcaption>Diego A. · treina com amigos</figcaption></figure>
     <figure><span class="ph">Exemplo</span><blockquote>“Gosto de marcar o CrossFit como ‘fui’ e anotar o esforço depois.”</blockquote><figcaption>Fernanda R. · CrossFit e corrida</figcaption></figure>
@@ -330,22 +337,9 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
   <h2 id="h-faq">Frequently asked questions</h2></header>
   <div class="faq">
     <details><summary>Is Movo free?</summary><p>Yes, and no credit card needed. Movo already works for everyday training and gets new features every week. When there is a paid plan, logging workouts stays free and nothing you logged is deleted. AI features have a monthly usage limit.</p></details>
-    <details id="instalar"><summary>How do I install it on my phone?</summary><div class="ans">
-      <p>The iPhone and Android apps are coming to the App Store and Google Play. Until then, use Movo right in your browser or add it to your home screen: it gets an icon, opens full screen and logs workouts even offline.</p>
-      <div class="tabs" role="tablist" aria-label="Phone type">
-        <button role="tab" id="t-android" aria-selected="true" aria-controls="g-android">Android</button>
-        <button role="tab" id="t-ios" aria-selected="false" aria-controls="g-ios">iPhone</button>
-      </div>
-      <div class="guide" id="g-android" role="tabpanel" aria-labelledby="t-android">
-        <ol><li>Open the app in <b>Chrome</b>: <a href="https://app.movoapp.com.br/?lang=en&utm_source=lp-en&pos=install" data-cta="install">open Movo</a>.</li><li>Tap the <b>⋮</b> menu (top right corner).</li><li>Tap <b>Install app</b> (or <b>Add to Home screen</b>).</li><li>Confirm. The Movo icon shows up on your home screen.</li></ol>
-      </div>
-      <div class="guide" id="g-ios" role="tabpanel" aria-labelledby="t-ios">
-        <ol><li>Open the app <b>in Safari</b>: <a href="https://app.movoapp.com.br/?lang=en&utm_source=lp-en&pos=install" data-cta="install">open Movo</a>. In other browsers this step may not show up.</li><li>Tap <b>Share</b> (the square with an up arrow, at the bottom).</li><li>Scroll and tap <b>Add to Home Screen</b>.</li><li>Tap <b>Add</b> (top right corner).</li></ol>
-        <p class="note">After installing, sign in with the email code inside the installed app. If the email link opens in your browser, go back to the app and type the code.</p>
-      </div>
-    </div></details>
+    <details id="instalar"><summary>How do I install it on my phone?</summary><p>Get it on the <a href="https://apps.apple.com/app/id6833195728" data-cta="appstore-faq">App Store</a> (iPhone) and sign in with the code sent to your email. The Android app is coming soon to Google Play. Rather not install it? Use it right in your browser: <a href="https://app.movoapp.com.br/?lang=en&utm_source=lp-en&pos=install" data-cta="install">open Movo</a>.</p></details>
     <details><summary>I already use another app. Can I bring my workouts?</summary><p>Yes, and it's easy. When importing, send the file exported from your current app, a spreadsheet, a PDF or a photo of your routine. Movo organizes everything and you check it before saving.</p></details>
-    <details><summary>Does it work with my watch?</summary><p>Yes, through Strava. Connect Strava in Movo and the activities from your watch come in on their own, with nothing to type.</p></details>
+    <details><summary>Does it work with my watch?</summary><p>Yes, in the iPhone app: Movo brings in the workouts your watch saves to Apple Health. On Android, this comes with the Google Play app, through Health Connect.</p></details>
     <details><summary>What about my data? Who sees it?</summary><p>Your workouts are saved to your account in the cloud, so you can access them from any device. Friends in a challenge only see what counts for points, never your weights or routines. A coach only sees what you allow. You can export your data and delete your account in the app. Details in the <a href="privacy.html">Privacy Policy</a> and the <a href="terms.html">Terms of Use</a>.</p></details>
     <details><summary>Does it use AI? What gets sent to it?</summary><p>Some features (importing workouts, building a custom plan, race plans and adjusting your week) use AI from Anthropic and send only what that feature needs. Nothing is saved until you review it. The AI makes suggestions and doesn't replace a health or fitness professional.</p></details>
     <details><summary>I'm a coach. How do I get started?</summary><p>When you sign in, choose “I'm a coach” and fill in your profile. Then invite your clients by link or code. Each client decides what you see.</p></details>
@@ -354,19 +348,19 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 </div></section>
 
 <section class="final" data-nosticky aria-labelledby="h-final"><div class="wrap"><div class="box reveal">
-  <h2 id="h-final">Get all your training in one place.</h2>
-  <p class="lead" style="margin:12px auto 0">Free, no password, no credit card.</p>
-  <div class="row"><a class="btn" href="https://app.movoapp.com.br/?lang=en&utm_source=lp-en&pos=final" data-cta="final" id="cta-final">Start free</a></div>
+  <h2 id="h-final">Get started free.</h2>
+  <p class="lead" style="margin:12px auto 0">Get the app or use it in your browser. No password, no credit card.</p>
+  <div class="row"><div class="stores" role="group" aria-label="Get the app"><a class="btn ghost store st-ios" href="https://apps.apple.com/app/id6833195728" data-cta="appstore-final"><small>Download on the</small>App Store</a></div><a class="btn web" href="https://app.movoapp.com.br/?lang=en&utm_source=lp-en&pos=final" data-cta="final" id="cta-final">Use in your browser</a></div>
 </div></div></section>
 
 </main>
 <footer data-nosticky><div class="wrap">
-  <div class="logo" style="font-size:20px"><svg width="26" height="26" viewBox="0 0 240 240" fill="none" aria-hidden="true"><rect x="36" y="126" width="44" height="74" rx="14" fill="#C6F135"/><rect x="98" y="84" width="44" height="116" rx="14" fill="#C6F135"/><rect x="160" y="40" width="44" height="160" rx="14" fill="#C6F135"/></svg>movo <span class="muted" style="font:400 14px Inter,sans-serif">· beta</span></div>
+  <div class="logo" style="font-size:20px"><svg width="26" height="26" viewBox="0 0 240 240" fill="none" aria-hidden="true"><rect x="36" y="126" width="44" height="74" rx="14" fill="#C6F135"/><rect x="98" y="84" width="44" height="116" rx="14" fill="#C6F135"/><rect x="160" y="40" width="44" height="160" rx="14" fill="#C6F135"/></svg>movo</div>
   <div class="links"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="../" hreflang="pt-BR" lang="pt-BR">Português</a><a href="mailto:contato@movoapp.com.br" data-cta="email">contato@movoapp.com.br</a></div>
   <p style="margin-top:14px">Movo doesn't replace a health or fitness professional.</p>
   <p style="margin-top:6px">© Movo. All rights reserved.</p>
 </div></footer>
-<div class="sticky" id="sticky"><a class="btn" href="https://app.movoapp.com.br/?lang=en&utm_source=lp-en&pos=sticky" data-cta="sticky">Start free</a></div>
+<div class="sticky" id="sticky"><a class="btn" href="https://app.movoapp.com.br/?lang=en&utm_source=lp-en&pos=sticky" data-cta="sticky">Get started free</a></div>
 <script>
 (function(){
 var d=document,de=d.documentElement;de.classList.add('js');
@@ -403,14 +397,10 @@ if('IntersectionObserver' in window){var cio=new IntersectionObserver(function(e
  d.querySelectorAll('[data-chapter]').forEach(function(el){cio.observe(el)})}
 /* instalar: aba conforme o sistema + aviso de navegador interno */
 var ua=navigator.userAgent||'',ios=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
-var inapp=/FBAN|FBAV|Instagram|WhatsApp|Line\//i.test(ua)||(ios&&/CriOS|FxiOS/i.test(ua));
-var tA=d.getElementById('t-android'),tI=d.getElementById('t-ios'),gA=d.getElementById('g-android'),gI=d.getElementById('g-ios');
-function tab(w){var a=w==='android';tA.setAttribute('aria-selected',a);tI.setAttribute('aria-selected',!a);gA.hidden=!a;gI.hidden=a}
-tA.addEventListener('click',function(){tab('android')});tI.addEventListener('click',function(){tab('ios')});
-tab(ios?'ios':'android');
-if(inapp)d.getElementById('inapp').classList.add('on');
-var cp=d.getElementById('copy');
-cp.addEventListener('click',function(){var u='https://app.movoapp.com.br/?lang=en';var ok=function(){d.getElementById('copied').textContent='Link copied.'};if(navigator.clipboard){navigator.clipboard.writeText(u).then(ok,function(){d.getElementById('copied').textContent=u})}else{d.getElementById('copied').textContent=u}});
+/* celular: a loja do sistema vira o botão principal */
+var android=/android/i.test(ua);if(ios)de.classList.add('os-ios');else if(android&&d.querySelector('.st-and'))de.classList.add('os-and');
+var lojaEl=ios?d.querySelector('.st-ios'):android?d.querySelector('.st-and'):null;
+if(lojaEl){var loja=lojaEl.getAttribute('href');['nav','vantagens','sticky'].forEach(function(p){var a=d.querySelector('[data-cta='+p+']');if(a){a.href=loja;a.setAttribute('data-cta',p+(ios?'-appstore':'-play'))}})}
 /* depoimentos de exemplo só aparecem em revisão (?depoimentos=1) */
 if(/[?&]depoimentos=1/.test(location.search)){var s=d.getElementById('depoimentos');if(s)s.hidden=false}
 })();
