@@ -67,6 +67,7 @@ header.top{display:flex;align-items:center;justify-content:space-between;height:
 .hero .cta{display:flex;flex-direction:column;gap:10px;margin-top:26px;align-items:stretch}
 .hero .cta .btn{width:100%}
 .stores{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
+.stores .store:only-child{grid-column:1/-1}
 .btn.store{flex-direction:column;gap:2px;min-height:56px;padding:0 12px;line-height:1.1;font-size:16px;width:100%}
 .btn.store small{font:500 11px/1 Inter,system-ui,sans-serif;letter-spacing:.04em;opacity:.75}
 .cta .btn.web,.final .btn.web{background:var(--lime);color:#14161A;border:0}
@@ -397,8 +398,9 @@ if('IntersectionObserver' in window){var cio=new IntersectionObserver(function(e
 /* instalar: aba conforme o sistema + aviso de navegador interno */
 var ua=navigator.userAgent||'',ios=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 /* celular: a loja do sistema vira o botão principal */
-var android=/android/i.test(ua);if(ios)de.classList.add('os-ios');else if(android)de.classList.add('os-and');
-if(ios||android){var loja=d.querySelector(ios?'.st-ios':'.st-and').getAttribute('href');['nav','vantagens','sticky'].forEach(function(p){var a=d.querySelector('[data-cta='+p+']');if(a){a.href=loja;a.setAttribute('data-cta',p+(ios?'-appstore':'-play'))}})}
+var android=/android/i.test(ua);if(ios)de.classList.add('os-ios');else if(android&&d.querySelector('.st-and'))de.classList.add('os-and');
+var lojaEl=ios?d.querySelector('.st-ios'):android?d.querySelector('.st-and'):null;
+if(lojaEl){var loja=lojaEl.getAttribute('href');['nav','vantagens','sticky'].forEach(function(p){var a=d.querySelector('[data-cta='+p+']');if(a){a.href=loja;a.setAttribute('data-cta',p+(ios?'-appstore':'-play'))}})}
 /* depoimentos de exemplo só aparecem em revisão (?depoimentos=1) */
 if(/[?&]depoimentos=1/.test(location.search)){var s=d.getElementById('depoimentos');if(s)s.hidden=false}
 })();
